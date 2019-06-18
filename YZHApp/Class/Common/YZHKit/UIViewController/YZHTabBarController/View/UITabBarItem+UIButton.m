@@ -1,6 +1,6 @@
 //
 //  UITabBarItem+UIButton.m
-//  jszs
+//  YZHApp
 //
 //  Created by yuan on 2018/3/2.
 //  Copyright © 2018年 yuan. All rights reserved.

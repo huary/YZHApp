@@ -1,9 +1,9 @@
 //
 //  YZHAsyncQueue.m
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2019/1/11.
-//  Copyright © 2019年 gdtech. All rights reserved.
+//  Copyright © 2019年 yuanzh. All rights reserved.
 //
 
 #import "YZHAsyncQueue.h"
@@ -82,6 +82,11 @@
 -(BOOL)isInAsyncQueue
 {
     return (dispatch_get_specific(self.asyncTaskQueueSpecificKey) == (__bridge void *)self);
+}
+
+-(dispatch_queue_t)asyncTaskQueue
+{
+    return _asyncTaskQueue;
 }
 
 @end

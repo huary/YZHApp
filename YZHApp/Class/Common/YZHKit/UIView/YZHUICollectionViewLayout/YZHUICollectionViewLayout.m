@@ -1,6 +1,6 @@
 //
 //  YZHUICollectionViewLayout.m
-//  易打分
+//  YZHApp
 //
 //  Created by yuan on 2017/7/6.
 //  Copyright © 2017年 yuan. All rights reserved.
@@ -107,6 +107,23 @@ NSString * const NSCollectionEdgeInsetsKey = TYPE_STR(NSCollectionEdgeInsetsKey)
 }
 
 
++(BOOL)_canLayoutForItem:(id<YZHUICollectionCellItemLayoutProtocol>)cellItem
+{
+    if ([cellItem respondsToSelector:@selector(layoutAttributesBlock)] && cellItem.layoutAttributesBlock) {
+        return YES;
+    }
+    else {
+        BOOL sizeOK = ([cellItem respondsToSelector:@selector(sizeBlock)] && cellItem.sizeBlock);
+//        BOOL rowSpaceOK = ([cellItem respondsToSelector:@selector(rowSpacingBlock)] && cellItem.rowSpacingBlock);
+//        BOOL lineSpaceOK = ([cellItem respondsToSelector:@selector(lineSpacingBlock)] && cellItem.lineSpacingBlock);
+        if (sizeOK) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
 +(CGSize)collectionViewSingleSectionContentSizeForCellItems:(NSArray<id<YZHUICollectionCellItemLayoutProtocol>>*)cellItems boundingRectWithSize:(CGSize)boundingRectSize layoutOptions:(NSDictionary<NSString*, id>*)layoutOptions
 {
     NSInteger i = 0;
@@ -118,12 +135,14 @@ NSString * const NSCollectionEdgeInsetsKey = TYPE_STR(NSCollectionEdgeInsetsKey)
     CGFloat minH = 0;
     for (id<YZHUICollectionCellItemLayoutProtocol> cellItem in cellItems) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i++ inSection:0];
-        UICollectionViewLayoutAttributes *layoutAttributes = nil;
+        UICollectionViewLayoutAttributes *layoutAttributes = cellItem.layoutAttribute;
         if ([cellItem respondsToSelector:@selector(layoutAttributesBlock)] && cellItem.layoutAttributesBlock) {
             layoutAttributes = cellItem.layoutAttributesBlock(indexPath,cellItem);
         }
         else {
-            layoutAttributes = [YZHUICollectionViewLayout _layoutAttributesForItem:cellItem atIndexPath:indexPath cellItems:cellItems boundingRectWithSize:boundingRectSize layoutOptions:layoutOptions layoutTarget:nil];
+            if ([[self class] _canLayoutForItem:cellItem]) {
+                layoutAttributes = [YZHUICollectionViewLayout _layoutAttributesForItem:cellItem atIndexPath:indexPath cellItems:cellItems boundingRectWithSize:boundingRectSize layoutOptions:layoutOptions layoutTarget:nil];
+            }
         }
         cellItem.layoutAttribute = layoutAttributes;
         totalWidth = MAX(CGRectGetMaxX(layoutAttributes.frame), totalWidth);
@@ -137,13 +156,14 @@ NSString * const NSCollectionEdgeInsetsKey = TYPE_STR(NSCollectionEdgeInsetsKey)
     UIEdgeInsets insets = [YZHUICollectionViewLayout _collectionViewLayout:nil insetsAtIndexPath:nil layoutOptions:layoutOptions];
     totalHeight += insets.bottom;
     totalWidth += insets.right;
-    if (boundingRectSize.width == MAXFLOAT && boundingRectSize.height == MAXFLOAT) {
+
+    if (boundingRectSize.width == CGFLOAT_MAX && boundingRectSize.height == CGFLOAT_MAX) {
         return CGSizeMake(totalWidth, totalHeight);
     }
-    else if (boundingRectSize.width == MAXFLOAT) {
+    else if (boundingRectSize.width == CGFLOAT_MAX) {
         return CGSizeMake(totalWidth, boundingRectSize.height);
     }
-    else if (boundingRectSize.height == MAXFLOAT) {
+    else if (boundingRectSize.height == CGFLOAT_MAX) {
         return CGSizeMake(boundingRectSize.width, totalHeight);
     }
     return CGSizeMake(totalWidth, totalHeight);

@@ -1,12 +1,13 @@
 //
 //  YZHWebObjectLoaderManager.m
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2019/1/14.
-//  Copyright © 2019年 gdtech. All rights reserved.
+//  Copyright © 2019年 yuanzh. All rights reserved.
 //
 
 #import "YZHWebObjectLoaderManager.h"
+#import "NSMapTable+YZHAdd.h"
 
 static YZHWebObjectLoaderManager *shareLoaderManager_s = nil;
 
@@ -54,6 +55,20 @@ static YZHWebObjectLoaderManager *shareLoaderManager_s = nil;
 -(YZHWebObjectLoader*)loaderForKey:(id)key
 {
     return [self.loaderMapTable objectForKey:key];
+}
+
+-(void)clear
+{
+    [self clearAllMemoryCache];
+    [self.loaderMapTable removeAllObjects];
+}
+
+-(void)clearAllMemoryCache
+{
+    [self.loaderMapTable enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        YZHWebObjectLoader *loader = obj;
+        [loader.cache.memoryCache removeAllObjects];
+    }];
 }
 
 @end

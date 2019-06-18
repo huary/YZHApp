@@ -20,12 +20,14 @@
 
 -(UIImage*)scaleAspectFitInSize:(CGSize)size backgroundColor:(UIColor*)backgroundColor;
 
--(UIImage*)updateImageOrientation;
+-(UIImage*)fixImageOrientation;
 
 -(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius;
 
 -(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
 
 -(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius corners:(UIRectCorner)corners borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
+
+-(CGSize)contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode;
 
 @end

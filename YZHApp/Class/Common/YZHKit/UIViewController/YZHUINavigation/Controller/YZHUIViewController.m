@@ -2,7 +2,7 @@
 //  YZHUIViewController.m
 //  YZHUINavigationController
 //
-//  Created by captain on 16/11/17.
+//  Created by yuan on 16/11/17.
 //  Copyright (c) 2016年 yzh. All rights reserved.
 //
 
@@ -45,10 +45,13 @@
     [self.navigationController.navigationBar setShadowImage:[UIImage new]];
 }
 
--(void)_clearOldNavigationItemLeftBarButtonItem
+-(void)_clearOldNavigationItemView
 {
     self.navigationItem.titleView = [[UIView alloc] init];
-    
+}
+
+-(void)_clearOldNavigationItemLeftBarButtonItem
+{
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[[UIView alloc] init]];
     self.navigationItem.leftBarButtonItem = barButtonItem;
 }
@@ -56,6 +59,9 @@
 -(void)_clearOldNavigationItemRightBarButtonItem
 {
     //    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    
+    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[[UIView alloc] init]];
+    self.navigationItem.rightBarButtonItem = barButtonItem;
 }
 
 -(void)_setUpNavigationBarAndItemView
@@ -734,9 +740,9 @@
         }
     }
     if (left) {
-        if (self.title == nil) {
-            [self _clearOldNavigationItemLeftBarButtonItem];
-        }
+//        if (self.title == nil) {
+//        }
+        [self _clearOldNavigationItemLeftBarButtonItem];
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     }
     else {
@@ -799,8 +805,9 @@
     
     for (UIButton *buttonItem in buttons) {
         buttonItem.tag = ++tag;
-        [systemItems addObject:[[UIBarButtonItem alloc] initWithCustomView:buttonItem]];
-        [systemItems addObject:space];
+        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithCustomView:buttonItem];
+        [systemItems addObject:item];
+//        [systemItems addObject:space];
     }
     if (left) {
         self.navigationItem.leftBarButtonItems = systemItems;

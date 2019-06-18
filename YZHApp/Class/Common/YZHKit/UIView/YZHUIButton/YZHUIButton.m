@@ -8,6 +8,7 @@
 
 #import "YZHUIButton.h"
 #import "YZHKitType.h"
+#import "NSObject+YZHAddForKVO.h"
 
 /**********************************************************
  *YZHUIButtonStateInfo
@@ -39,10 +40,9 @@
  **********************************************************/
 @interface YZHUIButton ()
 
-//@property (nonatomic, copy) YZHUIButtonActionBlock actionBlock;
-
-/* <#注释#> */
 @property (nonatomic, strong) NSMutableDictionary<NSNumber*, UIColor*> *backgroundColorStateInfo;
+@property (nonatomic, strong) NSMutableDictionary<NSNumber*, UIColor*> *borderColorStateInfo;
+@property (nonatomic, strong) NSMutableDictionary<NSNumber*, NSNumber*> *borderWidthStateInfo;
 
 @end
 
@@ -52,36 +52,56 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-//        NSLog(@"init==============");
+        
+        [self _setupDefault];
         [self _addKVOForState:YES];
     }
     return self;
 }
 
+-(void)_setupDefault
+{
+    self.layoutChangeBounds = YES;
+    self.layoutStyle = -1;
+}
+
 -(void)_addKVOForState:(BOOL)add
 {
     if (add) {
-        [self addObserver:self forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:nil];
-        [self addObserver:self forKeyPath:@"selected" options:NSKeyValueObservingOptionNew context:nil];
-        [self addObserver:self forKeyPath:@"highlighted" options:NSKeyValueObservingOptionNew context:nil];
+        [self addKVOObserver:self forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [self addKVOObserver:self forKeyPath:@"selected" options:NSKeyValueObservingOptionNew context:NULL];
+        [self addKVOObserver:self forKeyPath:@"highlighted" options:NSKeyValueObservingOptionNew context:NULL];
     }
     else {
-        [self removeObserver:self forKeyPath:@"enabled"];
-        [self removeObserver:self forKeyPath:@"selected"];
-        [self removeObserver:self forKeyPath:@"highlighted"];
+        [self removeKVOObserver:self forKeyPath:@"enabled" context:NULL];
+        [self removeKVOObserver:self forKeyPath:@"selected" context:NULL];
+        [self removeKVOObserver:self forKeyPath:@"highlighted" context:NULL];
     }
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
-    [self _updateBackgroundColorForState];
+    [self _updateStateInfo];
 }
 
--(void)_updateBackgroundColorForState
+-(void)_updateStateInfo
 {
-    UIColor *backgroundColor = [self.backgroundColorStateInfo objectForKey:@(self.state)];
-    if (backgroundColor) {
-        [super setBackgroundColor:backgroundColor];
+    UIControlState state = self.state;
+    UIColor *bgColor = self.backgroundColorStateInfo[@(state)];
+    
+    UIColor *borderColor = self.borderColorStateInfo[@(state)];
+    
+    CGFloat borderWidth = [self.borderWidthStateInfo[@(state)] floatValue];
+    
+    if (bgColor) {
+//        self.backgroundColor = bgColor;
+        [super setBackgroundColor:bgColor];
+    }
+    
+    self.layer.borderWidth = MAX(borderWidth, 0);
+    
+    if (borderColor) {
+        self.layer.borderColor = borderColor.CGColor;
     }
 }
 
@@ -95,9 +115,13 @@
 
 -(void)_layoutImageTitleView
 {
+    if (self.layoutStyle < 0) {
+        return;
+    }
     CGSize contentSize = self.bounds.size;
     
-    CGSize imageSize = self.currentImage.size;
+//    CGSize imageSize = self.currentImage.size;
+    CGSize imageSize = self.imageView.frame.size;
     CGSize titleSize = self.titleLabel.frame.size;
     if (CGSizeEqualToSize(imageSize, CGSizeZero) && CGSizeEqualToSize(titleSize, CGSizeZero)) {
         return;
@@ -244,7 +268,12 @@
         
     self.imageView.frame = CGRectMake(IX, IY, IW, IH);
     self.titleLabel.frame = CGRectMake(TX, TY, TW, TH);
-    
+    if (self.circleCornerImageView) {
+        self.imageView.layer.cornerRadius = MIN(IW, IH)/2;
+    }
+    if (self.layoutChangeBounds == NO) {
+        return;
+    }
 
     CGFloat minX = MIN(IX, TX);
     CGFloat maxX = MAX(CGRectGetMaxX(self.imageView.frame), CGRectGetMaxX(self.titleLabel.frame));
@@ -285,7 +314,7 @@
 -(void)setBackgroundColor:(UIColor *)backgroundColor
 {
     [super setBackgroundColor:backgroundColor];
-    [self setBackgroundColor:backgroundColor forState:UIControlStateNormal];
+    [self setBackgroundColor:backgroundColor forState:self.state];
 }
 
 -(void)setTitle:(NSString *)title forState:(UIControlState)state
@@ -308,22 +337,47 @@
     return _backgroundColorStateInfo;
 }
 
--(void)setBackgroundColor:(UIColor *)backgroundColor forState:(UIControlState)state
+-(NSMutableDictionary<NSNumber*, UIColor*>*)borderColorStateInfo
 {
-    if (backgroundColor) {
-        [self.backgroundColorStateInfo setObject:backgroundColor forKey:@(state)];
+    if (!_borderColorStateInfo) {
+        _borderColorStateInfo = [NSMutableDictionary dictionary];
     }
-    else {
-        [self.backgroundColorStateInfo removeObjectForKey:@(state)];
-    }
-    [self _updateBackgroundColorForState];
+    return _borderColorStateInfo;
 }
 
-//-(void)addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock
-//{
-//    self.actionBlock = actionBlock;
-//    [self addTarget:self action:@selector(controlAction:) forControlEvents:controlEvents];
-//}
+-(NSMutableDictionary<NSNumber*, NSNumber*>*)borderWidthStateInfo
+{
+    if (!_borderWidthStateInfo) {
+        _borderWidthStateInfo = [NSMutableDictionary dictionary];
+    }
+    return _borderWidthStateInfo;
+}
+
+-(void)setBackgroundColor:(UIColor *)backgroundColor forState:(UIControlState)state
+{
+    if (backgroundColor == nil) {
+        backgroundColor = CLEAR_COLOR;
+    }
+    [self.backgroundColorStateInfo setObject:backgroundColor forKey:@(state)];
+    [self _updateStateInfo];
+}
+
+- (void)setBorderColor:(UIColor *)borderColor forState:(UIControlState)state
+{
+    if (borderColor == nil) {
+        borderColor = CLEAR_COLOR;
+    }
+    [self.borderColorStateInfo setObject:borderColor forKey:@(state)];
+    [self _updateStateInfo];
+}
+
+- (void)setBorderWidth:(CGFloat)borderWidth forState:(UIControlState)state
+{
+    borderWidth = MAX(borderWidth, 0);
+    [self.borderWidthStateInfo setObject:@(borderWidth) forKey:@(state)];
+    [self _updateStateInfo];
+}
+
 
 -(BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event
 {
@@ -355,13 +409,6 @@
         self.cancelTrackingBlock(self, event);
     }
 }
-
-//-(void)controlAction:(YZHUIButton*)titleButton
-//{
-//    if (self.actionBlock) {
-//        self.actionBlock(titleButton);
-//    }
-//}
 
 -(void)dealloc
 {

@@ -10,6 +10,17 @@
 #import "YZHUITextView.h"
 #import "YZHKeyboardManager.h"
 
+
+typedef NS_ENUM(NSInteger, YZHShiftType)
+{
+    //正常按那个view的底部Y值计算移动
+    YZHShiftTypeNormal              = 0,
+    //按contentOffset的进行移动，专指UIScrollView及其子类的对象
+    YZHShiftTypeContentOffset       = 1,
+    //按contentSizePoint判断，移动View(专指UIScrollView及其子类的对象),此时contentSize的height需要小于view.height
+    YZHShiftTypeContentSizePoint    = 2,
+};
+
 @class YZHKeyboardInputView;
 //开始要偏移的block
 typedef void(^YZHKeyboardInputViewWillUpdateBlock)(YZHKeyboardInputView *inputView, NSNotification *keyboardNotification, CGFloat currentShift, BOOL isShow);
@@ -66,9 +77,9 @@ typedef void(^YZHKeyboardInputViewCompletionBlock)(YZHKeyboardInputView *inputVi
 //指的是inputView和firstResponder的最小距离,默认为0;
 @property (nonatomic, assign) CGFloat inputViewMinTopToResponder;
 /*
- *指的是inputView和firstResponder是否始终保持着keyboardMinTopToResponder，
- *默认为YES，则他们的距离始终保持着keyboardMinTopToResponder，
- *为NO，此时他们的距离则保持着距离至少是keyboardMinTopToResponder
+ *指的是inputView和firstResponder是否始终保持着inputViewMinTopToResponder，
+ *默认为YES，则他们的距离始终保持着inputViewMinTopToResponder，
+ *为NO，此时他们的距离则保持着距离至少是inputViewMinTopToResponder
  */
 @property (nonatomic, assign) BOOL firstResponderShiftToInputViewMinTop;
 
@@ -77,8 +88,12 @@ typedef void(^YZHKeyboardInputViewCompletionBlock)(YZHKeyboardInputView *inputVi
  *在进行hide后，scroll的contentOffset没有还原到开始时的
  *默认为YES
  */
-@property (nonatomic, assign) BOOL relatedShiftViewUseContentOffsetToShift;
+//@property (nonatomic, assign) BOOL relatedShiftViewUseContentOffsetToShift;
+/* <#name#> */
+@property (nonatomic, assign) YZHShiftType shiftType;
 
+/* <#name#> */
+@property (nonatomic, assign) NSTimeInterval updateAnimationDuaration;
 
 /* <#注释#> */
 @property (nonatomic, copy) YZHKeyboardInputViewWillUpdateBlock willUpdateBlock;
@@ -89,6 +104,8 @@ typedef void(^YZHKeyboardInputViewCompletionBlock)(YZHKeyboardInputView *inputVi
 /* <#注释#> */
 @property (nonatomic, copy) YZHKeyboardCompletionBlock completionBlock;
 
+
+
 -(instancetype)initWithInputView:(UIView<YZHKeyboardInputViewProtocol>*)inputView;
 
 -(instancetype)initWithInputView:(UIView<YZHKeyboardInputViewProtocol>*)inputView inView:(UIView*)inView;
@@ -98,6 +115,6 @@ typedef void(^YZHKeyboardInputViewCompletionBlock)(YZHKeyboardInputView *inputVi
 -(void)resignFirstResponder;
 
 //这个主要是在更新inputView中的firstResponderView（inputTextView）的大小时需要调用
--(void)updateKeyboardInputView:(UIView<YZHKeyboardInputViewProtocol>*)inputView;
+-(void)updateKeyboardInputView:(UIView<YZHKeyboardInputViewProtocol>*)inputView animated:(BOOL)animated;
 
 @end

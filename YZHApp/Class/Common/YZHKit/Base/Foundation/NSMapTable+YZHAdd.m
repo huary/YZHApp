@@ -16,17 +16,39 @@
         return;
     }
     id key = nil;
-    while (key = [self.keyEnumerator nextObject]) {
+    NSEnumerator *keyEnumerator = self.keyEnumerator;
+    while (key = [keyEnumerator nextObject]) {
         id object = [self objectForKey:key];
         
         BOOL stop = NO;
-        
         block(key, object, &stop);
         
         if (stop) {
             break;
         }
     }
+}
+
+-(NSArray*)allValues
+{
+    NSMutableArray *valueList = [NSMutableArray array];
+    [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (obj) {
+            [valueList addObject:obj];
+        }
+    }];
+    return [valueList copy];
+}
+
+-(NSArray*)allKeys
+{
+    NSMutableArray *keyList = [NSMutableArray array];
+    [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if (key) {
+            [keyList addObject:key];
+        }
+    }];
+    return [keyList copy];
 }
 
 @end

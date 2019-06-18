@@ -7,24 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "YZHTaskOperationManager.h"
+#import "YZHOperationManager.h"
 
 @class YZHTaskManager;
 
 typedef id(^YZHTaskBlock)(YZHTaskManager *taskManager);
-typedef void(^YZHTaskStopBlock)(YZHTaskManager *taskManager, id taskObject, id key);
-typedef void(^YZHTaskRestartBlock)(YZHTaskManager *taskManager, id taskObject, id key);
+typedef void(^YZHTaskStopBlock)(YZHTaskManager *taskManager, id taskObject);
+typedef void(^YZHTaskRestartBlock)(YZHTaskManager *taskManager, id taskObject);
 
 
 @interface YZHTaskManager : NSObject
 {
     @protected
     BOOL _sync;
-    YZHTaskOperationManager *_operationManager;
+    YZHOperationManager *_operationManager;
 }
-
-/* <#name#> */
-//@property (nonatomic, assign, readonly) BOOL sync;
 
 //默认为5个任务
 @property (nonatomic, assign) NSInteger maxConcurrentRunningTaskCnt;
@@ -32,7 +29,7 @@ typedef void(^YZHTaskRestartBlock)(YZHTaskManager *taskManager, id taskObject, i
 @property (nonatomic, assign, readonly) NSInteger currentRunningTaskCnt;
 
 
--(instancetype)initWithOperationManager:(YZHTaskOperationManager*)operationManager sync:(BOOL)sync;
+-(instancetype)initWithOperationManager:(YZHOperationManager*)operationManager sync:(BOOL)sync;
 
 //默认cancelPrev默认为NO
 -(void)addTaskBlock:(YZHTaskBlock)taskBlock forKey:(id)key;
@@ -40,7 +37,6 @@ typedef void(^YZHTaskRestartBlock)(YZHTaskManager *taskManager, id taskObject, i
 -(void)addTaskBlock:(YZHTaskBlock)taskBlock forKey:(id)key cancelPrev:(BOOL)cancelPrev;
 
 -(void)addTaskBlock:(YZHTaskBlock)taskBlock restartBlock:(YZHTaskRestartBlock)restartBlock stopBlock:(YZHTaskStopBlock)stopBlock forKey:(id)key cancelPrev:(BOOL)cancelPrev;
-
 
 /*
  *同notifyTaskFinishForKey:(id)key cancelRetain:(BOOL)cancelRetain;
@@ -57,8 +53,5 @@ typedef void(^YZHTaskRestartBlock)(YZHTaskManager *taskManager, id taskObject, i
 
 
 -(void)cancelAllTask;
-
-//返回通过addTaskBlock时taskBlock返回的对象
--(id)taskObjectForKey:(id)key;
 
 @end

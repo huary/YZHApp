@@ -8,6 +8,7 @@
 
 #import "YZHMemoryCache.h"
 #import "YZHKitType.h"
+#import "NSMapTable+YZHAdd.h"
 
 #define MUTEX_LOCK(L)       dispatch_semaphore_wait(L, DISPATCH_TIME_FOREVER);
 #define MUTEX_UNLOCK(L)     dispatch_semaphore_signal(L)
@@ -355,6 +356,37 @@ static YZHMemoryCache *shareMemoryCache_s = nil;
     if (obj) {
         [self _dispatchDeleteList:@[obj]];
     }
+}
+
+-(void)removeAllObjects
+{
+    MUTEX_LOCK(self.lock);
+    NSArray *allValues = [self.cache allValues];
+    [self.cache removeAllObjects];
+    MUTEX_UNLOCK(self.lock);
+    [self _dispatchDeleteList:allValues];
+}
+
+-(NSArray*)allCacheValues
+{
+    MUTEX_LOCK(self.lock);
+    
+    NSArray *allValues = [self.cache allValues];
+
+    MUTEX_UNLOCK(self.lock);
+    
+    return allValues;
+}
+
+-(NSArray*)allCacheKeys
+{
+    MUTEX_LOCK(self.lock);
+    
+    NSArray *allKeys = [self.cache allKeys];
+    
+    MUTEX_UNLOCK(self.lock);
+    
+    return allKeys;
 }
 
 #pragma mark dispath delegate

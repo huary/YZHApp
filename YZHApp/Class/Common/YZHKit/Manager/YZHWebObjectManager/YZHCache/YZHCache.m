@@ -57,13 +57,13 @@ static YZHCache *shareCache_s = nil;
     if (toDisk) {
         [self.diskCache saveObject:object data:data forFileName:key completion:^(YZHDiskCache *cache, id object, NSString *path, NSString *inFileName) {
             if (completion) {
-                completion(self, object);
+                completion(self, object, path);
             }
         }];
     }
     else {
         if (completion) {
-            completion(self, object);
+            completion(self, object, nil);
         }
     }
 }
@@ -78,13 +78,16 @@ static YZHCache *shareCache_s = nil;
     id object = [self.memoryCache objectForKey:key];
     if (object) {
         if (completion) {
-            completion(self, object, nil, YZHCacheMemory);
+            completion(self, object, nil, nil, YZHCacheMemory);
         }
         return nil;
     }
     return [self.diskCache loadObjectForFileName:key decode:decode completion:^(YZHDiskCache *cache, NSData *data, id object, NSString *path, NSString *inFileName) {
+        if (object) {
+            [self.memoryCache setObject:object forKey:key];
+        }
         if (completion) {
-            completion(self, object, data, YZHCacheDisk);
+            completion(self, object, data, path, YZHCacheDisk);
         }
     }];
 }
@@ -97,7 +100,7 @@ static YZHCache *shareCache_s = nil;
     }
     return [self.diskCache removeObjectForFileName:key completion:^(YZHDiskCache *cache, NSString *path) {
         if (completion) {
-            completion(self, key);
+            completion(self, key, path);
         }
     }];
 }

@@ -1,9 +1,9 @@
 //
 //  YZHAsyncQueue.h
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2019/1/11.
-//  Copyright © 2019年 gdtech. All rights reserved.
+//  Copyright © 2019年 yuanzh. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -25,5 +25,7 @@ typedef void(^YZHAsyncQueueExecuteCompletionBlock)(YZHAsyncQueue *asyncQueue,id 
 -(void)addAsyncExecute:(YZHAsyncQueueExecuteBlock)executeBlock asyncCompletion:(BOOL)asyncCompletion completionBlock:(YZHAsyncQueueExecuteCompletionBlock)completionBlock;
 
 -(BOOL)isInAsyncQueue;
+
+-(dispatch_queue_t)asyncTaskQueue;
 
 @end

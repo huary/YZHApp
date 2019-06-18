@@ -2,11 +2,14 @@
 //  YZHttpManager.h
 //  YZHttpManager
 //
-//  Created by captain on 16/12/22.
+//  Created by yuan on 16/12/22.
 //  Copyright © 2016年 yzh. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+
+#define YZHTTP  (1)
+#define AFN     (0)
 
 typedef void (^httpManagerSuccessBlock)(id result);
 //typedef void (^httpManagerSuccessBlock)(id result, id responseObject);
@@ -18,8 +21,10 @@ typedef void (^httpManagerDownloadCompletionBlock)(NSString *filePath);
 //这个是非严格的单例，可以alloc一个YZHttpManager的对象
 @interface YZHttpManager : NSObject
 
+#if AFN
 @property (nonatomic, strong) AFHTTPSessionManager *httpSessionManager;
 @property (nonatomic, strong) AFHTTPSessionManager *httpsSessionManager;
+#endif
 
 +(instancetype)httpManager;
 

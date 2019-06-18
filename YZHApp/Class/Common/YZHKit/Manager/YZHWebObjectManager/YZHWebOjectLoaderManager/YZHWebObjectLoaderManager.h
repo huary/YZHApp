@@ -1,9 +1,9 @@
 //
 //  YZHWebObjectLoaderManager.h
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2019/1/14.
-//  Copyright © 2019年 gdtech. All rights reserved.
+//  Copyright © 2019年 yuanzh. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -17,4 +17,7 @@
 
 -(YZHWebObjectLoader*)loaderForKey:(id)key;
 
+-(void)clear;
+
+-(void)clearAllMemoryCache;
 @end

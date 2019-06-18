@@ -14,6 +14,7 @@ typedef void(^YZHUIButtonActionBlock)(UIButton *button);
 
 -(void)addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock;
 
--(YZHUIButtonActionBlock)actionBlock;
+-(void)removeControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock;
 
+-(YZHUIButtonActionBlock)actionBlockForControlEvent:(UIControlEvents)controlEvents;
 @end

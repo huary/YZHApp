@@ -8,71 +8,129 @@
 
 #import "UIView+YZHAddForUIGestureRecognizer.h"
 #import <objc/runtime.h>
-#import "YZHKitMacro.h"
+#import "YZHKitType.h"
 
+#define DEFAULT_TIME_INTERVAL       (0.2)
 #define MAX_TIME_INTERVAL           (30.0)
 #define MIN_TIME_INTERVAL           (0.01)
+
+
+NSString * const YZHIntervalActionLastTimeIntervalKey = TYPE_STR(YZHIntervalActionLastTimeInterval);
+NSString * const YZHIntervalActionElapsedTimeIntervalKey = TYPE_STR(YZHIntervalActionElapsedTimeInterval);
+
+
+typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
+{
+    YZHUIGestureRecognizerStateNull     = 0,
+    YZHUIGestureRecognizerStateBegan    = 1,
+    YZHUIGestureRecognizerStateChanged  = 2,
+    YZHUIGestureRecognizerStateEnded    = 3,
+};
+
+
+
+/****************************************************
+ *UIGestureRecognizer (GestureRecognizerInfo)
+ ****************************************************/
+@implementation UIGestureRecognizer (GestureRecognizerInfo)
+
+-(void)setYZHState:(YZHUIGestureRecognizerState)YZHState
+{
+    objc_setAssociatedObject(self, @selector(YZHState), @(YZHState), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+-(YZHUIGestureRecognizerState)YZHState
+{
+    return (YZHUIGestureRecognizerState)[objc_getAssociatedObject(self, _cmd) integerValue];
+}
+
+
+-(void)setUserInfo:(NSDictionary *)userInfo
+{
+    objc_setAssociatedObject(self, @selector(userInfo), userInfo, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+-(NSDictionary*)userInfo
+{
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+@end
 
 /****************************************************
  *YZHIntervalGestureRecognizerActionOptionsInfo
  ****************************************************/
 @implementation YZHIntervalGestureRecognizerActionOptionsInfo
+-(instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self _setupDefault];
+    }
+    return self;
+}
 
-+(YZHIntervalGestureActionTimingFunctionBlock)YZHIntervalGestureRecognizerActionTimingFunctionLinearBlock
+-(void)_setupDefault
+{
+    _minActionTimeInterval = MIN_TIME_INTERVAL;
+    _maxActionTimeInterval = MAX_TIME_INTERVAL;
+    _easeInChangeRatio = 0.8;
+    _easeOutChangeRatio = 1.25;
+}
+
++(YZHIntervalGestureActionTimingFunctionBlock)linearTimingFunctionBlockForMin:(NSTimeInterval)min max:(NSTimeInterval)max
 {
     YZHIntervalGestureActionTimingFunctionBlock linearBlock = ^(NSTimeInterval elapsedTime,NSTimeInterval lastTimeInterval){
-        lastTimeInterval = MAX(lastTimeInterval, MIN_TIME_INTERVAL);
-        lastTimeInterval = MIN(lastTimeInterval, MAX_TIME_INTERVAL);
+        lastTimeInterval = MAX(lastTimeInterval, min);
+        lastTimeInterval = MIN(lastTimeInterval, max);
         return lastTimeInterval;
     };
     return linearBlock;
 }
 
-+(YZHIntervalGestureActionTimingFunctionBlock)YZHIntervalGestureRecognizerActionTimingFunctionEaseInBlock
++(YZHIntervalGestureActionTimingFunctionBlock)easeInTimingFunctionBlockForMin:(NSTimeInterval)min max:(NSTimeInterval)max changeRatio:(CGFloat)changeRatio
 {
-    CGFloat changeRatio = 0.8;
+//    CGFloat changeRatio = 0.8;
     YZHIntervalGestureActionTimingFunctionBlock easeInBlock = ^(NSTimeInterval elapsedTime,NSTimeInterval lastTimeInterval){
         lastTimeInterval = lastTimeInterval * changeRatio;
-        lastTimeInterval = MAX(lastTimeInterval, MIN_TIME_INTERVAL);
-        lastTimeInterval = MIN(lastTimeInterval, MAX_TIME_INTERVAL);
+        lastTimeInterval = MAX(lastTimeInterval, min);
+        lastTimeInterval = MIN(lastTimeInterval, max);
         return lastTimeInterval;
     };
     return easeInBlock;
 }
 
-+(YZHIntervalGestureActionTimingFunctionBlock)YZHIntervalGestureRecognizerActionTimingFunctionEaseOutBlock
++(YZHIntervalGestureActionTimingFunctionBlock)easeOutTimingFunctionBlockForMin:(NSTimeInterval)min max:(NSTimeInterval)max changeRatio:(CGFloat)changeRatio
 {
-    CGFloat changeRatio = 1.25;
+//    CGFloat changeRatio = 1.25;
     YZHIntervalGestureActionTimingFunctionBlock easeOutBlock = ^(NSTimeInterval elapsedTime,NSTimeInterval lastTimeInterval){
         lastTimeInterval = lastTimeInterval * changeRatio;
-        lastTimeInterval = MAX(lastTimeInterval, MIN_TIME_INTERVAL);
-        lastTimeInterval = MIN(lastTimeInterval, MAX_TIME_INTERVAL);
+        lastTimeInterval = MAX(lastTimeInterval, min);
+        lastTimeInterval = MIN(lastTimeInterval, max);
         return lastTimeInterval;
     };
     return easeOutBlock;
 }
 
 -(YZHIntervalGestureActionTimingFunctionBlock)timingFunctionBlock
-{
+{    
     if (_timingFunctionBlock != nil) {
         return _timingFunctionBlock;
     }
     
-    //    BOOL cond = (self.actionOptions == YZHIntervalGestureRecognizerActionOptionsBeginChangeEnd || self.actionOptions == YZHIntervalGestureRecognizerActionOptionsBeginChangesEnd || self.actionOptions == YZHIntervalGestureRecognizerActionOptionsCustom);
-    //    if (!cond) {
-    //        return nil;
-    //    }
+    NSTimeInterval min = self.minActionTimeInterval;
+    NSTimeInterval max = self.maxActionTimeInterval;
     
     if (self.timingFunction == YZHIntervalGestureRecognizerActionTimingFunctionLinear) {
-        self.timingFunctionBlock = [YZHIntervalGestureRecognizerActionOptionsInfo YZHIntervalGestureRecognizerActionTimingFunctionLinearBlock];
+        self.timingFunctionBlock = [YZHIntervalGestureRecognizerActionOptionsInfo linearTimingFunctionBlockForMin:min max:max];
     }
     else if (self.timingFunction == YZHIntervalGestureRecognizerActionTimingFunctionEaseIn)
     {
-        self.timingFunctionBlock = [YZHIntervalGestureRecognizerActionOptionsInfo YZHIntervalGestureRecognizerActionTimingFunctionEaseInBlock];
+        self.timingFunctionBlock = [YZHIntervalGestureRecognizerActionOptionsInfo easeInTimingFunctionBlockForMin:min max:max changeRatio:self.easeInChangeRatio];
     }
     else if (self.timingFunction == YZHIntervalGestureRecognizerActionTimingFunctionEaseOut)
     {
-        self.timingFunctionBlock = [YZHIntervalGestureRecognizerActionOptionsInfo YZHIntervalGestureRecognizerActionTimingFunctionEaseOutBlock];
+        self.timingFunctionBlock = [YZHIntervalGestureRecognizerActionOptionsInfo easeOutTimingFunctionBlockForMin:min max:max changeRatio:self.easeOutChangeRatio];
     }
     return _timingFunctionBlock;
 }
@@ -92,8 +150,6 @@
 
 @property (nonatomic, strong) YZHIntervalGestureRecognizerActionOptionsInfo *actionOptionsInfo;
 
-//@property (nonatomic, assign) NSTimeInterval lastTimeInterval;
-//@property (nonatomic, assign) NSTimeInterval elapsedTimeInterval;
 
 -(instancetype)initWithGestureBlock:(YZHGestureRecognizerBlock)gestureBlock;
 -(instancetype)initWithGestureBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)gestureShouldBeginBlock;
@@ -129,16 +185,19 @@
     }
     if (self.actionOptionsInfo == nil || self.actionOptionsInfo.actionOptions == YZHIntervalGestureRecognizerActionOptionsDefault)
     {
-        gestureRecognizer.YZHState = YZHUIGestureRecognizerStateEnded;
         self.gestureBlock(gestureRecognizer);
     }
     else
     {
-        //        NSLog(@"%s,state=%ld",__FUNCTION__,self.gestureRecognizer.YZHState);
-        if (self.gestureRecognizer.YZHState != YZHUIGestureRecognizerStateEnded && self.gestureRecognizer.state == UIGestureRecognizerStateEnded)
-        {
-            gestureRecognizer.YZHState = YZHUIGestureRecognizerStateEnded;
-            self.gestureBlock(gestureRecognizer);
+//        NSLog(@"%s,gesture=%@",__FUNCTION__,self.gestureRecognizer);
+        if (self.gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+            [self _startIntervalAction];
+        }
+        else if (self.gestureRecognizer.state == UIGestureRecognizerStateChanged) {
+            
+        }
+        else if (self.gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+            [self _startIntervalAction];
         }
     }
 }
@@ -155,132 +214,137 @@
     if (self.gestureShouldBeginBlock) {
         shouldBegin = self.gestureShouldBeginBlock(gestureRecognizer);
     }
-    if (shouldBegin) {
-        [self startIntervalAction];
-    }
+//    if (shouldBegin) {
+//        [self startIntervalAction];
+//    }
     return shouldBegin;
 }
 
--(void)startIntervalAction
+-(BOOL)_shouldDoStartIntervalActionFor:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo
 {
-    if (self.actionOptionsInfo && self.actionOptionsInfo.actionOptions != YZHIntervalGestureRecognizerActionOptionsDefault && self.actionOptionsInfo.actionOptions != YZHIntervalGestureRecognizerActionOptionsOnlyEnd) {
-        CGFloat lastTimeInterval = self.actionOptionsInfo.firstActionTimeInterval;
-        if ([self.gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
-            UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer*)self.gestureRecognizer;
-            //如果某一次特殊的话，按特殊的时间来进行
-            lastTimeInterval = longPress.minimumPressDuration;
-        }
-        CGFloat elapsedTimeInterval = 0;
-        
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        dict[TYPE_STR(YZHStateKey)] = @(YZHUIGestureRecognizerStateBegan);
-        dict[TYPE_STR(YZHIntervalActionElapsedTimeIntervalKey)] = @(elapsedTimeInterval + lastTimeInterval);
-        dict[TYPE_STR(YZHIntervalActionLastTimeIntervalKey)] = @(lastTimeInterval);
-        
-        if (lastTimeInterval > 0) {
-            [self performSelector:@selector(nextIntervalAction:) withObject:dict afterDelay:lastTimeInterval];
-        }
-        else
-        {
-            [self nextIntervalAction:dict];
-        }
+    if (optionsInfo == nil) {
+        return NO;
     }
+    YZHIntervalGestureRecognizerActionOptions options = optionsInfo.actionOptions;
+    return (options != YZHIntervalGestureRecognizerActionOptionsDefault);
 }
 
--(void)nextIntervalAction:(NSDictionary*)actionInfo
+-(void)_startIntervalAction
 {
-    YZHUIGestureRecognizerState state = [actionInfo[TYPE_STR(YZHStateKey)] integerValue];
+    if (![self _shouldDoStartIntervalActionFor:self.actionOptionsInfo]) {
+        return;
+    }
+    CGFloat lastTimeInterval = 0;
+    if ([self.gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        UILongPressGestureRecognizer *longPress = (UILongPressGestureRecognizer*)self.gestureRecognizer;
+        //如果某一次特殊的话，按特殊的时间来进行
+        lastTimeInterval = longPress.minimumPressDuration;
+    }
+    CGFloat elapsedTimeInterval = lastTimeInterval;
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    dict[YZHIntervalActionLastTimeIntervalKey] = @(lastTimeInterval);
+    dict[YZHIntervalActionElapsedTimeIntervalKey] = @(elapsedTimeInterval);
+    [self _nextIntervalAction:dict];
+}
+
+-(BOOL)_shouldDoNextActionForGesture:(UIGestureRecognizer*)gesture
+{
+    if (!gesture) {
+        return NO;
+    }
+    if (([gesture isKindOfClass:[UILongPressGestureRecognizer class]] ||
+         [gesture isKindOfClass:[UIPanGestureRecognizer class]]) &&
+        gesture.state >= UIGestureRecognizerStateBegan &&
+        gesture.state <= UIGestureRecognizerStateEnded) {
+        return YES;
+    }
+    return NO;
+}
+
+-(void)_nextIntervalAction:(NSDictionary*)actionInfo
+{
     YZHIntervalGestureRecognizerActionOptionsInfo *actionOptionsInfo = self.actionOptionsInfo;
-    NSTimeInterval elapsedTimeInterval = [actionInfo[TYPE_STR(YZHIntervalActionElapsedTimeIntervalKey)] doubleValue];
-    NSTimeInterval lastTimeInterval = [actionInfo[TYPE_STR(YZHIntervalActionLastTimeIntervalKey)] doubleValue];
     
-    self.gestureRecognizer.YZHState = state;
+//    NSLog(@"gesture=%@",self.gestureRecognizer);
+    self.gestureRecognizer.userInfo = actionInfo;
     
-    if (self.gestureBlock && self.gestureRecognizer && ([self.gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]] || [self.gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) && self.gestureRecognizer.state != UIGestureRecognizerStateEnded)
+    YZHIntervalGestureRecognizerActionOptions option = actionOptionsInfo.actionOptions;
+    if (self.gestureBlock && [self _shouldDoNextActionForGesture:self.gestureRecognizer])
     {
-        //        NSLog(@"%s,state=%ld",__FUNCTION__,self.gestureRecognizer.YZHState);
-        if (actionOptionsInfo.actionOptions == YZHIntervalGestureRecognizerActionOptionsOnlyOnce) {
-            if (self.gestureRecognizer.YZHState != YZHUIGestureRecognizerStateEnded) {
-                self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateEnded;
+        if (option == YZHIntervalGestureRecognizerActionOptionsOnlyOnce) {
+            if (self.gestureRecognizer.state == UIGestureRecognizerStateBegan) {
                 self.gestureBlock(self.gestureRecognizer);
             }
         }
-        else if (actionOptionsInfo.actionOptions == YZHIntervalGestureRecognizerActionOptionsBeginEnd)
-        {
-            if (self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateBegan) {
+        else if (option == YZHIntervalGestureRecognizerActionOptionsOnlyEnd) {
+            if (self.gestureRecognizer.state == UIGestureRecognizerStateEnded) {
                 self.gestureBlock(self.gestureRecognizer);
             }
         }
-        else if (actionOptionsInfo.actionOptions == YZHIntervalGestureRecognizerActionOptionsBeginChangeEnd)
+        else if (option == YZHIntervalGestureRecognizerActionOptionsBeginEnd)
         {
-            if (self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateBegan) {
+            if (self.gestureRecognizer.state == UIGestureRecognizerStateBegan) {
                 self.gestureBlock(self.gestureRecognizer);
-                self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateChanged;
-                
-                CGFloat nextTimeInterval = 0.0;
-                if (actionOptionsInfo.timingFunctionBlock) {
-                    nextTimeInterval = actionOptionsInfo.timingFunctionBlock(elapsedTimeInterval,lastTimeInterval);
+            }
+            else if (self.gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+                self.gestureBlock(self.gestureRecognizer);
+            }
+        }
+        else if (option == YZHIntervalGestureRecognizerActionOptionsBeginChangeEnd ||
+                 option == YZHIntervalGestureRecognizerActionOptionsBeginChangesEnd ||
+                 option == YZHIntervalGestureRecognizerActionOptionsCustom)
+        {
+            if (self.gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+                self.gestureBlock(self.gestureRecognizer);
+                self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateBegan;
+            }
+            else if (self.gestureRecognizer.state == UIGestureRecognizerStateChanged) {
+                if (option == YZHIntervalGestureRecognizerActionOptionsBeginChangeEnd) {
+                    if (self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateBegan) {
+                        self.gestureBlock(self.gestureRecognizer);
+                        self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateChanged;
+                    }
+                    return;
                 }
-                if (nextTimeInterval > 0.0 && nextTimeInterval <= MIN_TIME_INTERVAL) {
-                    nextTimeInterval = MIN_TIME_INTERVAL;
-                }
-                else if (nextTimeInterval == 0)
-                {
-                    self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateEnded;
+                else {
                     self.gestureBlock(self.gestureRecognizer);
-                    return;
+                    self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateChanged;
                 }
-                else
-                {
-                    return;
-                }
-                lastTimeInterval = nextTimeInterval;
-                
-                NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-                dict[TYPE_STR(YZHStateKey)] = @(YZHUIGestureRecognizerStateChanged);
-                dict[TYPE_STR(YZHIntervalActionElapsedTimeIntervalKey)] = @(elapsedTimeInterval + lastTimeInterval);
-                dict[TYPE_STR(YZHIntervalActionLastTimeIntervalKey)] = @(lastTimeInterval);
-                
-                [self performSelector:@selector(nextIntervalAction:) withObject:dict afterDelay:lastTimeInterval];
             }
-            else if (self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateChanged)
+            else if (self.gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+                if (self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateChanged) {
+                    self.gestureBlock(self.gestureRecognizer);
+                    self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateEnded;
+                }
+                return;
+            }
+            
+            NSTimeInterval lastTimeInterval = [actionInfo[YZHIntervalActionLastTimeIntervalKey] doubleValue];
+            NSTimeInterval elapsedTimeInterval = [actionInfo[YZHIntervalActionElapsedTimeIntervalKey] doubleValue];
+            CGFloat nextTimeInterval = 0;
+            if (actionOptionsInfo.timingFunctionBlock) {
+                nextTimeInterval = actionOptionsInfo.timingFunctionBlock(elapsedTimeInterval,lastTimeInterval);
+            }
+            
+            if (nextTimeInterval > 0 && nextTimeInterval <= actionOptionsInfo.minActionTimeInterval) {
+                nextTimeInterval = actionOptionsInfo.minActionTimeInterval;
+            }
+            else if (nextTimeInterval > actionOptionsInfo.maxActionTimeInterval) {
+                nextTimeInterval = actionOptionsInfo.maxActionTimeInterval;
+            }
+            else if (nextTimeInterval == 0)
             {
                 self.gestureBlock(self.gestureRecognizer);
-                self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateChanged;
+                return;
             }
-        }
-        else if (actionOptionsInfo.actionOptions == YZHIntervalGestureRecognizerActionOptionsBeginChangesEnd || actionOptionsInfo.actionOptions == YZHIntervalGestureRecognizerActionOptionsCustom)
-        {
-            if (self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateBegan || self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateChanged) {
-                self.gestureBlock(self.gestureRecognizer);
-                self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateChanged;
-                
-                CGFloat nextTimeInterval = 0;
-                if (actionOptionsInfo.timingFunctionBlock) {
-                    nextTimeInterval = actionOptionsInfo.timingFunctionBlock(elapsedTimeInterval,lastTimeInterval);
-                }
-                if (nextTimeInterval > 0 && nextTimeInterval <= MIN_TIME_INTERVAL) {
-                    nextTimeInterval = MIN_TIME_INTERVAL;
-                }
-                else if (nextTimeInterval == 0)
-                {
-                    self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateEnded;
-                    self.gestureBlock(self.gestureRecognizer);
-                    return;
-                }
-                else
-                {
-                    return;
-                }
-                lastTimeInterval = nextTimeInterval;
-                
-                NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-                dict[TYPE_STR(YZHStateKey)] = @(YZHUIGestureRecognizerStateChanged);
-                dict[TYPE_STR(YZHIntervalActionElapsedTimeIntervalKey)] = @(elapsedTimeInterval + lastTimeInterval);
-                dict[TYPE_STR(YZHIntervalActionLastTimeIntervalKey)] = @(lastTimeInterval);
-                
-                [self performSelector:@selector(nextIntervalAction:) withObject:dict afterDelay:lastTimeInterval];
-            }
+            lastTimeInterval = nextTimeInterval;
+//            NSLog(@"next=%f",nextTimeInterval);
+            
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            dict[YZHIntervalActionLastTimeIntervalKey] = @(lastTimeInterval);
+            dict[YZHIntervalActionElapsedTimeIntervalKey] = @(elapsedTimeInterval + lastTimeInterval);
+            
+            [self performSelector:@selector(_nextIntervalAction:) withObject:dict afterDelay:lastTimeInterval];
         }
     }
 }
@@ -348,7 +412,7 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:target action:@selector(gestureAction:)];
     
     target.gestureRecognizer = tapGesture;
-    
+
     [self addGestureRecognizer:tapGesture];
     [self.gestureTargets addObject:target];
     return tapGesture;
@@ -370,7 +434,7 @@
         }
     }
     target.gestureRecognizer = doubleTapGesture;
-    
+
     [self addGestureRecognizer:doubleTapGesture];
     [self.gestureTargets addObject:target];
     
@@ -421,10 +485,11 @@
     UIGestureRecognizerBlockTarget *target = [[UIGestureRecognizerBlockTarget alloc] initWithGestureBlock:gestureBlock shouldBeginBlock:shouldBeginBlock];
     
     UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:target action:@selector(gestureAction:)];
-//    longGesture.minimumPressDuration = DEFAULT_TIME_INTERVAL;
+    longGesture.minimumPressDuration = DEFAULT_TIME_INTERVAL;
     
     target.actionOptionsInfo = optionsInfo;
     target.gestureRecognizer = longGesture;
+    
     
     [self addGestureRecognizer:longGesture];
     [self.gestureTargets addObject:target];

@@ -8,6 +8,8 @@
 
 #import "YZHKeyboardInputView.h"
 #import "YZHKitType.h"
+#import "UIView+YZHAdd.h"
+#import "NSObject+YZHAddForKVO.h"
 
 @interface YZHKeyboardInputView ()
 
@@ -44,7 +46,7 @@
     self.relatedShiftViewBeforeShowTransform = CGAffineTransformIdentity;
     self.inputViewMinTopToResponder = 0;
     self.firstResponderShiftToInputViewMinTop = YES;
-    self.relatedShiftViewUseContentOffsetToShift = YES;
+//    self.relatedShiftViewUseContentOffsetToShift = YES;
     
     _keyboardManager = [[YZHKeyboardManager alloc] init];
     self.keyboardManager.firstResponderView = self.inputView.firstResponderView;
@@ -57,19 +59,30 @@
         [weakSelf _doWillShowOrHideAction:keyboardNotification show:NO];
     };
     self.keyboardManager.willUpdateBlock = ^(YZHKeyboardManager *keyboardManager, NSNotification *keyboardNotification, CGFloat currentShift, BOOL isShow) {
-        [weakSelf _doUpdateRelateViewShift:keyboardNotification shift:currentShift isShow:isShow];
+        [weakSelf _doUpdateRelateViewShift:keyboardNotification shift:currentShift isShow:isShow animated:YES];
     };
+}
+
+-(void)setRelatedShiftView:(UIView *)relatedShiftView
+{
+    [self _addScrollShiftViewKVO:NO];
+    _relatedShiftView = relatedShiftView;
+    _relatedShiftViewBeforeShowTransform = relatedShiftView.transform;
+    [self _addScrollShiftViewKVO:YES];
 }
 
 -(void)_setInputViewWithView:(UIView<YZHKeyboardInputViewProtocol> *)inputView inView:(UIView*)inView
 {
     if (_inputView != inputView) {
         [_inputView removeFromSuperview];
+        
+        [self _addInputViewKVO:NO];
         _inputView = inputView;
+        [self _addInputViewKVO:YES];
+        
         [self _addInputViewToKeyWindow:(UIView*)inView];
     }
 }
-
 
 -(void)_addInputViewToKeyWindow:(UIView*)inView
 {
@@ -79,6 +92,7 @@
     self.inView = inView;
     [inView addSubview:self.inputView];
 }
+
 
 -(void)_doWillShowOrHideAction:(NSNotification*)notification show:(BOOL)show
 {
@@ -92,32 +106,86 @@
     }
 }
 
--(BOOL)_doUpdateRelateViewShift:(NSNotification*)keyboardNotification shift:(CGFloat)currentShift isShow:(BOOL)isShow
+-(BOOL)_isRelatedShiftScrollView
 {
-    BOOL isScrollViewContentOffset = ([self.relatedShiftView isKindOfClass:[UIScrollView class]] && self.relatedShiftViewUseContentOffsetToShift);
-    if (self.firstResponderView == nil && isScrollViewContentOffset == NO) {
+    if (![self.relatedShiftView isKindOfClass:[UIScrollView class]]) {
         return NO;
     }
+    if (self.shiftType == YZHShiftTypeContentOffset || self.shiftType == YZHShiftTypeContentSizePoint) {
+        return YES;
+    }
+    return NO;
+}
+
+-(BOOL)_isRelatedShiftScrollViewContentSizePointToBottom
+{
+    UIScrollView *scrollView = nil;
+    if ([self.relatedShiftView isKindOfClass:[UIScrollView class]]) {
+        scrollView = self.relatedShiftView;
+    }
+    CGSize size = scrollView.contentSize;
+    if (size.height >= scrollView.height && self.shiftType == YZHShiftTypeContentSizePoint) {
+        return YES;
+    }
+    return NO;
+}
+
+//-(BOOL)_shouldNotDownShiftWithRelatedShiftScrollViewContentSizePoint
+//{
+//
+//    UIScrollView *scrollView = nil;
+//    if ([self.relatedShiftView isKindOfClass:[UIScrollView class]]) {
+//        scrollView = (UIScrollView*)self.relatedShiftView;
+//    }
+//    else {
+//        return NO;
+//    }
+//
+//    CGSize size = scrollView.contentSize;
+//
+//    return (size.height < scrollView.height && scrollView.transform.ty != self.relatedShiftViewBeforeShowTransform.ty && self.shiftType == YZHShiftTypeContentSizePoint);
+//}
+
+-(BOOL)_doUpdateRelateViewShift:(NSNotification*)keyboardNotification shift:(CGFloat)currentShift isShow:(BOOL)isShow animated:(BOOL)animated
+{
+//    NSLog(@"keyboardNotification=%@",keyboardNotification);
+    BOOL isScrollViewShift = [self _isRelatedShiftScrollView];
+    UIView *firstResponderView = self.firstResponderView;
+    if (firstResponderView == nil && isScrollViewShift == NO) {
+        return NO;
+    }
+    
+//    if (firstResponderView == nil && [self _isRelatedShiftScrollViewContentSizePointToBottom]) {
+//        firstResponderView = self.relatedShiftView;
+//    }
     
     self.isInputViewInFirstResponder = isShow;
     
     CGFloat firstResponderViewMaxY = 0;
-    if (self.firstResponderView) {
-        CGRect rect = [self.firstResponderView.superview convertRect:self.firstResponderView.frame toView:[UIApplication sharedApplication].keyWindow];
+    if (firstResponderView) {
+        CGRect rect = [firstResponderView.superview convertRect:firstResponderView.frame toView:[UIApplication sharedApplication].keyWindow];
         firstResponderViewMaxY = CGRectGetMaxY(rect);
     }
     else {
-        //这里firstResponderView为nil，则relatedShiftView必须是scrollView
-        UIScrollView *scrollView = (UIScrollView*)self.relatedShiftView;
-        CGPoint contentSizePoint = CGPointMake(0, scrollView.contentSize.height - scrollView.contentOffset.y);
-        contentSizePoint = [scrollView.superview convertPoint:contentSizePoint toView:[UIApplication sharedApplication].keyWindow];
-        firstResponderViewMaxY = contentSizePoint.y;
+        if ([self _isRelatedShiftScrollViewContentSizePointToBottom]) {
+            CGRect rect = [self.relatedShiftView.superview convertRect:self.relatedShiftView.frame toView:[UIApplication sharedApplication].keyWindow];
+            firstResponderViewMaxY = CGRectGetMaxY(rect);
+        }
+        else {
+            //这里firstResponderView为nil，则relatedShiftView必须是scrollView
+            UIScrollView *scrollView = (UIScrollView*)self.relatedShiftView;
+            CGPoint contentSizePoint = CGPointMake(0, scrollView.contentSize.height);
+            contentSizePoint = [scrollView convertPoint:contentSizePoint toView:[UIApplication sharedApplication].keyWindow];
+            firstResponderViewMaxY = contentSizePoint.y;
+        }
+//        NSLog(@"firstResponderViewMaxY=%f",firstResponderViewMaxY);
     }
     
     CGRect keyboardFirstResponderViewFrame = [self.keyboardManager.firstResponderView.superview convertRect:self.keyboardManager.firstResponderView.frame toView:[UIApplication sharedApplication].keyWindow];
     
     CGFloat inputY = keyboardFirstResponderViewFrame.origin.y + currentShift;
     CGFloat diffY = inputY - firstResponderViewMaxY - self.inputViewMinTopToResponder;
+//    NSLog(@"diffY=%f，inputY=%f",diffY,inputY);
     
     if (self.willUpdateBlock) {
         self.willUpdateBlock(self, keyboardNotification, diffY, isShow);
@@ -130,36 +198,89 @@
         void (^animateCompletionBlock)(BOOL finished) = ^(BOOL finished){
         };
         
-        if ([self.relatedShiftView isKindOfClass:[UIScrollView class]] && self.relatedShiftViewUseContentOffsetToShift) {
+        
+        NSTimeInterval duration = self.updateAnimationDuaration;
+        if (keyboardNotification) {
+            duration = [[keyboardNotification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+        }
+        
+        if ([self.relatedShiftView isKindOfClass:[UIScrollView class]] && self.shiftType == YZHShiftTypeContentOffset) {
             UIScrollView *scrollView = (UIScrollView*)self.relatedShiftView;
             CGPoint contentOffset = scrollView.contentOffset;
             CGFloat offsetY = contentOffset.y - diffY;
-            CGFloat maxOffsetY = scrollView.contentSize.height - scrollView.bounds.size.height;
+#if 0
             if (!self.firstResponderShiftToInputViewMinTop) {
                 offsetY = MAX(offsetY, 0);
             }
-            maxOffsetY = MAX(maxOffsetY, 0);
             if (isShow) {
-                [scrollView setContentOffset:CGPointMake(contentOffset.x, offsetY) animated:NO];
+                if (animated) {
+                    [UIView animateWithDuration:duration animations:^{
+                        scrollView.contentOffset = CGPointMake(contentOffset.x, offsetY);
+                    } completion:animateCompletionBlock];
+                }
+                else {
+                    scrollView.contentOffset = CGPointMake(contentOffset.x, offsetY);
+                }
             }
             else {
+                CGFloat maxOffsetY = scrollView.contentSize.height - scrollView.bounds.size.height;
+                maxOffsetY = MAX(maxOffsetY, 0);
                 if (contentOffset.y > maxOffsetY) {
-                    [scrollView setContentOffset:CGPointMake(contentOffset.x, maxOffsetY) animated:NO];
+                    if (animated) {
+                        [UIView animateWithDuration:duration animations:^{
+                            scrollView.contentOffset = CGPointMake(contentOffset.x, maxOffsetY);
+                        } completion:animateCompletionBlock];
+                    }
+                    else {
+                        scrollView.contentOffset = CGPointMake(contentOffset.x, maxOffsetY);
+                    }
                 }
                 else if (contentOffset.y <= 0) {
-                    [scrollView setContentOffset:CGPointMake(contentOffset.x, 0) animated:NO];
-
+                    if (animated) {
+                        [UIView animateWithDuration:duration animations:^{
+                            scrollView.contentOffset = CGPointMake(contentOffset.x, 0);
+                        } completion:animateCompletionBlock];
+                    }
+                    else {
+                        scrollView.contentOffset = CGPointMake(contentOffset.x, 0);
+                    }
                 }
-                    
             }
-            animateCompletionBlock(YES);
-        }
-        else {
-            NSTimeInterval duration = 0.1;
-            if (keyboardNotification) {
-                duration = [[keyboardNotification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+#else
+            if (self.firstResponderShiftToInputViewMinTop) {
+                if (keyboardNotification) {
+                    if (isShow) {
+                    }
+                    else {
+                        offsetY = MAX(offsetY, 0);
+                        CGFloat maxOffsetY = scrollView.contentSize.height - scrollView.bounds.size.height;
+                        offsetY = MIN(offsetY, maxOffsetY);
+                    }
+                }
+            }
+            else {
+                offsetY = MAX(offsetY, 0);
+                if (isShow) {
+                }
+                else {
+                    CGFloat maxOffsetY = scrollView.contentSize.height - scrollView.bounds.size.height;
+                    maxOffsetY = MAX(maxOffsetY, 0);
+                    offsetY = MIN(offsetY, maxOffsetY);
+                }
             }
             
+            if (animated) {
+                [UIView animateWithDuration:duration animations:^{
+                    scrollView.contentOffset =  CGPointMake(contentOffset.x, offsetY);
+                } completion:animateCompletionBlock];
+            }
+            else {
+                scrollView.contentOffset =  CGPointMake(contentOffset.x, offsetY);
+            }
+#endif
+        }
+        else {
+#if 0
             if (diffY > 0) {
                 if (!isShow) {
                     [UIView animateWithDuration:duration animations:^{
@@ -176,9 +297,68 @@
             CGFloat oldTranslationY = self.relatedShiftView.transform.ty;
             CGFloat ty = oldTranslationY + diffY;
             
-            [UIView animateWithDuration:duration animations:^{
+//            NSLog(@"======ty=%f",ty);
+            if (animated) {
+                [UIView animateWithDuration:duration animations:^{
+                    self.relatedShiftView.transform = CGAffineTransformMakeTranslation(oldTranslationX, ty);
+                } completion:animateCompletionBlock];
+            }
+            else {
                 self.relatedShiftView.transform = CGAffineTransformMakeTranslation(oldTranslationX, ty);
-            } completion:animateCompletionBlock];
+            }
+#else
+            CGFloat tx = self.relatedShiftViewBeforeShowTransform.tx;
+            CGFloat ty = self.relatedShiftViewBeforeShowTransform.ty;
+            if (diffY > 0 && self.shiftType == YZHShiftTypeContentSizePoint) {
+                //此时scrollView的contentSize的高度小于本身高度的时候，不需要向下移动
+//                NSLog(@"diffY=%f,isShow=%@",diffY,@(isShow));
+                if (self.relatedShiftView.transform.ty == self.relatedShiftViewBeforeShowTransform.ty) {
+                    return YES;
+                }
+                tx = self.relatedShiftView.transform.tx;
+                ty = self.relatedShiftView.transform.ty + diffY;
+                if (ty > 0) {
+                    ty = self.relatedShiftViewBeforeShowTransform.ty;
+                }
+            }
+            else {
+                
+                tx = self.relatedShiftView.transform.tx;
+                ty = self.relatedShiftView.transform.ty + diffY;
+                
+                if (self.firstResponderShiftToInputViewMinTop) {
+                    if (keyboardNotification) {
+                        if (isShow) {
+                        }
+                        else {
+                            tx = self.relatedShiftViewBeforeShowTransform.tx;
+                            ty = self.relatedShiftViewBeforeShowTransform.ty;
+                        }
+                    }
+                }
+                else {
+                    if (diffY > 0) {
+                    }
+                    
+                    if (isShow) {
+                    }
+                    else {
+                        tx = self.relatedShiftViewBeforeShowTransform.tx;
+                        ty = self.relatedShiftViewBeforeShowTransform.ty;
+                    }
+                }
+            }
+            
+//            NSLog(@"ty=%f,diffY=%f",ty,diffY);
+            if (animated) {
+                [UIView animateWithDuration:duration animations:^{
+                    self.relatedShiftView.transform = CGAffineTransformMakeTranslation(tx, ty);
+                } completion:animateCompletionBlock];
+            }
+            else {
+                self.relatedShiftView.transform = CGAffineTransformMakeTranslation(tx, ty);
+            }
+#endif
         }
     }
     return YES;
@@ -194,9 +374,57 @@
     [self.inputView.inputTextView resignFirstResponder];
 }
 
--(void)updateKeyboardInputView:(UIView<YZHKeyboardInputViewProtocol>*)inputView
+-(void)updateKeyboardInputView:(UIView<YZHKeyboardInputViewProtocol>*)inputView animated:(BOOL)animated
 {
     [self _setInputViewWithView:inputView inView:self.inView];
-    [self _doUpdateRelateViewShift:nil shift:0 isShow:self.isInputViewInFirstResponder];
+    [self _doUpdateRelateViewShift:nil shift:0 isShow:YES animated:animated];
+}
+
+
+
+#pragma mark KVO
+-(void)_addScrollShiftViewKVO:(BOOL)add
+{
+    if (![self.relatedShiftView isKindOfClass:[UIScrollView class]]) {
+        return;
+    }
+    if (add) {
+        [self.relatedShiftView addKVOObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
+    }
+    else {
+        [self.relatedShiftView removeKVOObserver:self forKeyPath:@"contentSize" context:NULL];
+    }
+}
+
+-(void)_addInputViewKVO:(BOOL)add
+{
+    if (add) {
+        [self.inputView addKVOObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+    }
+    else {
+        [self.inputView removeKVOObserver:self forKeyPath:@"transform" context:NULL];
+    }
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if (object == self.relatedShiftView) {
+        if ([keyPath isEqualToString:@"contentSize"]) {
+            [self updateKeyboardInputView:self.inputView animated:YES];
+        }
+    }
+    else if (object == self.inputView) {
+        if ([keyPath isEqualToString:@"transform"]) {
+            [self updateKeyboardInputView:self.inputView animated:YES];
+        }
+    }
+}
+
+
+
+-(void)dealloc
+{
+    [self _addScrollShiftViewKVO:NO];
+    [self _addInputViewKVO:NO];
 }
 @end

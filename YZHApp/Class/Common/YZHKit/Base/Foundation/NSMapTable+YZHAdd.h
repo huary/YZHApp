@@ -12,4 +12,8 @@
 
 - (void)enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(id key, id obj, BOOL *stop))block;
 
+-(NSArray*)allValues;
+
+-(NSArray*)allKeys;
+
 @end

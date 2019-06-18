@@ -38,4 +38,10 @@
 
 - (void)removeObjectForKey:(KeyType)key;
 
+-(void)removeAllObjects;
+
+-(NSArray*)allCacheValues;
+
+-(NSArray*)allCacheKeys;
+
 @end

@@ -25,6 +25,8 @@ typedef void(^YZHKeyboardShiftBlock)(YZHKeyboardManager *keyboardManager, NSNoti
 //完成动画后的block
 typedef void(^YZHKeyboardCompletionBlock)(YZHKeyboardManager *keyboardManager, BOOL isShow);
 
+typedef CGAffineTransform(^YZHKeyboardShiftTransformBlock)(YZHKeyboardManager *keyboardManager, NSNotification *keyboardNotification, CGFloat currentShift, BOOL isShow, BOOL *use);
+
 
 
 
@@ -51,6 +53,9 @@ typedef void(^YZHKeyboardCompletionBlock)(YZHKeyboardManager *keyboardManager, B
  */
 @property (nonatomic, assign) BOOL relatedShiftViewUseContentOffsetToShift;
 
+/* 默认为NO */
+@property (nonatomic, assign) BOOL shiftWithFrame;
+
 @property (nonatomic, copy) YZHKeyboardBecomeFirstResponderBlock becomeFirstResponderBlock;
 @property (nonatomic, copy) YZHKeyboardResignFirstResponderBlock resignFirstResponderBlock;
 
@@ -62,7 +67,12 @@ typedef void(^YZHKeyboardCompletionBlock)(YZHKeyboardManager *keyboardManager, B
 
 @property (nonatomic, copy) YZHKeyboardShiftBlock shiftBlock;
 
+/* <#注释#> */
+@property (nonatomic, copy) YZHKeyboardShiftTransformBlock shiftTransformBlock;
+
 @property (nonatomic, copy) YZHKeyboardCompletionBlock completionBlock;
+
+-(BOOL)isKeyboardShow;
 
 @end
 

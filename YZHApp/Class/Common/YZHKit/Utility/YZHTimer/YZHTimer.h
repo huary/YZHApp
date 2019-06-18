@@ -19,8 +19,8 @@ typedef void(^YZHTimerFireBlock)(YZHTimer *timer);
 /* <#name#> */
 @property (nonatomic, assign, readonly) NSTimeInterval timeInterval;
 
-/* 为可读写，在执行action的时候，可以修改repeat为YES或者NO来进行继续或者停止 */
-@property (nonatomic, assign) BOOL repeat;
+/* <#name#> */
+@property (nonatomic, assign, readonly) BOOL repeat;
 
 /* <#name#> */
 @property (nonatomic, assign, readonly, getter=isValid) BOOL valid;
@@ -47,6 +47,9 @@ typedef void(^YZHTimerFireBlock)(YZHTimer *timer);
 
 -(instancetype)initWithTimeInterval:(NSTimeInterval)interval repeat:(BOOL)repeat fireBlock:(YZHTimerFireBlock)fireBlock;
 
+//更新下一次运行间隔，将在after后进行第一次的fire，后面继续按timeInterval
+-(void)updateNextStart:(NSTimeInterval)after;
+
 //更新运行间隔，将在interval后进行第一次的fire
 -(void)updateTimeInterval:(NSTimeInterval)interval;
 
@@ -54,6 +57,10 @@ typedef void(^YZHTimerFireBlock)(YZHTimer *timer);
 
 -(void)fire;
 
+/*
+ *这里的suspend、resume、isSuspend放在同一个线程上来操作
+ *
+ */
 -(void)suspend;
 
 -(void)resume;

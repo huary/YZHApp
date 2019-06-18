@@ -1,35 +1,35 @@
 //
-//  YZHTaskOperationManager.m
-//  YZHURLSessionTaskOperation
+//  YZHOperationManager.m
+//  YZHApp
 //
 //  Created by yuan on 2019/1/7.
 //  Copyright © 2019年 yuan. All rights reserved.
 //
 
-#import "YZHTaskOperationManager.h"
-#import "YZHTaskOperation.h"
+
+#import "YZHOperationManager.h"
 #import "YZHKitType.h"
 
-@interface YZHTaskOperationManager ()
+@interface YZHOperationManager ()
 
 @property (nonatomic, strong) dispatch_semaphore_t lock;
 
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
-@property (nonatomic, weak) YZHTaskOperation *lastTaskOperation;
+@property (nonatomic, weak) YZHOperation *lastTaskOperation;
 
 //是从开始创建到完成时保留的对象
-@property (nonatomic, strong) NSMapTable<id, YZHTaskOperation*> *taskOperationMapTable;
+@property (nonatomic, strong) NSMapTable<id, YZHOperation*> *taskOperationMapTable;
 
 //还没有进入到operationQueue中的YZHTaskOperation
-@property (nonatomic, strong) NSHashTable<YZHTaskOperation*> *notInQueueTaskOperationList;
+@property (nonatomic, strong) NSHashTable<YZHOperation*> *notInQueueTaskOperationList;
 
 @end
 
-@implementation YZHTaskOperationManager
+@implementation YZHOperationManager
 
 
--(instancetype)initWithExecutionOrder:(YZHTaskOperationExecutionOrder)executionOrder
+-(instancetype)initWithExecutionOrder:(YZHOperationExecutionOrder)executionOrder
 {
     self = [super init];
     if (self) {
@@ -46,7 +46,7 @@
     self.lock = dispatch_semaphore_create(1);
 }
 
--(NSMapTable<id,YZHTaskOperation*>*)taskOperationMapTable
+-(NSMapTable<id,YZHOperation*>*)taskOperationMapTable
 {
     if (_taskOperationMapTable == nil) {
         _taskOperationMapTable = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
@@ -54,7 +54,7 @@
     return _taskOperationMapTable;
 }
 
--(NSHashTable<YZHTaskOperation*>*)notInQueueTaskOperationList
+-(NSHashTable<YZHOperation*>*)notInQueueTaskOperationList
 {
     if (_notInQueueTaskOperationList == nil) {
         _notInQueueTaskOperationList = [NSHashTable hashTableWithOptions:NSPointerFunctionsWeakMemory];
@@ -62,15 +62,15 @@
     return _notInQueueTaskOperationList;
 }
 
--(YZHTaskOperation*)_firstFILOTaskOperation
+-(YZHOperation*)_firstFILOTaskOperation
 {
-    if (self.executionOrder != YZHTaskOperationExecutionOrderFILO) {
+    if (self.executionOrder != YZHOperationExecutionOrderFILO) {
         return nil;
     }
-    YZHTaskOperation *firstLIFOTaskOperation = [[YZHTaskOperation alloc] init];
+    YZHOperation *firstLIFOTaskOperation = [[YZHOperation alloc] init];
     firstLIFOTaskOperation.key = @"helloFirstNull";
-    firstLIFOTaskOperation.startBlock = ^(YZHTaskOperation *taskOperation) {
-        [taskOperation finishExecuting];
+    firstLIFOTaskOperation.startBlock = ^(YZHOperation *operation) {
+        [operation finishExecuting];
     };
     [self.operationQueue addOperation:firstLIFOTaskOperation];
     return firstLIFOTaskOperation;
@@ -80,44 +80,42 @@
 -(void)setMaxConcurrentOperationCount:(NSInteger)maxConcurrentOperationCount
 {
     _maxConcurrentOperationCount = maxConcurrentOperationCount;
-    if (self.executionOrder == YZHTaskOperationExecutionOrderNone) {
-        self.operationQueue.maxConcurrentOperationCount = maxConcurrentOperationCount;        
+    if (self.executionOrder == YZHOperationExecutionOrderNone) {
+        self.operationQueue.maxConcurrentOperationCount = maxConcurrentOperationCount;
     }
 }
 
--(YZHTaskOperation*)addTaskOperation:(YZHTaskOperationBlock)taskBlock completion:(YZHTaskOperationCompletionBlock)completion forKey:(id)key
+-(YZHOperation*)addTaskOperation:(YZHTaskOperationBlock)taskBlock completion:(YZHTaskOperationCompletionBlock)completion forKey:(id)key
 {
     return [self addTaskOperation:taskBlock completion:completion forKey:key addToQueue:YES];
 }
 
--(YZHTaskOperation*)addTaskOperation:(YZHTaskOperationBlock)taskBlock completion:(YZHTaskOperationCompletionBlock)completion forKey:(id)key addToQueue:(BOOL)addToQueue
+-(YZHOperation*)addTaskOperation:(YZHTaskOperationBlock)taskBlock completion:(YZHTaskOperationCompletionBlock)completion forKey:(id)key addToQueue:(BOOL)addToQueue
 {
-    YZHTaskOperation *taskOperation = [[YZHTaskOperation alloc] init];
+    YZHOperation *taskOperation = [[YZHOperation alloc] init];
     taskOperation.key = key;
     
     WEAK_SELF(weakSelf);
-    taskOperation.startBlock = ^(YZHTaskOperation *taskOperation) {
-//        NSLog(@"%@-beginStart.operationCnt=%ld,operations=%@,thread=%@",taskOperation.key,self.operationQueue.operationCount,self.operationQueue.operations,[NSThread currentThread]);
+    taskOperation.startBlock = ^(YZHOperation *operation) {
         [weakSelf _willStartAction:key];
         if (taskBlock) {
-            taskBlock(weakSelf, taskOperation);
+            taskBlock(weakSelf, operation);
         }
     };
     
-    taskOperation.didFinishBlock = ^(YZHTaskOperation *taskOperation) {
-//        NSLog(@"%@-didFinish.operationCnt=%ld,operations=%@,thread=%@",key,self.operationQueue.operationCount,self.operationQueue.operations,[NSThread currentThread]);
+    taskOperation.finishBlock = ^(YZHOperation *operation) {
         [weakSelf _didFinishAction:key];
         if (completion) {
-            completion(weakSelf, taskOperation);
+            completion(weakSelf, operation);
         }
     };
     
     sync_lock(self.lock, ^{
-        if (self.executionOrder == YZHTaskOperationExecutionOrderFILO) {
-            YZHTaskOperation *lastTaskOperation = self.lastTaskOperation ? self.lastTaskOperation : [self _firstFILOTaskOperation];
+        if (self.executionOrder == YZHOperationExecutionOrderFILO) {
+            YZHOperation *lastTaskOperation = self.lastTaskOperation ? self.lastTaskOperation : [self _firstFILOTaskOperation];
             [lastTaskOperation addDependency:taskOperation];
         }
-        else if (self.executionOrder == YZHTaskOperationExecutionOrderFIFO) {
+        else if (self.executionOrder == YZHOperationExecutionOrderFIFO) {
             if (self.lastTaskOperation) {
                 [taskOperation addDependency:self.lastTaskOperation];
             }
@@ -125,7 +123,7 @@
         else {
         }
         if (addToQueue) {
-            [self.operationQueue addOperation:taskOperation];            
+            [self.operationQueue addOperation:taskOperation];
         }
         else {
             [self.notInQueueTaskOperationList addObject:taskOperation];
@@ -137,22 +135,14 @@
     return taskOperation;
 }
 
-+(BOOL)_canAddOperationIntoQueue:(YZHTaskOperation*)taskOperation
-{
-    if (taskOperation && !taskOperation.isExecuting && !taskOperation.finished) {
-        return YES;
-    }
-    return NO;
-}
-
 -(void)startAllTaskOperationInQueue
 {
     sync_lock(self.lock, ^{
         NSEnumerator *objEnumerator = [self.notInQueueTaskOperationList objectEnumerator];
-        YZHTaskOperation *taskOperation = nil;
+        YZHOperation *taskOperation = nil;
         while (taskOperation = [objEnumerator nextObject]) {
-            if ([[self class] _canAddOperationIntoQueue:taskOperation]) {
-                [self.operationQueue addOperation:taskOperation];                
+            if ([taskOperation canAddIntoOperationQueue]) {
+                [self.operationQueue addOperation:taskOperation];
             }
         }
         [self.notInQueueTaskOperationList removeAllObjects];
@@ -163,35 +153,37 @@
 -(void)startTaskOperationForKey:(id)key
 {
     sync_lock(self.lock, ^{
-        YZHTaskOperation *taskOperation = [self.taskOperationMapTable objectForKey:key];
-        if ([[self class] _canAddOperationIntoQueue:taskOperation] && [self.notInQueueTaskOperationList containsObject:taskOperation]) {
+        YZHOperation *taskOperation = [self.taskOperationMapTable objectForKey:key];
+        if ([taskOperation canAddIntoOperationQueue] && [self.notInQueueTaskOperationList containsObject:taskOperation]) {
             [self.operationQueue addOperation:taskOperation];
         }
         [self.notInQueueTaskOperationList removeObject:taskOperation];
     });
 }
 
--(YZHTaskOperation*)taskOperationForKey:(id)key
+-(YZHOperation*)taskOperationForKey:(id)key
 {
-    __block YZHTaskOperation *taskOperation = nil;
+    __block YZHOperation *taskOperation = nil;
     sync_lock(self.lock, ^{
         taskOperation = [self.taskOperationMapTable objectForKey:key];
     });
     return taskOperation;
 }
 
--(void)addTaskOperationIntoQueue:(YZHTaskOperation*)taskOperation forKey:(id)key
+-(void)addTaskOperationIntoQueue:(YZHOperation*)taskOperation forKey:(id)key
 {
     sync_lock(self.lock, ^{
         taskOperation.key = key;
-        [self.operationQueue addOperation:taskOperation];
+        if ([taskOperation canAddIntoOperationQueue]) {
+            [self.operationQueue addOperation:taskOperation];
+        }
         [self.taskOperationMapTable setObject:taskOperation forKey:key];
     });
 }
 
 -(void)cancelTaskOperationForKey:(id)key
 {
-    YZHTaskOperation *taskOperation = [self.taskOperationMapTable objectForKey:key];
+    YZHOperation *taskOperation = [self.taskOperationMapTable objectForKey:key];
     [taskOperation cancel];
 }
 
@@ -203,14 +195,15 @@
 -(void)_didFinishAction:(id)key
 {
     sync_lock(self.lock, ^{
-        YZHTaskOperation *taskOperation = [self.taskOperationMapTable objectForKey:key];
+        YZHOperation *taskOperation = [self.taskOperationMapTable objectForKey:key];
         [self.taskOperationMapTable removeObjectForKey:key];
         /*如果外部持有了taskOperation，导致notInQueueTaskOperationList没有释放掉，
          *所以这里从notInQueueTaskOperationList中remove掉,
          *在有依赖关系的operation时，就会对operation产生强引用，就不会在释放完成时释放掉
          */
         [self.notInQueueTaskOperationList removeObject:taskOperation];
-        NSLog(@"%@,%@",self.taskOperationMapTable,self.notInQueueTaskOperationList);
+//        NSLog(@"self.notInQueueTaskOperationList=%ld",self.notInQueueTaskOperationList.count);
+//        NSLog(@"=====%@,%@",self.taskOperationMapTable,self.notInQueueTaskOperationList);
     });
 }
 

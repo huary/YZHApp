@@ -958,7 +958,7 @@ POP_ACTION_END:
     }
     
     
-    NSLog(@"*********************************new*********************************");
+//    NSLog(@"*********************************new*********************************");
     YZHPopActionContext *ctxMax = nil;
     for (NSNumber *arrowDirectionValue in self.arrowDirectionPriorityOrder) {
         YZHUIPopViewArrowDirection arrowDirection = [arrowDirectionValue integerValue];
@@ -967,9 +967,9 @@ POP_ACTION_END:
 
         [self _adjustArrowCtxForContentSize:popContentSizeTmp arrowDirection:arrowDirection];
 
-        NSLog(@"CSizeTmp=%@",NSStringFromCGSize(popContentSizeTmp));
+//        NSLog(@"CSizeTmp=%@",NSStringFromCGSize(popContentSizeTmp));
         YZHPopActionContext *ctx = [self _getPopActionContextForArrowDirection:arrowDirection popContentSize:popContentSizeTmp popOverRect:self.popOverRect showInViewSize:showInViewSize];
-        NSLog(@"ctx=%@",ctx);
+//        NSLog(@"ctx=%@",ctx);
         if (ctxMax == nil) {
             ctxMax = ctx;
         }
@@ -990,7 +990,7 @@ POP_ACTION_END:
                 }
             }
         }
-        NSLog(@"ctxMax.arrowDirection=%ld",ctxMax.arrowDirection);
+//        NSLog(@"ctxMax.arrowDirection=%ld",ctxMax.arrowDirection);
     }
     return ctxMax;
 }
@@ -1559,6 +1559,7 @@ POP_ACTION_END:
             y = CGRectGetMidY(ctx.arrowFrame)/h;
         }
     }
+//    NSLog(@"x=%f,y=%f",x,y);
     return CGPointMake(x, y);
 }
 

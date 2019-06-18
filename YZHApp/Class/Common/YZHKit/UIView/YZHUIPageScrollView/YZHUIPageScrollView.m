@@ -2,7 +2,7 @@
 //  YZHUIPageScrollView.m
 //  YZHUIPageScrollViewDemo
 //
-//  Created by captain on 16/12/6.
+//  Created by yuan on 16/12/6.
 //  Copyright (c) 2016年 yzh. All rights reserved.
 //
 

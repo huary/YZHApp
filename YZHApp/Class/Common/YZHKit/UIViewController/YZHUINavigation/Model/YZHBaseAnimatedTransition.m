@@ -2,7 +2,7 @@
 //  YZHBaseAnimatedTransition.m
 //  BaseDefaultUINavigationController
 //
-//  Created by captain on 16/11/10.
+//  Created by yuan on 16/11/10.
 //  Copyright © 2016年 yzh. All rights reserved.
 //
 

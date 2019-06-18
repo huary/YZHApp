@@ -10,6 +10,7 @@
 #import "YZHUtil.h"
 #import "NSData+YZHCoding.h"
 #import "UIImage+YZHCoding.h"
+#import "NSString+YZHCache.h"
 
 #define OBJECT_ARCHIVE_TO_DATA_KEY                  @"com.yzhDiskCache.archiveToData"
 
@@ -139,6 +140,7 @@ typedef NS_ENUM(NSInteger, YZHDiskObjectType)
 {
     self.fullPath = [self _fullCachePath];
     self.completionQueue = dispatch_get_main_queue();
+    self.maxLoadToMemoryFileSize = 20 * MB_VALUE;
 }
 
 -(dispatch_queue_t)IOQueue
@@ -174,15 +176,54 @@ typedef NS_ENUM(NSInteger, YZHDiskObjectType)
     [[diskObject encode] writeToFile:path atomically:NO];
 }
 
+//-(NSString*)_saveFileNameForFileName:(NSString*)fileName
+//{
+//    NSString *key = fileName;
+//    if (fileName.length >= 256) {
+//        NSString *ext = [fileName pathExtension];
+//        key = [[YZHUtil MD5ForText:fileName lowercase:YES] stringByAppendingPathExtension:ext];
+//    }
+//    return key;
+//}
+
 -(NSString*)_saveFileNameForFileName:(NSString*)fileName
 {
-    NSString *key = fileName;
-    if (fileName.length >= 256) {
-        NSString *ext = [fileName pathExtension];
-        key = [[YZHUtil MD5ForText:fileName lowercase:YES] stringByAppendingPathExtension:ext];
+    NSString *key = nil;
+    NSString *suffix = nil;
+    NSArray *pathComponents = [fileName pathComponents];
+    if (IS_AVAILABLE_NSSET_OBJ(pathComponents)) {
+        suffix = [fileName stringByDeletingLastPathComponent];
+    }
+    
+    if (IS_AVAILABLE_NSSTRNG(fileName.cacheKey)) {
+        key = fileName.cacheKey;
+    }
+    else {
+        if (fileName.cacheKeyBlock) {
+            key = fileName.cacheKeyBlock(fileName, self);
+        }
+        if (!IS_AVAILABLE_NSSTRNG(key)) {
+            NSString *lastFileName = [fileName lastPathComponent];
+            
+            if (lastFileName.length >= 256 || lastFileName.length == 0) {
+                NSString *ext = [lastFileName pathExtension];
+                key = [YZHUtil MD5ForText:lastFileName lowercase:YES];
+                if (IS_AVAILABLE_NSSTRNG(ext)) {
+                    key = [key stringByAppendingPathExtension:ext];
+                }
+            }
+            else {
+                key = lastFileName;
+            }
+        }
+    }
+    if (IS_AVAILABLE_NSSTRNG(suffix)) {
+        key = [suffix stringByAppendingPathComponent:key];
     }
     return key;
 }
+
+
 
 
 -(void)saveObject:(id)object forFileName:(NSString*)fileName completion:(YZHDiskCacheSaveCompletionBlock)completion
@@ -325,6 +366,63 @@ typedef NS_ENUM(NSInteger, YZHDiskObjectType)
     return operation;
 }
 
+
+//-(NSOperation*)loadObjectForFileName:(NSString*)fileName
+//                          shouldLoad:(YZHDiskCacheShouldLoadToMemoryBlock)shouldLoad
+//                              decode:(YZHDiskCacheDecodeBlock)decode
+//                          completion:(YZHDiskCacheLoadCompletionBlock)completion
+//{
+//    NSString *key = [self _saveFileNameForFileName:fileName];
+//    NSString *path = [self.fullPath stringByAppendingPathComponent:key];
+//    
+//    NSOperation *operation = [NSOperation new];
+//    dispatch_async(self.IOQueue, ^{
+//        if (operation.isCancelled) {
+//            return ;
+//        }
+//        NSData *data = nil;
+//        BOOL should = NO;
+//        if (shouldLoad) {
+//            should = shouldLoad(self, path, fileName);
+//        }
+//        else {
+//            int64_t fileSize = [YZHUtil fileSizeAtPath:path];
+//            if (fileSize > 0 && fileSize <= self.maxLoadToMemoryFileSize) {
+//                should = YES;
+//            }
+//        }
+//        if (should) {
+//            data = [NSData dataWithContentsOfFile:path];
+//        }
+//        //decode
+//        id object = nil;
+//        if (decode ) {
+//            object = decode(self, data, path, fileName);
+//        }
+//        if (object == nil) {
+//            object = [YZHUtil decodeObjectForData:data forKey:key];
+//        }
+//        
+//        if (self.syncDoCompletion) {
+//            if (completion) {
+//                completion(self, data, object, path, fileName);
+//            }
+//        }
+//        else {
+//            dispatch_async(self.completionQueue, ^{
+//                if (operation.isCancelled) {
+//                    return;
+//                }
+//                if (completion) {
+//                    completion(self, data, object, path, fileName);
+//                }
+//            });
+//        }
+//    });
+//    
+//    return operation;
+//}
+
 -(NSOperation*)removeObjectForFileName:(NSString*)fileName completion:(YZHDiskCacheRemoveCompletionBlock)completion
 {
     NSString *key = [self _saveFileNameForFileName:fileName];
@@ -347,6 +445,73 @@ typedef NS_ENUM(NSInteger, YZHDiskObjectType)
             dispatch_async(self.completionQueue, ^{
                 if (completion) {
                     completion(self, path);
+                }
+            });
+        }
+    });
+    return operation;
+}
+
+-(NSOperation*)enumerateFilesUsingBlock:(YZHDiskCacheEnumerateFilesBlock)enumerateFilesBlock completion:(YZHDiskCacheEnumerateFilesCompletionBlock)completion
+{
+    return [self enumerateFiles:YES usingBlock:enumerateFilesBlock completion:completion];
+}
+
+-(NSOperation*)enumerateFiles:(BOOL)enumerateSubDirectory usingBlock:(YZHDiskCacheEnumerateFilesBlock)enumerateFilesBlock completion:(YZHDiskCacheEnumerateFilesCompletionBlock)completion;
+{
+    if (!enumerateFilesBlock) {
+        return nil;
+    }
+    NSOperation *operation = [NSOperation new];
+    
+    NSString *directory = [self _fullCachePath];
+
+    dispatch_async(self.IOQueue, ^{
+        if (operation.isCancelled) {
+            return ;
+        }
+        
+        BOOL stop = NO;
+        NSInteger idx = 0;
+        if (enumerateSubDirectory) {
+            NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:directory];
+            NSString *path = nil;
+            while ((path = [enumerator nextObject]) != nil)
+            {
+                if (operation.isCancelled) {
+                    break;
+                }
+                enumerateFilesBlock(self, enumerator, path, idx, &stop);
+                if (stop) {
+                    break;
+                }
+                ++idx;
+            }
+        }
+        else {
+            NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directory error:NULL];
+            
+            for (NSString *file in files) {
+                if (operation.isCancelled) {
+                    break;
+                }
+                enumerateFilesBlock(self,nil, file, idx, &stop);
+                if (stop) {
+                    break;
+                }
+                ++idx;
+            }
+        }
+        
+        if (self.syncDoCompletion) {
+            if (completion) {
+                completion(self);
+            }
+        }
+        else {
+            dispatch_async(self.completionQueue, ^{
+                if (completion) {
+                    completion(self);
                 }
             });
         }

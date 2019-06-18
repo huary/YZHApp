@@ -1,9 +1,9 @@
 //
 //  NSObject+YZHRefreshView.m
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2018/12/6.
-//  Copyright © 2018年 gdtech. All rights reserved.
+//  Copyright © 2018年 yuanzh. All rights reserved.
 //
 
 #import "NSObject+YZHRefreshView.h"
@@ -13,12 +13,12 @@
 @implementation NSObject (YZHRefreshView)
 
 
--(void)setHz_bindRefreshViewTable:(NSMapTable<id,UIView<YZHUIRefreshViewProtocol> *> *)hz_bindRefreshViewTable
+-(void)setHz_bindRefreshViewTable:(NSMapTable<id,UIResponder<YZHUIRefreshViewProtocol> *> *)hz_bindRefreshViewTable
 {
     objc_setAssociatedObject(self, @selector(hz_bindRefreshViewTable), hz_bindRefreshViewTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSMapTable<id,UIView<YZHUIRefreshViewProtocol>*> *)hz_bindRefreshViewTable
+-(NSMapTable<id,UIResponder<YZHUIRefreshViewProtocol>*> *)hz_bindRefreshViewTable
 {
     NSMapTable *table =  objc_getAssociatedObject(self, _cmd);
     if (table == nil) {
@@ -28,12 +28,12 @@
     return table;
 }
 
--(void)setRegisterViewTable:(NSMapTable<id,UIView *> *)registerViewTable
+-(void)setRegisterViewTable:(NSMapTable<id,UIResponder *> *)registerViewTable
 {
     objc_setAssociatedObject(self, @selector(setRegisterViewTable:), registerViewTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSMapTable<id, UIView *>*)registerViewTable
+-(NSMapTable<id, UIResponder *>*)registerViewTable
 {
     NSMapTable *table = objc_getAssociatedObject(self, _cmd);
     if (table == nil) {
@@ -45,7 +45,7 @@
 
 -(YZHUIRefreshConditionBlock)_defaultConditionBlock
 {
-    YZHUIRefreshConditionBlock condition = ^BOOL(UIView<YZHUIRefreshViewProtocol> *refreshView, id model) {
+    YZHUIRefreshConditionBlock condition = ^BOOL(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model) {
         if (refreshView.refreshModel == nil || refreshView.refreshModel == model) {
             return YES;
         }
@@ -55,7 +55,7 @@
 }
 
 
--(void)hz_addRefreshView:(UIView<YZHUIRefreshViewProtocol>*)refreshView forKey:(id)key
+-(void)hz_addRefreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView forKey:(id)key
 {
     [self.hz_bindRefreshViewTable setObject:refreshView forKey:key];
 }
@@ -70,7 +70,7 @@
 -(BOOL)hz_refresh:(YZHUIRefreshConditionBlock)condition
 {
     NSEnumerator *valueEnumerator = self.hz_bindRefreshViewTable.objectEnumerator;
-    UIView<YZHUIRefreshViewProtocol> *refreshView = nil;
+    UIResponder<YZHUIRefreshViewProtocol> *refreshView = nil;
     while (refreshView = [valueEnumerator nextObject]) {
         [self hz_refreshView:refreshView condition:condition];
     }
@@ -81,12 +81,12 @@
 //根据绑定的Key对view进行刷新
 -(BOOL)hz_refreshViewWithKey:(id)key
 {
-    UIView<YZHUIRefreshViewProtocol> *refreshView = [self.hz_bindRefreshViewTable objectForKey:key];
+    UIResponder<YZHUIRefreshViewProtocol> *refreshView = [self.hz_bindRefreshViewTable objectForKey:key];
     return [self hz_refreshView:refreshView];
 }
 
 //通过指定View镜像刷新
--(BOOL)hz_refreshView:(UIView<YZHUIRefreshViewProtocol>*)refreshView
+-(BOOL)hz_refreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView
 {
     return [self hz_refreshView:refreshView condition:nil];
 }
@@ -94,12 +94,12 @@
 //根据条件，对绑定的Key对view进行刷新
 -(BOOL)hz_refreshViewWithKey:(id)key condition:(YZHUIRefreshConditionBlock)condition
 {
-    UIView<YZHUIRefreshViewProtocol> *refreshView = [self.hz_bindRefreshViewTable objectForKey:key];
+    UIResponder<YZHUIRefreshViewProtocol> *refreshView = [self.hz_bindRefreshViewTable objectForKey:key];
     return [self hz_refreshView:refreshView condition:condition];
 }
 
 //根据条件，对view进行刷新
--(BOOL)hz_refreshView:(UIView<YZHUIRefreshViewProtocol>*)refreshView condition:(YZHUIRefreshConditionBlock)condition
+-(BOOL)hz_refreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView condition:(YZHUIRefreshConditionBlock)condition
 {
     if (refreshView == nil) {
         return NO;
@@ -122,28 +122,28 @@
     return r;
 }
 
--(UIView<YZHUIRefreshViewProtocol>*)hz_refreshViewForKey:(id)key
+-(UIResponder<YZHUIRefreshViewProtocol>*)hz_refreshViewForKey:(id)key
 {
     return [self.hz_bindRefreshViewTable objectForKey:key];
 }
 
--(NSArray<UIView<YZHUIRefreshViewProtocol>*>*)hz_allRefreshView
+-(NSArray<UIResponder<YZHUIRefreshViewProtocol>*>*)hz_allRefreshView
 {
-    NSMutableArray<UIView<YZHUIRefreshViewProtocol> *> *refreshViewList = [NSMutableArray array];
+    NSMutableArray<UIResponder<YZHUIRefreshViewProtocol> *> *refreshViewList = [NSMutableArray array];
     NSEnumerator *valueEnumerator = self.hz_bindRefreshViewTable.objectEnumerator;
-    UIView<YZHUIRefreshViewProtocol> *refreshView = nil;
+    UIResponder<YZHUIRefreshViewProtocol> *refreshView = nil;
     while (refreshView = [valueEnumerator nextObject]) {
         [refreshViewList addObject:refreshView];
     }
     return [refreshViewList copy];
 }
 
--(void)hz_clearRefreshView:(UIView<YZHUIRefreshViewProtocol>*)refreshView
+-(void)hz_clearRefreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView
 {
     NSEnumerator *keyEnumerator = self.hz_bindRefreshViewTable.keyEnumerator;
     id key = nil;
     while (key = [keyEnumerator nextObject]) {
-        UIView<YZHUIRefreshViewProtocol> *refreshViewTmp = [self.hz_bindRefreshViewTable objectForKey:key];
+        UIResponder<YZHUIRefreshViewProtocol> *refreshViewTmp = [self.hz_bindRefreshViewTable objectForKey:key];
         if (refreshViewTmp == refreshView) {
             break;
         }
@@ -167,13 +167,13 @@
  *有这个方法的原因是因为view绑定的model（弱应用）已经释放，而需要刷新这个view的模型是通过某一个Id（key）
  *来进行的，就可以通过那个id（key）找到对应刷新view，然后进行刷新。
  */
--(void)hz_registerView:(UIView*)view ForRegisterKey:(id)registerKey
+-(void)hz_registerView:(UIResponder*)view ForRegisterKey:(id)registerKey
 {
     [self.registerViewTable setObject:view forKey:registerKey];
 }
 
 //通过在View中进行registerRefreshViewForRegisterKey来注册的view时的registerKey找到对应的
--(UIView*)hz_viewForRegisterKey:(id)registerKey
+-(UIResponder*)hz_viewForRegisterKey:(id)registerKey
 {
     return [self.registerViewTable objectForKey:registerKey];
 }

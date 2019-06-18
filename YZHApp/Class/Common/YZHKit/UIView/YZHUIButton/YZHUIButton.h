@@ -41,12 +41,9 @@ typedef NS_ENUM(NSInteger, NSButtonLayoutStyle)
 @class YZHUIButton;
 
 typedef BOOL(^YZHUIButtonBeginTrackingBlock)(YZHUIButton *button, UITouch *touch, UIEvent *event);
-typedef BOOL(^YZHUIButtonContinueTrackingBlock)(YZHUIButton *button, UITouch *touch, UIEvent *evnet);
+typedef BOOL(^YZHUIButtonContinueTrackingBlock)(YZHUIButton *button, UITouch *touch, UIEvent *event);
 typedef void(^YZHUIButtonEndTrackingBlock)(YZHUIButton *button, UITouch *touch, UIEvent *event);
 typedef void(^YZHUIButtonCancelTrackingBlock)(YZHUIButton *button, UIEvent *event);
-
-//typedef void(^YZHUIButtonActionBlock)(YZHUIButton *button);
-
 
 @interface YZHUIButton : UIButton
 
@@ -58,6 +55,11 @@ typedef void(^YZHUIButtonCancelTrackingBlock)(YZHUIButton *button, UIEvent *even
 @property (nonatomic, assign) UIEdgeInsets titleEdgeInsetsRatio;
 
 @property (nonatomic, assign) NSButtonContentAlignment contentAlignment;
+//对图片进行圆角处理
+@property (nonatomic, assign) BOOL circleCornerImageView;
+
+/* 默认为YES */
+@property (nonatomic, assign) BOOL layoutChangeBounds;
 
 //tracking event block
 @property (nonatomic, copy) YZHUIButtonBeginTrackingBlock beginTrackingBlock;
@@ -66,7 +68,8 @@ typedef void(^YZHUIButtonCancelTrackingBlock)(YZHUIButton *button, UIEvent *even
 @property (nonatomic, copy) YZHUIButtonCancelTrackingBlock cancelTrackingBlock;
 
 -(void)setBackgroundColor:(UIColor *)backgroundColor forState:(UIControlState)state;
-
+-(void)setBorderColor:(UIColor *)borderColor forState:(UIControlState)state;
+-(void)setBorderWidth:(CGFloat)borderWidth forState:(UIControlState)state;
 //-(void)addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock;
 
 @end

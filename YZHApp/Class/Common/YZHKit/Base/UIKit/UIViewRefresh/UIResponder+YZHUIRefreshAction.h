@@ -1,15 +1,15 @@
 //
-//  UIView+YZHUIRefreshAction.h
-//  contact
+//  UIResponder+YZHUIRefreshAction.h
+//  YZHApp
 //
-//  Created by yuan on 2018/12/6.
-//  Copyright © 2018年 gdtech. All rights reserved.
+//  Created by yuan on 2019/6/18.
+//  Copyright © 2019年 yuan. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "NSObject+YZHRefreshView.h"
 
-@interface UIView (YZHUIRefreshAction)
+@interface UIResponder (YZHUIRefreshAction)
 
 @property (nonatomic, strong) id refreshModel;
 
@@ -23,4 +23,3 @@
 -(void)bindToRefreshModel:(id)refreshModel forKey:(id)key;
 
 @end
-

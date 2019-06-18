@@ -2,12 +2,14 @@
 //  YZHttpManager.m
 //  YZHttpManager
 //
-//  Created by captain on 16/12/22.
+//  Created by yuan on 16/12/22.
 //  Copyright © 2016年 yzh. All rights reserved.
 //
 
 #import "YZHttpManager.h"
+#if AFN
 #import "AFHTTPSessionManager.h"
+#endif
 
 #define DEFAULT_HTTP_SESSION_REQUEST_TIME_OUT                    (8)
 #define DEFAULT_HTTP_SESSION_REQUEST_TIME_OUT_KEY                @"NetWorkRequestTimeOutInterval"
@@ -27,9 +29,14 @@ static YZHttpManager *yzHttpManager_s = NULL;
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        yzHttpManager_s = [[YZHttpManager alloc] init];
+        yzHttpManager_s = [[super allocWithZone:NULL] init];
     });
     return yzHttpManager_s;
+}
+
++ (id)allocWithZone:(struct _NSZone *)zone
+{
+    return [YZHttpManager httpManager];
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone
@@ -37,6 +44,7 @@ static YZHttpManager *yzHttpManager_s = NULL;
     return [YZHttpManager httpManager];
 }
 
+#if AFN
 -(AFHTTPSessionManager*)createHttpSessionManager
 {
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -91,7 +99,9 @@ static YZHttpManager *yzHttpManager_s = NULL;
                         success:(httpManagerSuccessBlock)successBlock
                         failure:(httpManagerFailureBlock)failureBlcok
 {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    dispatch_in_main_queue(^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    });
     return  [self.httpSessionManager GET:url parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
         if (progressBlock) {
             dispatch_in_main_queue(^{
@@ -129,7 +139,9 @@ static YZHttpManager *yzHttpManager_s = NULL;
                          success:(httpManagerSuccessBlock)successBlock
                          failure:(httpManagerFailureBlock)failureBlcok
 {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    dispatch_in_main_queue(^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    });
     return [self.httpSessionManager POST:url parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
         if (progressBlock) {
             dispatch_in_main_queue(^{
@@ -170,9 +182,13 @@ static YZHttpManager *yzHttpManager_s = NULL;
                              success:(httpManagerSuccessBlock)successBlock
                              failure:(httpManagerFailureBlock)failureBlcok
 {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    dispatch_in_main_queue(^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    });
     return [self.httpSessionManager POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-        [formData appendPartWithFileData:fileData name:@"file" fileName:fileName mimeType:mimeType];
+        if (fileData) {
+            [formData appendPartWithFileData:fileData name:@"file" fileName:fileName mimeType:mimeType];            
+        }
     } progress:^(NSProgress * _Nonnull uploadProgress) {
         if (progressBlock) {
             dispatch_in_main_queue(^{
@@ -232,7 +248,9 @@ static YZHttpManager *yzHttpManager_s = NULL;
                          success:(httpManagerSuccessBlock)successBlock
                          failure:(httpManagerFailureBlock)failureBlcok
 {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    dispatch_in_main_queue(^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;        
+    });
     return [self.httpsSessionManager GET:url parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
         if (progressBlock) {
             dispatch_in_main_queue(^{
@@ -270,7 +288,9 @@ static YZHttpManager *yzHttpManager_s = NULL;
                           success:(httpManagerSuccessBlock)successBlock
                           failure:(httpManagerFailureBlock)failureBlcok
 {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    dispatch_in_main_queue(^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    });
     return [self.httpsSessionManager POST:url parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
         if (progressBlock) {
             dispatch_in_main_queue(^{
@@ -311,7 +331,9 @@ static YZHttpManager *yzHttpManager_s = NULL;
                               success:(httpManagerSuccessBlock)successBlock
                               failure:(httpManagerFailureBlock)failureBlcok
 {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    dispatch_in_main_queue(^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    });
     return [self.httpsSessionManager POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         [formData appendPartWithFileData:fileData name:@"file" fileName:fileName mimeType:mimeType];
     } progress:^(NSProgress * _Nonnull uploadProgress) {
@@ -376,7 +398,7 @@ static YZHttpManager *yzHttpManager_s = NULL;
     
     NSString *destionation = destinationDir;
     if (!IS_AVAILABLE_NSSTRNG(destionation)) {
-        destionation = [Utils applicationTmpDirectory:nil];
+        destionation = [YZHUtil applicationTmpDirectory:nil];
     }
     
     NSURLSessionDownloadTask *downloadTask = [self.httpSessionManager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
@@ -412,7 +434,7 @@ static YZHttpManager *yzHttpManager_s = NULL;
 {    
     NSString *destionation = destinationDir;
     if (!IS_AVAILABLE_NSSTRNG(destionation)) {
-        destionation = [Utils applicationTmpDirectory:nil];
+        destionation = [YZHUtil applicationTmpDirectory:nil];
     }
     NSURLSessionDownloadTask *downloadTask =  [self.httpSessionManager downloadTaskWithResumeData:resumeData progress:progressBlock destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
         NSString *storePath = [destionation stringByAppendingPathComponent:response.suggestedFilename];
@@ -478,5 +500,6 @@ static YZHttpManager *yzHttpManager_s = NULL;
     
     return uploadTask;
 }
+#endif
 
 @end

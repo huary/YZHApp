@@ -8,6 +8,7 @@
 
 #import "YZHUITextView.h"
 #import "YZHKitType.h"
+#import "NSObject+YZHAddForKVO.h"
 
 #define USE_TEXTVIEW_TEXT_AS_PLACEHOLDER    (0)
 
@@ -81,6 +82,7 @@
     self.lastContentSize = self.contentSize;
     self.normalHeight = -1;
     self.maxLimit = nil;
+    self.enablePerformAction = YES;
     [self _initNormalHeight];
 }
 
@@ -145,11 +147,22 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didBeginEditingAction:) name:UITextViewTextDidBeginEditingNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didChangeTextAction:) name:UITextViewTextDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didEndEditingAction:) name:UITextViewTextDidEndEditingNotification object:nil];
+        
+        [self addKVOObserver:self forKeyPath:@"selectedRange" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
     }
     else {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidBeginEditingNotification object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidEndEditingNotification object:nil];
+        
+        [self removeKVOObserver:self forKeyPath:@"selectedRange" context:nil];
+    }
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"selectedRange"]) {
+        self.contentOffset = self.contentOffset;
     }
 }
 
@@ -317,7 +330,9 @@
 -(void)_didBeginEditingAction:(NSNotification*)notification
 {
     if (notification.object == self) {
-        
+        if (self.didBeginEditingBlock) {
+            self.didBeginEditingBlock(self, notification);
+        }
     }
 }
 
@@ -377,6 +392,9 @@
 {
     if (notification.object == self) {
         [self _hiddenPlaceholderTextView];
+        if (self.didEndEditingBlock) {
+            self.didEndEditingBlock(self,notification);
+        }
     }
 }
 #endif
@@ -394,7 +412,7 @@
 
 -(void)setContentOffset:(CGPoint)contentOffset
 {
-    if (!self.decelerating && !self.tracking && !self.dragging && self.selectedRange.location >= self.text.length) {
+    if (!self.decelerating && !self.tracking && !self.dragging && (self.selectedRange.location >= self.text.length || self.selectedRange.location >= self.attributedText.length)) {
         CGFloat y = self.contentSize.height - self.frame.size.height;
         contentOffset.y = MAX(0, y);
     }
@@ -406,7 +424,7 @@
     return _normalHeight;
 }
 
--(NSInteger)textLineHeight
+-(CGFloat)textLineHeight
 {
     CGFloat lineHeight = self.font.lineHeight;
     return lineHeight;
@@ -421,6 +439,95 @@
         lineCnt = (textSize.height - self.textContainerInset.top - self.textContainerInset.bottom) / lineHeight;
     }
     return lineCnt;
+}
+
+- (BOOL)_isPasteboardContainsValidValue {
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    NSLog(@"pastedboard=%@",pasteboard);
+    NSLog(@"string=%@,strings=%@",pasteboard.string,pasteboard.strings);
+    if (SYSTEMVERSION_NUMBER >= 10.0) {
+        if ([pasteboard hasStrings] ||
+            [pasteboard hasURLs] ||
+            [pasteboard hasImages] ||
+            [pasteboard hasColors]) {
+            return YES;
+        }
+        return NO;
+    }
+    else {
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        if (pasteboard.string.length > 0) {
+            return YES;
+        }
+//        if (pasteboard.attributedString.length > 0) {
+//            return YES;
+//        }
+        return NO;
+    }
+}
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    /*
+     ------------------------------------------------------
+     Default menu actions list:
+     cut:                                   Cut
+     copy:                                  Copy
+     select:                                Select
+     selectAll:                             Select All
+     paste:                                 Paste
+     delete:                                Delete
+     _promptForReplace:                     Replace...
+     _transliterateChinese:                 简⇄繁
+     _showTextStyleOptions:                 BIU
+     _define:                               Define
+     _addShortcut:                          Add...
+     _accessibilitySpeak:                   Speak
+     _accessibilitySpeakLanguageSelection:  Speak...
+     _accessibilityPauseSpeaking:           Pause Speak
+     makeTextWritingDirectionRightToLeft:   ⇋
+     makeTextWritingDirectionLeftToRight:   ⇌
+     
+     ------------------------------------------------------
+     Default attribute modifier list:
+     toggleBoldface:
+     toggleItalics:
+     toggleUnderline:
+     increaseSize:
+     decreaseSize:
+     */
+    BOOL OK = NO;
+    if (self.canPerformActionBlock) {
+        OK = self.canPerformActionBlock(self, action, sender);
+    }
+    else {
+        if (self.enablePerformAction) {
+            NSRange selectedRange = self.selectedRange;
+            if (selectedRange.length == 0) {
+                if (action == @selector(select:) ||
+                    action == @selector(selectAll:)) {
+                    OK = self.text.length > 0;
+                }
+                if (action == @selector(paste:)) {
+                    OK = [self _isPasteboardContainsValidValue];
+                }
+            } else {
+                if (action == @selector(cut:)) {
+                    OK = (self.isFirstResponder && self.editable);
+                }
+                if (action == @selector(copy:)) {
+                    OK = YES;
+                }
+                if (action == @selector(selectAll:)) {
+                    OK = (selectedRange.length < self.text.length);
+                }
+                if (action == @selector(paste:)) {
+                    OK = (self.isFirstResponder && self.editable && [self _isPasteboardContainsValidValue]);
+                }
+            }
+        }
+    }
+    NSLog(@"action=%@,OK=%@",NSStringFromSelector(action),OK ? @"YES" : @"NO");
+    return OK;
 }
 
 -(void)dealloc

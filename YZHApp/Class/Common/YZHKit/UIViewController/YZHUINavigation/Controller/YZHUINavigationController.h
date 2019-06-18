@@ -2,7 +2,7 @@
 //  YZHUINavigationController.h
 //  YZHUINavigationController
 //
-//  Created by captain on 16/11/17.
+//  Created by yuan on 16/11/17.
 //  Copyright (c) 2016年 yzh. All rights reserved.
 //
 

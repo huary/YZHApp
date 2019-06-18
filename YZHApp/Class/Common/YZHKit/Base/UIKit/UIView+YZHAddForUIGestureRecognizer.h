@@ -7,13 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UIGestureRecognizer+YZHState.h"
 
-//#define TIME_INTERVAL_INVALID           (-2)
-//#define TIME_INTERVAL_LAST_OF_TIME      (0)
+#define TIME_INTERVAL_INVALID           (-2)
+#define TIME_INTERVAL_LAST_OF_TIME      (0)
 
 typedef void(^YZHGestureRecognizerBlock)(UIGestureRecognizer *gesture);
 typedef BOOL(^YZHGestureRecognizerShouldBeginBlock)(UIGestureRecognizer *gesture);
+
+
+UIKIT_EXTERN NSString * const YZHIntervalActionLastTimeIntervalKey;
+UIKIT_EXTERN NSString * const YZHIntervalActionElapsedTimeIntervalKey;
+
 /*
  *参数值：
  *elapesedTime为从开始到这次进过了多长的时间
@@ -41,7 +45,7 @@ typedef NS_ENUM(NSInteger, YZHIntervalGestureRecognizerActionOptions)
 {
     //系统默认的
     YZHIntervalGestureRecognizerActionOptionsDefault             = 0,
-    //只响应一次，响应时间为开始识别（begin）时间后的minimumPressDuration每响应一次
+    //只响应一次，响应时间为开始识别（begin）时间后的minimumPressDuration响应一次
     YZHIntervalGestureRecognizerActionOptionsOnlyOnce            = 1,
     //只在结束的时候响应一次
     YZHIntervalGestureRecognizerActionOptionsOnlyEnd             = 2,
@@ -55,13 +59,42 @@ typedef NS_ENUM(NSInteger, YZHIntervalGestureRecognizerActionOptions)
     YZHIntervalGestureRecognizerActionOptionsCustom              = 6,
 };
 
+
+
+
+
+/****************************************************
+ *UIGestureRecognizer (GestureRecognizerInfo)
+ ****************************************************/
+@interface UIGestureRecognizer (GestureRecognizerInfo)
+
+@property (nonatomic, strong) NSDictionary *userInfo;
+
+@end
+
+
+
+
 /****************************************************
  *YZHIntervalGestureRecognizerActionOptionsInfo
  ****************************************************/
 @interface YZHIntervalGestureRecognizerActionOptionsInfo : NSObject
 
 //第一次调用的时间间隔（距离开始响应的时间）
-@property (nonatomic, assign) NSTimeInterval firstActionTimeInterval;
+//@property (nonatomic, assign) NSTimeInterval firstActionTimeInterval;
+
+// 最小调用的时间间隔，默认为0.01
+@property (nonatomic, assign) NSTimeInterval minActionTimeInterval;
+
+// 最大调用的时间间隔，默认为30s
+@property (nonatomic, assign) NSTimeInterval maxActionTimeInterval;
+
+//EaseIn的changeRatio，默认为0.8
+@property (nonatomic, assign) CGFloat easeInChangeRatio;
+
+//EaseOut的changeRatio，默认为1.25
+@property (nonatomic, assign) CGFloat easeOutChangeRatio;
+
 //调用动作的选项
 @property (nonatomic, assign) YZHIntervalGestureRecognizerActionOptions actionOptions;
 //调用动作的时间选项，时间间隔按算法设计的来实现

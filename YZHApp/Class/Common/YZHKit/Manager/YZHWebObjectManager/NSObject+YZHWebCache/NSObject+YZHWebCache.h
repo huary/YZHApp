@@ -1,9 +1,9 @@
 //
 //  NSObject+YZHWebCache.h
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2019/1/13.
-//  Copyright © 2019年 gdtech. All rights reserved.
+//  Copyright © 2019年 yuanzh. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, YZHLoadObjectType)
 @interface NSObject (YZHWebCache)
 
 /* <#注释#> */
-@property (nonatomic, strong) NSMapTable<NSString *, YZHWebObjectOperation*> *loadOperationMapTable;
+@property (nonatomic, strong) NSMapTable<NSString *, YZHWebObjectLoadOperation*> *loadOperationMapTable;
 
 -(void)loadObject:(NSString*)url
              type:(YZHLoadObjectType)type

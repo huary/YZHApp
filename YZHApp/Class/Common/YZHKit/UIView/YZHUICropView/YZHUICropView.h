@@ -82,6 +82,8 @@ typedef NS_ENUM(NSInteger, NSLineViewTag)
 
 -(instancetype)initWithCropOverView:(UIView*)cropOverView;
 
+-(instancetype)initWithCropTargetView:(UIView *)cropTargetView;
+
 -(void)updatePoint:(NSPointViewTag)tag centerPoint:(CGPoint)centerPoint;
 -(void)updatePoint:(NSPointViewTag)tag hidden:(BOOL)hidden;
 -(void)updateLine:(NSLineViewTag)tag hiddent:(BOOL)hidden;

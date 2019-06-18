@@ -710,25 +710,25 @@
     return result;
 }
 
-+(void)printData:(NSData*)data
-{
-    NSInteger offset = 0;
-    NSInteger step = 10000;
-    NSInteger i = 1;
-    while (1) {
-        NSInteger subL = data.length - offset;
-        if (subL > step) {
-            subL = step;
-        }
-        if (subL <= 0) {
-            break;
-        }
-        NSData *sub = [data subdataWithRange:NSMakeRange(offset, subL)];
-        NSLog(@"sub-%ld=%@,length=%ld",i, sub,sub.length);
-        offset += subL;
-        ++i;
-    }
-}
+//+(void)printData:(NSData*)data
+//{
+//    NSInteger offset = 0;
+//    NSInteger step = 10000;
+//    NSInteger i = 1;
+//    while (1) {
+//        NSInteger subL = data.length - offset;
+//        if (subL > step) {
+//            subL = step;
+//        }
+//        if (subL <= 0) {
+//            break;
+//        }
+//        NSData *sub = [data subdataWithRange:NSMakeRange(offset, subL)];
+//        NSLog(@"sub-%ld=%@,length=%ld",i, sub,sub.length);
+//        offset += subL;
+//        ++i;
+//    }
+//}
 
 +(NSString*)MD5ForText:(NSString*)text lowercase:(BOOL)lowercase
 {
@@ -748,6 +748,34 @@
     
     NSString *mdf = [NSString stringWithFormat:format,r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10],r[11], r[12], r[13], r[14], r[15]];
     return mdf;
+}
+
++(NSString*)createUUID
+{
+    CFUUIDRef    uuidObj = CFUUIDCreate(NULL);
+    NSString    *uuidString = (__bridge NSString *)CFUUIDCreateString(NULL, uuidObj);
+    CFRelease(uuidObj);
+    return uuidString;
+}
+
+//是否是纯中文
++(BOOL)isChineseForText:(NSString*)text
+{
+    NSString *match = @"(^[\u4e00-\u9fa5]+$)";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF matches %@", match];
+    return [predicate evaluateWithObject:text];
+}
+
++(BOOL)isContainsChinese:(NSString*)text
+{
+    for(int i=0; i< [text length];i++)
+    {
+        int a =[text characterAtIndex:i];
+        if( a >0x4e00 && a <0x9fff){
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

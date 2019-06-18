@@ -2,7 +2,7 @@
 //  YZHUITitleButtonItem.m
 //  YZHUIPageScrollViewDemo
 //
-//  Created by captain on 16/12/8.
+//  Created by yuan on 16/12/8.
 //  Copyright (c) 2016年 yzh. All rights reserved.
 //
 

@@ -2,7 +2,7 @@
 //  UINavigationPopScrollView.h
 //  YZHUINavigationController
 //
-//  Created by captain on 16/11/21.
+//  Created by yuan on 16/11/21.
 //  Copyright (c) 2016年 yzh. All rights reserved.
 //
 

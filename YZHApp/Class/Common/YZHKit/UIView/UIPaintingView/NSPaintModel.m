@@ -536,8 +536,17 @@ typedef NS_ENUM(NSInteger, NSTimeActionType)
 {
     self = [super init];
     if (self) {
-        self.eventId = USEC_FROM_DATE_SINCE1970([NSDate date]);
+        _eventId = USEC_FROM_DATE_SINCE1970([NSDate date]);
         self.eventConfig = [[NSPaintEventConfig alloc] initWithAdjacentPointsMaxTimeInterval:2 adjacentStrokesMaxFreeTimeInterval:5];
+    }
+    return self;
+}
+
+-(instancetype)initWithEventId:(uint64_t)eventId
+{
+    self = [self init];
+    if (self) {
+        _eventId = eventId;
     }
     return self;
 }
@@ -546,7 +555,7 @@ typedef NS_ENUM(NSInteger, NSTimeActionType)
 {
     self = [super init];
     if (self) {
-        self.eventId = [aDecoder decodeInt64ForKey:TYPE_STR(eventId)];
+        _eventId = [aDecoder decodeInt64ForKey:TYPE_STR(eventId)];
         self.strokeIds = [aDecoder decodeObjectForKey:TYPE_STR(strokeIds)];
         self.eventConfig = [aDecoder decodeObjectForKey:TYPE_STR(eventConfig)];
     }
@@ -768,7 +777,9 @@ typedef NS_ENUM(NSInteger, NSTimeActionType)
     [self.strokeIds enumerateObjectsUsingBlock:^(NSNumber * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [NSPaintStroke deleteWithEventId:self.eventId strokeId:[obj unsignedIntegerValue]];
     }];
-    [YZHUtil removeObjectFrom:[[self class] _saveKey:self.eventId]];
+//    [YZHUtil removeObjectFrom:[[self class] _saveKey:self.eventId]];
+    NSString *dir = [[[self class] _saveKey:self.eventId] stringByDeletingLastPathComponent];
+    [YZHUtil removeFileItemAtPath:dir];
 }
 
 +(void)deleteWithEventId:(uint64_t)eventId
@@ -1178,12 +1189,17 @@ static dispatch_queue_t _paintDataQueue_s = NULL;
     
     //加载所有此eventId所有的stroke到cache里面
     NSPaintEvent *event = [NSPaintEvent loadWithEventId:eventId];
-    [event.strokeIds enumerateObjectsUsingBlock:^(NSNumber * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSPaintStroke *stroke = [NSPaintStroke loadWithEventId:eventId strokeId:[obj unsignedIntegerValue]];
-        if (stroke) {
-            [self.eventMemoryCache setObject:stroke forKey:@(stroke.strokeId)];
-        }
-    }];
+    if (event) {
+        [event.strokeIds enumerateObjectsUsingBlock:^(NSNumber * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSPaintStroke *stroke = [NSPaintStroke loadWithEventId:eventId strokeId:[obj unsignedIntegerValue]];
+            if (stroke) {
+                [self.eventMemoryCache setObject:stroke forKey:@(stroke.strokeId)];
+            }
+        }];
+    }
+    else {
+        event = [[NSPaintEvent alloc] initWithEventId:eventId];
+    }
     self.cacheEvent = event;
     return event;
 }
@@ -1227,7 +1243,9 @@ static dispatch_queue_t _paintDataQueue_s = NULL;
     }
     NSUInteger strokeId = [self.cacheEvent deletePaintStroke:paintStroke];
     if (strokeId > 0) {
+        self.eventMemoryCache.delegate = nil;
         [self.eventMemoryCache removeObjectForKey:@(paintStroke.strokeId)];
+        self.eventMemoryCache.delegate = self;
     }
     return strokeId;
 }

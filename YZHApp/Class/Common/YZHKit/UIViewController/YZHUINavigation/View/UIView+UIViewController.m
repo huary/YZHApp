@@ -2,7 +2,7 @@
 //  UIView+UIViewController.m
 //  BaseDefaultUINavigationController
 //
-//  Created by captain on 16/11/15.
+//  Created by yuan on 16/11/15.
 //  Copyright (c) 2016年 yzh. All rights reserved.
 //
 

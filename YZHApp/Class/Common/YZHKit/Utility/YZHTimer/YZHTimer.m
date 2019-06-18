@@ -152,6 +152,15 @@
     _suspendTime += USEC_FROM_DATE_SINCE1970_NOW - _suspendStartTime;
 }
 
+-(void)updateNextStart:(NSTimeInterval)after
+{
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, after * NSEC_PER_SEC);
+    if (_wallTime) {
+        start = dispatch_walltime(NULL, after * NSEC_PER_SEC);
+    }
+    dispatch_source_set_timer(_timerSource, start, _timeInterval * NSEC_PER_SEC, 0);
+}
+
 -(void)updateTimeInterval:(NSTimeInterval)interval
 {
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, interval * NSEC_PER_SEC);
@@ -217,20 +226,20 @@
 -(void)suspend
 {
     if (_timerSource) {
-        dispatch_suspend(_timerSource);
-        dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
-        _isSuspend = YES;
-        dispatch_semaphore_signal(_sem);
+        if (_isSuspend == NO) {
+            dispatch_suspend(_timerSource);
+            _isSuspend = YES;
+        }
     }
 }
 
 -(void)resume
 {
     if (_timerSource) {
-        dispatch_resume(_timerSource);
-        dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
-        _isSuspend = NO;
-        dispatch_semaphore_signal(_sem);
+        if (_isSuspend == YES) {
+            dispatch_resume(_timerSource);
+            _isSuspend = NO;
+        }
     }
 }
 
@@ -241,7 +250,7 @@
 
 -(void)dealloc
 {
-//    NSLog(@"timer dealloc");
+    NSLog(@"timer dealloc");
     [self invalidate];
     [self _registNotification:NO];
 }

@@ -7,6 +7,8 @@
 //
 
 #import "YZHUICircleProgressView.h"
+#import "YZHKitType.h"
+#import "UIView+YZHAdd.h"
 
 static CGFloat defaultProgressLineWidth_s = 5.0;
 
@@ -118,9 +120,21 @@ static CGFloat defaultProgressLineWidth_s = 5.0;
 
 -(void)layoutSubviews
 {
+    [super layoutSubviews];
     [self setUpBorderLayer];
     [self setTrackLayer];
     [self setUpProgressLayer];
+    [self _updateLabelFrame];
+}
+
+-(void)_updateLabelFrame
+{
+    CGFloat w = MIN(self.width, self.height);
+    w = w/sqrt(2);
+    CGFloat h = w;
+    CGFloat x = (self.width - w)/2;
+    CGFloat y = (self.height - h)/2;
+    self.titleLabel.frame = CGRectMake(x, y, w, h);
 }
 
 -(void)setProgressPathWithProgress:(CGFloat)progress

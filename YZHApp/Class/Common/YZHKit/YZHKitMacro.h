@@ -3,7 +3,7 @@
 //  yxx_ios
 //
 //  Created by victor siu on 17/3/20.
-//  Copyright © 2017年 GDtech. All rights reserved.
+//  Copyright © 2017年 yuanzh. All rights reserved.
 //
 
 #import <pthread.h>
@@ -12,7 +12,7 @@
 #ifndef Macro_h
 #define Macro_h
 
-#define __DEBUG__                           DEBUG
+#define __DEBUG__                                DEBUG
 
 //日志打印
 #ifdef DEBUG
@@ -296,48 +296,47 @@
 
 
 //00(分钟):00(秒)
-#define TIME_SECOND_UNIT_STR(SEC)                   (((SEC) >= 6000) ? STRING_FORMAT(@"%03d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN) : STRING_FORMAT(@"%02d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN))
+#define TIME_SECOND_UNIT_STR(SEC)               (((SEC) >= 6000) ? STRING_FORMAT(@"%03d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN) : STRING_FORMAT(@"%02d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN))
 
 //xx小时xx分xx秒 格式
-#define TIME_TEXT_FORMAT_HMS(SEC)                   ((((int)SEC) >= SEC_PER_MIN) ? ((((int)SEC) >= SEC_PER_HOUR) ? STRING_FORMAT(@"%d%@%d%@%d%@",((int)SEC)/SEC_PER_HOUR,TIME_HOUR_TEXT, (((int)SEC)%SEC_PER_HOUR)/SEC_PER_MIN,TIME_MIN_TEXT, ((int)SEC)%SEC_PER_MIN,TIME_SEC_TEXT) : STRING_FORMAT(@"%d%@%d%@",((int)SEC)/SEC_PER_MIN,TIME_MIN_TEXT, (((int)SEC)%SEC_PER_MIN),TIME_SEC_TEXT)) : STRING_FORMAT(@"%d%@",(int)SEC,TIME_SEC_TEXT))
+#define TIME_TEXT_FORMAT_HMS(SEC)               ((((int)SEC) >= SEC_PER_MIN) ? ((((int)SEC) >= SEC_PER_HOUR) ? STRING_FORMAT(@"%d%@%d%@%d%@",((int)SEC)/SEC_PER_HOUR,TIME_HOUR_TEXT, (((int)SEC)%SEC_PER_HOUR)/SEC_PER_MIN,TIME_MIN_TEXT, ((int)SEC)%SEC_PER_MIN,TIME_SEC_TEXT) : STRING_FORMAT(@"%d%@%d%@",((int)SEC)/SEC_PER_MIN,TIME_MIN_TEXT, (((int)SEC)%SEC_PER_MIN),TIME_SEC_TEXT)) : STRING_FORMAT(@"%d%@",(int)SEC,TIME_SEC_TEXT))
 
 //00:00:00格式
-#define TIME_TEXT_FORMAT_COLON(SEC)                 ((((int)SEC) >= SEC_PER_MIN) ? ((((int)SEC) >= SEC_PER_HOUR) ? STRING_FORMAT(@"%02d:%02d:%02d",(((int)SEC)/SEC_PER_HOUR), ((((int)SEC)%SEC_PER_HOUR)/SEC_PER_MIN), (((int)SEC)%SEC_PER_MIN)) : STRING_FORMAT(@"00:%02d:%02d",(((int)SEC)/SEC_PER_MIN), (((int)SEC)%SEC_PER_MIN))) : STRING_FORMAT(@"00:00:%02d",(int)SEC))
+#define TIME_TEXT_FORMAT_COLON(SEC)             ((((int)SEC) >= SEC_PER_MIN) ? ((((int)SEC) >= SEC_PER_HOUR) ? STRING_FORMAT(@"%02d:%02d:%02d",(((int)SEC)/SEC_PER_HOUR), ((((int)SEC)%SEC_PER_HOUR)/SEC_PER_MIN), (((int)SEC)%SEC_PER_MIN)) : STRING_FORMAT(@"00:%02d:%02d",(((int)SEC)/SEC_PER_MIN), (((int)SEC)%SEC_PER_MIN))) : STRING_FORMAT(@"00:00:%02d",(int)SEC))
 
 #define TIME_TEXT_FORMAT_COLON_WITH_MSEC(MSEC)      TIME_TEXT_FORMAT_COLON((unsigned int)(MSEC)/MSEC_PER_SEC)
 #define TIME_MSECOND_UNIT_STR(MSEC)                 TIME_SECOND_UNIT_STR((NSInteger)(MSEC)/MSEC_PER_SEC)
 
-#define USEC_FROM_DATE_SINCE1970(DATE)           ((uint64_t)([DATE timeIntervalSince1970] * USEC_PER_SEC))
-#define DATE_FROM_USEC_SINCE1970(TIME)           ([NSDate dateWithTimeIntervalSince1970:TIME * 1.0/USEC_PER_SEC])
+#define USEC_FROM_DATE_SINCE1970(DATE)              ((uint64_t)([DATE timeIntervalSince1970] * USEC_PER_SEC))
+#define DATE_FROM_USEC_SINCE1970(TIME)              ([NSDate dateWithTimeIntervalSince1970:TIME * 1.0/USEC_PER_SEC])
 
-#define MSEC_FROM_DATE_SINCE1970(DATE)           ((uint64_t)([DATE timeIntervalSince1970] * MSEC_PER_SEC))
-#define DATE_FROM_MSEC_SINCE1970(TIME)           ([NSDate dateWithTimeIntervalSince1970:TIME * 1.0/MSEC_PER_SEC])
+#define MSEC_FROM_DATE_SINCE1970(DATE)              ((uint64_t)([DATE timeIntervalSince1970] * MSEC_PER_SEC))
+#define DATE_FROM_MSEC_SINCE1970(TIME)              ([NSDate dateWithTimeIntervalSince1970:TIME * 1.0/MSEC_PER_SEC])
 
-#define USEC_FROM_DATE_SINCE1970_NOW             USEC_FROM_DATE_SINCE1970([NSDate date])
-#define MSEC_FROM_DATE_SINCE1970_NOW             MSEC_FROM_DATE_SINCE1970([NSDate date])
+#define USEC_FROM_DATE_SINCE1970_NOW                USEC_FROM_DATE_SINCE1970([NSDate date])
+#define MSEC_FROM_DATE_SINCE1970_NOW                MSEC_FROM_DATE_SINCE1970([NSDate date])
 
 //-------数据模型请求下来的，比较特殊的宏定义
-#define IS_OBJ_CLASS(OBJ,CLS)                   [OBJ isKindOfClass:[CLS class]]
-#define IS_NULL_OBJ(OBJ)                        IS_OBJ_CLASS(OBJ,NSNull)
-#define IS_NONNULL_OBJ(OBJ)                     (!IS_NULL_OBJ(OBJ))
+#define IS_OBJ_CLASS(OBJ,CLS)                       [OBJ isKindOfClass:[CLS class]]
+#define IS_NULL_OBJ(OBJ)                            IS_OBJ_CLASS(OBJ,NSNull)
+#define IS_NONNULL_OBJ(OBJ)                         (!IS_NULL_OBJ(OBJ))
 
-#define NSOBJECT_VALUE(DATA,NAME)               DATA[TYPE_STR(NAME)]
+#define NSOBJECT_VALUE(DICT,NAME)                   DICT[TYPE_STR(NAME)]
 
-#define IS_NULL_VALUE(DATA,NAME)                IS_OBJ_CLASS(NSOBJECT_VALUE(DATA,NAME), NSNull)
-#define IS_NONNULL_VALUE(DATA,NAME)             (!IS_NULL_VALUE(DATA,NAME))
-#define BOOL_VALUE(DATA,NAME)                   (IS_NULL_VALUE(DATA,NAME) ? NO : [NSOBJECT_VALUE(DATA, NAME) boolValue])
-#define FLOAT_VALUE(DATA,NAME)                  (IS_NULL_VALUE(DATA,NAME) ? 0 : [NSOBJECT_VALUE(DATA, NAME) floatValue])
-#define INTEGER_VALUE(DATA,NAME)                (IS_NULL_VALUE(DATA,NAME) ? 0 : [NSOBJECT_VALUE(DATA, NAME) integerValue])
-#define INT_VALUE(DATA,NAME)                    (IS_NULL_VALUE(DATA,NAME) ? 0 : [NSOBJECT_VALUE(DATA, NAME) intValue])
-#define STRING_VALUE(DATA,NAME)                 (IS_NULL_VALUE(DATA,NAME) ? nil : NEW_NORMAL_FORMAT_STRING(DATA[TYPE_STR(NAME)]))
-#define NUMBER_VALUE(DATA,NAME)                 (IS_OBJ_CLASS(NSOBJECT_VALUE(DATA,NAME), NSNumber) ?NSOBJECT_VALUE(DATA,NAME) : nil)
-
+#define IS_NULL_VALUE(DICT,NAME)                    IS_OBJ_CLASS(NSOBJECT_VALUE(DICT,NAME), NSNull)
+#define IS_NONNULL_VALUE(DICT,NAME)                 (!IS_NULL_VALUE(DICT,NAME))
+#define BOOL_VALUE(DICT,NAME)                       (IS_NULL_VALUE(DICT,NAME) ? NO : [NSOBJECT_VALUE(DICT, NAME) boolValue])
+#define FLOAT_VALUE(DICT,NAME)                      (IS_NULL_VALUE(DICT,NAME) ? 0 : [NSOBJECT_VALUE(DICT, NAME) floatValue])
+#define INTEGER_VALUE(DICT,NAME)                    (IS_NULL_VALUE(DICT,NAME) ? 0 : [NSOBJECT_VALUE(DICT, NAME) integerValue])
+#define INT_VALUE(DICT,NAME)                        (IS_NULL_VALUE(DICT,NAME) ? 0 : [NSOBJECT_VALUE(DICT, NAME) intValue])
+#define STRING_VALUE(DICT,NAME)                     (IS_NULL_VALUE(DICT,NAME) ? nil : NEW_NORMAL_FORMAT_STRING(DICT[TYPE_STR(NAME)]))
+#define NUMBER_VALUE(DICT,NAME)                     (IS_OBJ_CLASS(NSOBJECT_VALUE(DICT,NAME), NSNumber) ? NSOBJECT_VALUE(DICT,NAME) : nil)
 //-------数据模型请求下来的，比较特殊的宏定义，end
 //n倍向上取整
-#define CEIL_TIMES(VAL,D)               ((VAL) == 0 ? (VAL) : ( (VAL) > 0 ? ((((VAL)-1)/D + 1) * D) : ((((VAL)+1)/D+1)*D)))
+#define CEIL_TIMES(VAL,D)                           ((VAL) == 0 ? (VAL) : ( (VAL) > 0 ? ((((VAL)-1)/D + 1) * D) : ((((VAL)+1)/D+1)*D)))
 
-#define RADIANS_TO_DEGREES(radians)             ((radians) * (180.0 / M_PI))
-#define DEGREES_TO_RADIANS(angle)               ((angle) / 180.0 * M_PI)
+#define RADIANS_TO_DEGREES(radians)                 ((radians) * (180.0 / M_PI))
+#define DEGREES_TO_RADIANS(angle)                   ((angle) / 180.0 * M_PI)
 
 //cgsize
 #define CGSizeLessThanToSize(SIZE1,SIZE2)           ((SIZE1.width < SIZE2.width) && (SIZE1.height < SIZE2.height))
@@ -348,26 +347,26 @@
 #define CGPointGeneralEqualToPoint(PT1,PT2)         ((((NSInteger)PT1.x) == ((NSInteger)PT2.x)) && (((NSInteger)PT1.y) == ((NSInteger)PT2.y)))
 
 
-#define _UI_D_WIDTH         (1334.0)
-#define _UI_D_HEIGHT        (750.0)
-#define _UI_D_RATIO         (2.0)
+#define _UI_D_WIDTH                                 (1334.0)
+#define _UI_D_HEIGHT                                (750.0)
+#define _UI_D_RATIO                                 (2.0)
 /*定义相对参考物时的长度
  *REF_L为参考物的长度
  *CUR_REL_L当前相对参考物的长度
  *REA_L实际参考物的长度
  */
-#define REF_LENGTH(REF_L, CUR_REL_L, REA_L)      ((REA_L <= 0) ? 0 : ((CUR_REL_L) * (REA_L) * 1.0 / (REF_L)))
-#define UI_WIDTH(W)         REF_LENGTH(_UI_D_WIDTH, W, SCREEN_WIDTH)
-#define UI_HEIGHT(H)        REF_LENGTH(_UI_D_HEIGHT, H, SCREEN_HEIGHT)
-#define UI_SIZE(SIZE)       CGSizeMake(UI_WIDTH(SIZE.width),UI_HEIGHT(SIZE.height))
-#define UI_RECT(RECT)       CGRectMake(UI_WIDTH(RECT.origin.x),UI_HEIGHT(RECT.origin.y),UI_WIDTH(RECT.size.width),UI_HEIGHT(RECT.size.height))
+#define REF_LENGTH(REF_L, CUR_REL_L, REA_L)         ((REA_L <= 0) ? 0 : ((CUR_REL_L) * (REA_L) * 1.0 / (REF_L)))
+#define UI_WIDTH(W)                                 REF_LENGTH(_UI_D_WIDTH, W, SCREEN_WIDTH)
+#define UI_HEIGHT(H)                                REF_LENGTH(_UI_D_HEIGHT, H, SCREEN_HEIGHT)
+#define UI_SIZE(SIZE)                               CGSizeMake(UI_WIDTH(SIZE.width),UI_HEIGHT(SIZE.height))
+#define UI_RECT(RECT)                               CGRectMake(UI_WIDTH(RECT.origin.x),UI_HEIGHT(RECT.origin.y),UI_WIDTH(RECT.size.width),UI_HEIGHT(RECT.size.height))
 
 
-#define SINGLE_LINE_WIDTH           (1 / SCREEN_SCALE)
-#define SINGLE_LINE_ADJUST_OFFSET   ((1 / SCREEN_SCALE) / 2)
-#define SINGLE_LINE_COLOR           RGB_WITH_INT_WITH_NO_ALPHA(0xdddddd)
+#define SINGLE_LINE_WIDTH                           (1 / SCREEN_SCALE)
+#define SINGLE_LINE_ADJUST_OFFSET                   ((1 / SCREEN_SCALE) / 2)
+#define SINGLE_LINE_COLOR                           RGB_WITH_INT_WITH_NO_ALPHA(0xdddddd)
 
-#define PROJ_MAIN_COLOR             MainColor
+#define PROJ_MAIN_COLOR
 
 
 #endif /* Macro_h */

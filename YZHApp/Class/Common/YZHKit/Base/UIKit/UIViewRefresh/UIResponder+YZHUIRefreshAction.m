@@ -1,15 +1,15 @@
 //
-//  UIView+YZHUIRefreshAction.m
-//  contact
+//  UIResponder+YZHUIRefreshAction.m
+//  YZHApp
 //
-//  Created by yuan on 2018/12/6.
-//  Copyright © 2018年 gdtech. All rights reserved.
+//  Created by yuan on 2019/6/18.
+//  Copyright © 2019年 yuan. All rights reserved.
 //
 
-#import "UIView+YZHUIRefreshAction.h"
+#import "UIResponder+YZHUIRefreshAction.h"
 #import <objc/runtime.h>
 
-@implementation UIView (YZHUIRefreshAction)
+@implementation UIResponder (YZHUIRefreshAction)
 
 -(void)setRefreshModel:(id)refreshModel
 {
@@ -54,9 +54,9 @@
     BOOL r = NO;
     //refresh
     if ([self respondsToSelector:@selector(refreshViewWithModel:)]) {
-        UIView<YZHUIRefreshViewProtocol> *target = nil;
+        UIResponder<YZHUIRefreshViewProtocol> *target = nil;
         if ([self conformsToProtocol:@protocol(YZHUIRefreshViewProtocol)]) {
-            target = (UIView<YZHUIRefreshViewProtocol>*)self;
+            target = (UIResponder<YZHUIRefreshViewProtocol>*)self;
         }
         r = [target refreshViewWithModel:refreshModel];
     }
@@ -73,9 +73,9 @@
     
     //did band
     if ([self respondsToSelector:@selector(refreshViewDidBandToModel:)]) {
-        UIView<YZHUIRefreshViewProtocol> *target = nil;
+        UIResponder<YZHUIRefreshViewProtocol> *target = nil;
         if ([self conformsToProtocol:@protocol(YZHUIRefreshViewProtocol)]) {
-            target = (UIView<YZHUIRefreshViewProtocol>*)self;
+            target = (UIResponder<YZHUIRefreshViewProtocol>*)self;
         }
         [target refreshViewDidBandToModel:refreshModel];
     }

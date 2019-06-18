@@ -477,7 +477,7 @@ typedef struct {
     count = MAX(ceilf(dis*BRUSH_PIXEL_STEP),1);
     
     CGFloat lineWidthDiff = fabs(fromPt.lineWidth - toPt.lineWidth);
-    if (count > 1 && fromPt.lineWidth > 0.0f && toPt.lineWidth > 0.0f && lineWidthDiff > 0.001f) {
+    if (count > 1 && /*fromPt.lineWidth > 0.0f && toPt.lineWidth > 0.0f &&*/ lineWidthDiff > 0.001f) {
         GLfloat vertexBuffer[2] = {0.0};
         CGFloat lineWidth = 0;
         for (i = 0; i < count; ++i) {
@@ -803,6 +803,7 @@ typedef struct {
     }
     
     self.brushWidth = _brushWidth;
+    self.brushColor = _brushColor;
     
     CGPoint loc = [touch locationInView:self];
 #if USE_LOCAL_PREV_TOUCH_POINT

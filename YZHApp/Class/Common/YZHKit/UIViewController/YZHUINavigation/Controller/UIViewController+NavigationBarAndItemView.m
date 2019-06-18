@@ -2,7 +2,7 @@
 //  UIViewController+NavigationBarAndItemView.m
 //  BaseDefaultUINavigationController
 //
-//  Created by captain on 16/11/11.
+//  Created by yuan on 16/11/11.
 //  Copyright (c) 2016年 yzh. All rights reserved.
 //
 

@@ -1,9 +1,9 @@
 //
 //  NSString+YZHCache.m
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2019/1/13.
-//  Copyright © 2019年 gdtech. All rights reserved.
+//  Copyright © 2019年 yuanzh. All rights reserved.
 //
 
 #import "NSString+YZHCache.h"

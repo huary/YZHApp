@@ -3,7 +3,7 @@
 //  YXX
 //
 //  Created by yuan on 2017/4/24.
-//  Copyright © 2017年 gdtech. All rights reserved.
+//  Copyright © 2017年 yuanzh. All rights reserved.
 //
 
 #import "YZHBaseUIViewController.h"

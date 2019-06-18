@@ -8,6 +8,7 @@
 
 #import "YZHKeyboardManager.h"
 #import <objc/runtime.h>
+#import "YZHKitType.h"
 
 /************************************************************
  *YZHKeyboardManager ()
@@ -43,6 +44,7 @@
 {
     self.isSpecialFirstResponderView = NO;
     self.relatedShiftViewUseContentOffsetToShift = YES;
+    self.relatedShiftViewBeforeShowTransform = CGAffineTransformIdentity;
     [self _registerAllNotification:YES];
 }
 
@@ -122,7 +124,12 @@
     CGRect firstResponderViewFrame = self.firstResponderView.frame;
     firstResponderViewFrame = [self.firstResponderView.superview convertRect:firstResponderViewFrame toView:[UIApplication sharedApplication].keyWindow];
     
-    CGFloat diffY = keyboardFrame.origin.y - CGRectGetMaxY(firstResponderViewFrame) - self.keyboardMinTopToResponder;
+    CGFloat off = 0;
+    if (keyboardFrame.origin.y == SCREEN_HEIGHT) {
+        off = SAFE_BOTTOM;
+    }
+    
+    CGFloat diffY = keyboardFrame.origin.y - CGRectGetMaxY(firstResponderViewFrame) - self.keyboardMinTopToResponder - off;
     
     if (self.willUpdateBlock) {
         self.willUpdateBlock(self, self.keyboardNotification, diffY, isShow);
@@ -145,11 +152,12 @@
             CGPoint contentOffset = scrollView.contentOffset;
             CGFloat offsetY = contentOffset.y - diffY;
             offsetY = MAX(offsetY, 0);
-            CGFloat maxOffsetY = scrollView.contentSize.height - scrollView.bounds.size.height;
             if (isShow) {
                 [scrollView setContentOffset:CGPointMake(contentOffset.x, offsetY)];
             }
             else {
+                CGFloat maxOffsetY = scrollView.contentSize.height - scrollView.bounds.size.height;
+                maxOffsetY = MAX(maxOffsetY, 0);
                 if (contentOffset.y > maxOffsetY) {
                     [scrollView setContentOffset:CGPointMake(contentOffset.x, maxOffsetY)];
                 }
@@ -158,10 +166,19 @@
         }
         else {
 //            NSLog(@"diffY=%f",diffY);
+            CGAffineTransform t = CGAffineTransformIdentity;
+            BOOL haveShiftTransform = NO;
+            if (self.shiftTransformBlock) {
+                BOOL use = NO;
+                t = self.shiftTransformBlock(self,self.keyboardNotification,diffY,isShow, &use);
+                if (use) {
+                    haveShiftTransform = YES;
+                }
+            }
             if (diffY > 0) {
                 if (!isShow) {
                     [UIView animateWithDuration:duration animations:^{
-                        self.relatedShiftView.transform = self.relatedShiftViewBeforeShowTransform;
+                        self.relatedShiftView.transform = haveShiftTransform ? t : self.relatedShiftViewBeforeShowTransform;
                     } completion:animateCompletionBlock];
                     return YES;
                 }
@@ -173,10 +190,13 @@
             CGFloat oldTranslationX = self.relatedShiftView.transform.tx;
             CGFloat oldTranslationY = self.relatedShiftView.transform.ty;
             CGFloat ty = oldTranslationY + diffY;
-//            NSLog(@"ty=%f",ty);
+//            NSLog(@"=======ty=%f",ty);
+            if (!haveShiftTransform) {
+                t = CGAffineTransformMakeTranslation(oldTranslationX, ty);
+            }
             
             [UIView animateWithDuration:duration animations:^{
-                self.relatedShiftView.transform = CGAffineTransformMakeTranslation(oldTranslationX, ty);
+                self.relatedShiftView.transform = t;
             } completion:animateCompletionBlock];
         }
         return YES;        
@@ -299,6 +319,15 @@ _DID_BECOME_FIRST_RESPONDER_END:
 -(void)_keyboardWillChangeFrame:(NSNotification*)notification
 {
 //    NSLog(@"%s,notification=%@",__FUNCTION__,notification);
+    if (!self.isKeyboardShowing) {
+        return;
+    }
+    [self _keyboardAction:notification show:self.isKeyboardShowing];
+}
+
+-(BOOL)isKeyboardShow
+{
+    return self.isKeyboardShowing;
 }
 
 -(void)dealloc

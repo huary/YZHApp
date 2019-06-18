@@ -6,10 +6,15 @@
 //  Copyright © 2018年 yuan. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
+UIKIT_EXTERN NSNotificationName const YZHAudioManagerDidFinishPlayingNotification;
+
 @class YZHAudioManager;
+
+typedef void(^YZHAudioManagerEndPlayBlock)(YZHAudioManager* audioManager, NSURL *URL, NSTimeInterval duration);
 
 @protocol YZHAudioManagerDelegate <NSObject>
 
@@ -33,6 +38,9 @@
 
 /* <#注释#> */
 @property (nonatomic, weak) id<YZHAudioManagerDelegate> delegate;
+
+@property (nonatomic, copy) YZHAudioManagerEndPlayBlock endPlayBlock;
+
 
 +(instancetype)shareAudioManager;
 

@@ -10,6 +10,7 @@
 #import "YZHAudioRecordView.h"
 #import "YZHWeakProxy.h"
 #import "YZHKitType.h"
+#import "NSObject+YZHTimer.h"
 
 #define COUNT_DOWN_KEY  @"COUNT_DOWN"
 
@@ -18,10 +19,13 @@
 @property (nonatomic, strong) YZHAudioRecordView *audioRecordView;
 
 /* <#name#> */
+@property (nonatomic, assign) YZHAudioRecordState prevState;
+
+/* <#name#> */
 @property (nonatomic, assign) YZHAudioRecordState state;
 
 /* <#注释#> */
-@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic, strong) YZHTimer *timer;
 
 /* <#name#> */
 @property (nonatomic, strong) NSDate *showDate;
@@ -63,12 +67,19 @@
         [self updateRecordViewWithPower:0];        
     }
     self.showDate = [NSDate date];
-    [self _startTimer:YES];
+//    [self _startTimer:YES];
+    [self _prevStartTimer];
 }
 
 -(void)updateRecordViewWithState:(YZHAudioRecordState)state title:(NSString*)title
 {
-    [self _updateRecordeViewWithState:state];
+    [self updateRecordViewWithState:state title:title delayEnd:0];
+}
+
+-(void)updateRecordViewWithState:(YZHAudioRecordState)state title:(NSString*)title delayEnd:(NSTimeInterval)delayEnd
+{
+    BOOL OK = [self _updateRecordeViewWithState:state];
+//    NSLog(@"OK=%d,state=%ld,prevState=%ld",OK,state,self.prevState);
     if (self.state == YZHAudioRecordStateRecording) {
         self.audioRecordView.normalView.titleLabel.backgroundColor = CLEAR_COLOR;
     }
@@ -77,16 +88,24 @@
         self.audioRecordView.normalView.imageView.image = [UIImage imageNamed:@"release_to_cancel"];
     }
     else if (self.state == YZHAudioRecordStateCountDown) {
-        [self _startTimer:NO];
+        [self timer];
     }
     else if (self.state == YZHAudioRecordStateTooShort) {
+        if (!OK) {
+            return;
+        }
+        [self _cancelPrevStartTimer];
         self.audioRecordView.normalView.titleLabel.backgroundColor = CLEAR_COLOR;
         self.audioRecordView.normalView.imageView.image = [UIImage imageNamed:@"record_too_short"];
         
-        [self _doEndAction:0.5];
+        [self _doEndAction:delayEnd];
     }
-    else if (self.state == YZHAudioRecordStateEnd) {
-        [self _doEndAction:0.1];
+    else if (self.state == YZHAudioRecordStateEnd || self.state == YZHAudioRecordStateAbort) {
+        if (self.prevState == YZHAudioRecordStateTooShort) {
+            return;
+        }
+        [self _cancelPrevStartTimer];
+        [self _doEndAction:delayEnd];
     }
     self.audioRecordView.powerView.titleLabel.text = title;
     self.audioRecordView.normalView.titleLabel.text = title;
@@ -95,10 +114,7 @@
 
 -(void)updateRecordViewWithPower:(CGFloat)power
 {
-    [self _startTimer:NO];
-    
-    if (_timer == nil && self.state != YZHAudioRecordStateCancel) {
-        [self _updateRecordeViewWithState:YZHAudioRecordStateRecording];
+    if (self.state == YZHAudioRecordStateRecording) {
         [self.audioRecordView.powerView updateWithPower:power];
     }
 }
@@ -110,8 +126,8 @@
 
 -(void)_doEndAction:(NSTimeInterval)delay
 {
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(_timeOutAction) object:nil];
-    [self performSelector:@selector(_timeOutAction) withObject:nil afterDelay:delay];
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(_endAction) object:nil];
+    [self performSelector:@selector(_endAction) withObject:nil afterDelay:delay];
 }
 
 -(BOOL)_updateRecordeViewWithState:(YZHAudioRecordState)recordState
@@ -123,7 +139,7 @@
         self.audioRecordView.countDownView.hidden = YES;
     }
     else if (recordState == YZHAudioRecordStateRecording) {
-        if (_timer == nil) {
+        if (_timer == nil /*&& self.state != YZHAudioRecordStateTooShort && self.state != YZHAudioRecordStateEnd && self.state != YZHAudioRecordStateAbort*/) {
             self.audioRecordView.powerView.hidden = NO;
             self.audioRecordView.normalView.hidden = YES;
             self.audioRecordView.countDownView.hidden = YES;
@@ -139,87 +155,70 @@
         self.audioRecordView.countDownView.hidden = YES;
     }
     else if (recordState == YZHAudioRecordStateCountDown) {
-        if ([self _canStartCountTimer]) {
             self.audioRecordView.powerView.hidden = YES;
             self.audioRecordView.normalView.hidden = YES;
             self.audioRecordView.countDownView.hidden = NO;
-        }
-        else {
-            OK = NO;
-        }
     }
-    else if (recordState == YZHAudioRecordStateTooShort) {
-        self.audioRecordView.powerView.hidden = YES;
-        self.audioRecordView.normalView.hidden = NO;
-        self.audioRecordView.countDownView.hidden = YES;
-    }
-    else if (recordState == YZHAudioRecordStateEnd) {
+    else if (recordState == YZHAudioRecordStateTooShort || recordState == YZHAudioRecordStateEnd || recordState == YZHAudioRecordStateAbort) {
         self.audioRecordView.powerView.hidden = YES;
         self.audioRecordView.normalView.hidden = NO;
         self.audioRecordView.countDownView.hidden = YES;
     }
     if (OK) {
+        self.prevState = self.state;
         self.state = recordState;
     }
     return OK;
 }
 
--(NSTimer*)timer
+
+-(void)_prevStartTimer
+{
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startTimer) object:nil];
+    NSTimeInterval delay = self.maxRecordDuration - self.countDown;
+    [self performSelector:@selector(_startTimer) withObject:nil afterDelay:delay];
+}
+
+-(void)_cancelPrevStartTimer
+{
+    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startTimer) object:nil];
+    [self _endTimer];
+}
+
+-(void)_startTimer
+{
+    NSString *tilte = nil;
+    [self updateRecordViewWithState:YZHAudioRecordStateCountDown title:tilte];
+}
+
+-(YZHTimer*)timer
 {
     if (!_timer) {
-        
-        self.audioRecordView.powerView.hidden = YES;
-        self.audioRecordView.normalView.hidden = YES;
-        self.audioRecordView.countDownView.hidden = NO;
-        
-        NSDate *now = [NSDate date];
-        NSTimeInterval diff = [now timeIntervalSinceDate:self.showDate];
-        NSInteger countDown = ceil(self.maxRecordDuration - diff);
-        
-//        NSLog(@"countDown=%ld",countDown);
+        if (self.state != YZHAudioRecordStateCountDown) {
+            return nil;
+        }
+ 
+        NSInteger countDown = self.countDown;
         self.audioRecordView.countDownView.countDownLabel.text = NEW_STRING_WITH_FORMAT(@"%@",@(countDown));
-
+        
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:@(countDown-1) forKey:COUNT_DOWN_KEY];
-        _timer = [NSTimer timerWithTimeInterval:1 target:[YZHWeakProxy proxyWithTarget:self] selector:@selector(_timerAction:) userInfo:userInfo repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
-
+        
+        _timer = [self addTimerInterval:1.0 actionBlock:^(id object, YZHTimer *timer) {
+            [(YZHAudioController*)object _timerAction:timer];
+        }];
+        _timer.userInfo = userInfo;
     }
     return _timer;
 }
 
--(BOOL)_canStartCountTimer
-{
-    if (self.showDate == nil) {
-        return NO;
-    }
-    NSTimeInterval countDown = self.maxRecordDuration - self.countDown;
-    NSDate *now = [NSDate date];
-    NSTimeInterval diff = [now timeIntervalSinceDate:self.showDate];
-    if (diff < countDown) {
-        return NO;
-    }
-    return YES;
-}
-
--(void)_startTimer:(BOOL)isStartShow
-{
-    if (isStartShow) {
-        NSTimeInterval delay = self.maxRecordDuration - self.countDown;
-        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(_startTimer:) object:@(NO)];
-        [self performSelector:@selector(_startTimer:) withObject:@(NO) afterDelay:delay];
-    }
-    else {
-        if ([self _canStartCountTimer]) {
-            [self timer];
-        }
-    }
-}
-
--(void)_timerAction:(NSTimer*)timer
+-(void)_timerAction:(YZHTimer*)timer
 {
     NSMutableDictionary *userInfo = timer.userInfo;
     NSInteger cnt = [[userInfo objectForKey:COUNT_DOWN_KEY] integerValue];
-    if (cnt == 0) {
+    if (cnt <= 0) {
+        if (self.finishCountDownBlock) {
+            self.finishCountDownBlock(self);
+        }
         [self dismiss];
         return;
     }
@@ -229,27 +228,29 @@
 
 -(void)_endTimer
 {
-    [self.timer invalidate];
+    [self cancelTimer:self.timer];
     self.timer = nil;
 }
 
--(void)_timeOutAction
+-(void)_endAction
 {
     [self dismiss];
 }
 
--(void)_dimissAction
+-(void)_dismissAction
 {
-    if (self.completionBlock) {
-        self.completionBlock(self);
+    if (self.dismissBlock) {
+        self.dismissBlock(self);
     }
     self.showDate = nil;
+    self.state = YZHAudioRecordStateNULL;
+    self.prevState = YZHAudioRecordStateNULL;
     [self _endTimer];
 }
 
 -(void)dismiss
 {
-    [self _dimissAction];
+    [self _dismissAction];
     [self.audioRecordView dismiss];
     _audioRecordView = nil;
 }

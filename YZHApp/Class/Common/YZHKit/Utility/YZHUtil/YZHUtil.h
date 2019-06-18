@@ -124,8 +124,14 @@ typedef NS_ENUM(NSInteger,NSFloatPointType)
 +(BOOL)isPasswordForText:(NSString *)text;
 +(BOOL)isRegisterNameForText:(NSString *)text;
 
-+(void)printData:(NSData*)data;
+//+(void)printData:(NSData*)data;
 
 +(NSString*)MD5ForText:(NSString*)text lowercase:(BOOL)lowercase;
+
++(NSString*)createUUID;
+//是否是纯中文
++(BOOL)isChineseForText:(NSString*)text;
+//是否含有中午
++(BOOL)isContainsChinese:(NSString*)text;
 
 @end

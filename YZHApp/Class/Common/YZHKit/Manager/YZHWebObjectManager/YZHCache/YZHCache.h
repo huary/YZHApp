@@ -19,9 +19,9 @@ typedef NS_ENUM(NSInteger, YZHCacheType)
 
 
 @class YZHCache;
-typedef void(^YZHCacheSaveCompletionBlock)(YZHCache *cache, id object);
-typedef void(^YZHCacheQueryCompletionBlock)(YZHCache *cache, id object, NSData *data, YZHCacheType cacheType);
-typedef void(^YZHCacheRemoveCompletionBlock)(YZHCache *cache, NSString *key);
+typedef void(^YZHCacheSaveCompletionBlock)(YZHCache *cache, id object, NSString *filePath);
+typedef void(^YZHCacheQueryCompletionBlock)(YZHCache *cache, id object, NSData *data, NSString *filePath, YZHCacheType cacheType);
+typedef void(^YZHCacheRemoveCompletionBlock)(YZHCache *cache, NSString *key, NSString *filePath);
 
 
 @interface YZHCache : NSObject
@@ -40,6 +40,8 @@ typedef void(^YZHCacheRemoveCompletionBlock)(YZHCache *cache, NSString *key);
 -(id)queryObjectFromMemoryForKey:(NSString*)key;
 
 -(NSOperation*)queryObjectForKey:(NSString*)key decode:(YZHDiskCacheDecodeBlock)decode completion:(YZHCacheQueryCompletionBlock)completion;
+
+-(NSOperation*)queryObjectForKey:(NSString*)key shouldLoad:(YZHDiskCacheShouldLoadToMemoryBlock)shouldLoad decode:(YZHDiskCacheDecodeBlock)decode completion:(YZHCacheQueryCompletionBlock)completion;
 
 -(NSOperation*)removeObjectForKey:(NSString*)key removeOnDisk:(BOOL)removeOnDisk completion:(YZHCacheRemoveCompletionBlock)completion;
 

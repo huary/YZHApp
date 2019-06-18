@@ -2,7 +2,7 @@
 //  YZHTabBarController.h
 //  YZHTabBarControllerDemo
 //
-//  Created by captain on 17/2/7.
+//  Created by yuan on 17/2/7.
 //  Copyright © 2017年 yzh. All rights reserved.
 //
 

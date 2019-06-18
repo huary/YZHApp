@@ -1,6 +1,6 @@
 //
 //  YZHUICollectionViewLayout.h
-//  易打分
+//  YZHApp
 //
 //  Created by yuan on 2017/7/6.
 //  Copyright © 2017年 yuan. All rights reserved.
@@ -71,7 +71,7 @@ typedef UICollectionViewLayoutAttributes*(^YZHUICollectionCellItemLayoutAttribut
 @property (nonatomic, weak) id <YZHUICollectionViewLayoutDelegate>delegate;
 
 /*
- *这个boudingRectSize希望获得width或者heigh值的话，就需要传MAX_FLOAT的参数，可以两个都是MAX_FLOAT
+ *这个boudingRectSize希望获得width或者heigh值的话，就需要传CGFLOAT_MAX的参数，可以两个都是CGFLOAT_MAX
  */
 +(CGSize)collectionViewSingleSectionContentSizeForCellItems:(NSArray<id<YZHUICollectionCellItemLayoutProtocol>>*)cellItems boundingRectWithSize:(CGSize)boundingRectSize layoutOptions:(NSDictionary<NSString*, id>*)layoutOptions;
 @end

@@ -46,7 +46,7 @@
         [bezierPath addArcWithCenter:CGPointMake(x, y) radius:cornerRadius startAngle:-M_PI_2 endAngle:0 clockwise:YES];
     }
     
-    //    画Right的竖线
+//    画Right的竖线
     x = MX;
     if (TYPE_AND(corners, UIRectCornerBottomRight)) {
         y = MY - cornerRadius;
@@ -62,7 +62,7 @@
         y = MY - cornerRadius;
         [bezierPath addArcWithCenter:CGPointMake(x, y) radius:cornerRadius startAngle:0 endAngle:M_PI_2 clockwise:YES];
     }
-    
+
     //画bottom的横线
     y = MY;
     if (TYPE_AND(corners, UIRectCornerBottomLeft)) {
@@ -72,13 +72,13 @@
         x = X;
     }
     [bezierPath addLineToPoint:CGPointMake(x, y)];
-    
+
     //画bottomLeft的corner
     if (TYPE_AND(corners, UIRectCornerBottomLeft)) {
         y = MY - cornerRadius;
         [bezierPath addArcWithCenter:CGPointMake(x, y) radius:cornerRadius startAngle:M_PI_2 endAngle:M_PI clockwise:YES];
     }
-    
+
     //画left的竖线
     x = X;
     if (TYPE_AND(corners, UIRectCornerTopLeft)) {
@@ -88,7 +88,7 @@
         y = Y;
     }
     [bezierPath addLineToPoint:CGPointMake(x, y)];
-    
+
     //画topLeft的corner
     if (TYPE_AND(corners, UIRectCornerTopLeft)) {
         x = X + cornerRadius;

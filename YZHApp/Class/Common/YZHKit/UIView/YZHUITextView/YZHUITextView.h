@@ -18,10 +18,15 @@ typedef NS_ENUM(NSInteger, NSTextViewLimitType)
 };
 
 @class YZHUITextView;
+typedef void(^YZHUITextViewTextDidBeginEditingBlock)(YZHUITextView *textView,NSNotification *notification);
+typedef void(^YZHUITextViewTextDidEndEditingBlock)(YZHUITextView *text,NSNotification *notification);
+
 typedef void(^YZHUITextViewTextDidChangeBlock)(YZHUITextView *textView, CGSize textSize);
 typedef void(^YZHUITextViewTextSizeDidChangeBlock)(YZHUITextView *textView, CGSize textSize);
 typedef void(^YZHUITextViewContentSizeDidChangeBlock)(YZHUITextView *textView, CGSize lastContentSize);
 typedef void(^YZHUITextViewDidChangeFrameBlock)(YZHUITextView *textView, CGRect oldFrame, CGRect newFrame);
+
+typedef BOOL(^YZHUITextViewCanPerformActionBlock)(YZHUITextView *textView, SEL selector, id sender);
 
 
 /****************************************************
@@ -54,6 +59,12 @@ typedef void(^YZHUITextViewDidChangeFrameBlock)(YZHUITextView *textView, CGRect 
 @property (nonatomic, strong) YZHUITextViewLimit *maxLimit;
 
 /* <#注释#> */
+@property (nonatomic, copy) YZHUITextViewTextDidBeginEditingBlock didBeginEditingBlock;
+
+/* <#注释#> */
+@property (nonatomic, copy) YZHUITextViewTextDidEndEditingBlock didEndEditingBlock;
+
+/* <#注释#> */
 @property (nonatomic, copy) YZHUITextViewTextDidChangeBlock textChangeBlock;
 
 /* <#注释#> */
@@ -65,9 +76,16 @@ typedef void(^YZHUITextViewDidChangeFrameBlock)(YZHUITextView *textView, CGRect 
 /* <#注释#> */
 @property (nonatomic, copy) YZHUITextViewDidChangeFrameBlock changeFrameBlock;
 
+
+@property (nonatomic, copy) YZHUITextViewCanPerformActionBlock canPerformActionBlock;
+
+//默认为YES
+@property (nonatomic, assign) BOOL enablePerformAction;
+
+
 -(CGFloat)normalHeight;
 
--(NSInteger)textLineHeight;
+-(CGFloat)textLineHeight;
 
 -(NSInteger)textLines;
 

@@ -1,9 +1,9 @@
 //
 //  NSData+YZHCoding.m
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2019/1/14.
-//  Copyright © 2019年 gdtech. All rights reserved.
+//  Copyright © 2019年 yuanzh. All rights reserved.
 //
 
 #import "NSData+YZHCoding.h"

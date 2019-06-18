@@ -1,9 +1,9 @@
 //
 //  NSObject+YZHRefreshView.h
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2018/12/6.
-//  Copyright © 2018年 gdtech. All rights reserved.
+//  Copyright © 2018年 yuanzh. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,10 +11,10 @@
 
 @protocol YZHUIRefreshViewProtocol;
 
-typedef BOOL(^YZHUIRefreshConditionBlock)(UIView<YZHUIRefreshViewProtocol> *refreshView, id model);
-typedef BOOL(^YZHUIRefreshBlock)(UIView<YZHUIRefreshViewProtocol> *refreshView, id model);
+typedef BOOL(^YZHUIRefreshConditionBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model);
+typedef BOOL(^YZHUIRefreshBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model);
 
-typedef void(^YZHUIRefreshViewDidBandBlock)(UIView<YZHUIRefreshViewProtocol> *refreshView, id model);
+typedef void(^YZHUIRefreshViewDidBandBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model);
 
 @protocol YZHUIRefreshViewProtocol <NSObject>
 
@@ -38,7 +38,7 @@ typedef void(^YZHUIRefreshViewDidBandBlock)(UIView<YZHUIRefreshViewProtocol> *re
 @interface NSObject (YZHRefreshView)
 
 //对模型绑定刷新的view
--(void)hz_addRefreshView:(UIView<YZHUIRefreshViewProtocol>*)refreshView forKey:(id)key;
+-(void)hz_addRefreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView forKey:(id)key;
 
 //刷新所有绑定的view
 -(BOOL)hz_refresh;
@@ -51,7 +51,7 @@ typedef void(^YZHUIRefreshViewDidBandBlock)(UIView<YZHUIRefreshViewProtocol> *re
 
 
 //通过指定View镜像刷新
--(BOOL)hz_refreshView:(UIView<YZHUIRefreshViewProtocol>*)refreshView;
+-(BOOL)hz_refreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView;
 
 
 //根据条件，对绑定的Key对view进行刷新
@@ -59,17 +59,17 @@ typedef void(^YZHUIRefreshViewDidBandBlock)(UIView<YZHUIRefreshViewProtocol> *re
 
 
 //根据条件，对view进行刷新
--(BOOL)hz_refreshView:(UIView<YZHUIRefreshViewProtocol>*)refreshView condition:(YZHUIRefreshConditionBlock)condition;
+-(BOOL)hz_refreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView condition:(YZHUIRefreshConditionBlock)condition;
 
 
 //获取指定的view
--(UIView<YZHUIRefreshViewProtocol>*)hz_refreshViewForKey:(id)key;
+-(UIResponder<YZHUIRefreshViewProtocol>*)hz_refreshViewForKey:(id)key;
 
 //获取所有绑定的View
--(NSArray<UIView<YZHUIRefreshViewProtocol>*>*)hz_allRefreshView;
+-(NSArray<UIResponder<YZHUIRefreshViewProtocol>*>*)hz_allRefreshView;
 
 //清空绑定的view
--(void)hz_clearRefreshView:(UIView<YZHUIRefreshViewProtocol>*)refreshView;
+-(void)hz_clearRefreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView;
 
 //清空绑定的view
 -(void)hz_clearRefreshViewForKey:(id)key;
@@ -82,10 +82,10 @@ typedef void(^YZHUIRefreshViewDidBandBlock)(UIView<YZHUIRefreshViewProtocol> *re
  *有这个方法的原因是因为view绑定的model（弱应用）已经释放，而需要刷新这个view的模型是通过某一个Id（key）
  *来进行的，就可以通过那个id（key）找到对应刷新view，然后进行刷新。
  */
--(void)hz_registerView:(UIView*)view ForRegisterKey:(id)registerKey;
+-(void)hz_registerView:(UIResponder*)view ForRegisterKey:(id)registerKey;
 
 //通过在View中进行registerRefreshViewForRegisterKey来注册的view时的registerKey找到对应的
--(UIView*)hz_viewForRegisterKey:(id)registerKey;
+-(UIResponder*)hz_viewForRegisterKey:(id)registerKey;
 
 //清除某一个注册的key
 -(void)hz_clearRegisterViewForRegisterKey:(id)registerKey;

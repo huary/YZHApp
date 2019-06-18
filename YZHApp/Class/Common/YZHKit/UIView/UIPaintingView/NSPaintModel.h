@@ -177,9 +177,11 @@ typedef void(^NSPaintDataExecuteCompletionBlock)(id result);
 @interface NSPaintEvent : NSObject <NSCoding>
 
 //eventId就是创建的时间（微妙us）
-@property (nonatomic, assign) uint64_t eventId;
+@property (nonatomic, assign, readonly) uint64_t eventId;
 //默认为adjacentPointsMaxTimeInterval:2,adjacentStrokesMaxFreeTimeInterval:5
 @property (nonatomic, strong) NSPaintEventConfig *eventConfig;
+
+-(instancetype)initWithEventId:(uint64_t)eventId;
 
 -(NSArray<NSNumber*>*)paintStrokeIds;
 

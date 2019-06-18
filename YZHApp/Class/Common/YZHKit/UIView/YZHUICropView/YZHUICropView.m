@@ -10,6 +10,7 @@
 #import "UIView+YZHAddForUIGestureRecognizer.h"
 #import "YZHKitType.h"
 #import <objc/runtime.h>
+#import "NSObject+YZHAddForKVO.h"
 
 /*********************************************************************
  *UIPointView
@@ -92,6 +93,12 @@
 @end
 
 
+typedef NS_ENUM(NSInteger, YZHCropViewType)
+{
+    YZHCropViewTypeOver     = 0,
+    YZHCropViewTypeTarget   = 1,
+};
+
 
 /*********************************************************************
  *UIView (YZHUICropView)
@@ -103,6 +110,12 @@
 
 /** cropOverView */
 @property (nonatomic, weak) UIView *cropOverView;
+
+/* <#注释#> */
+@property (nonatomic, weak) UIView *cropTargetView;
+
+/* <#name#> */
+@property (nonatomic, assign) YZHCropViewType type;
 
 /** pointA */
 @property (nonatomic, strong) UIPointView *pointA;
@@ -154,9 +167,24 @@
 {
     self = [super init];
     if (self) {
+        self.type = YZHCropViewTypeOver;
         self.cropOverView = cropOverView;
         [self _setupDefaultValue];
         [self _setupChildView];
+    }
+    return self;
+}
+
+-(instancetype)initWithCropTargetView:(UIView *)cropTargetView
+{
+    self = [super init];
+    if (self) {
+        self.type = YZHCropViewTypeTarget;
+        self.cropTargetView = cropTargetView;
+        [self _setupDefaultValue];
+        [self _setupChildView];
+        [self _addKVO:YES];
+        [self _layoutChildViews];
     }
     return self;
 }
@@ -171,6 +199,27 @@
     self.pointColor = [WHITE_COLOR colorWithAlphaComponent:0.6];
     self.dragPointColor = [RED_COLOR colorWithAlphaComponent:0.6];
     self.outColor = [GRAY_COLOR colorWithAlphaComponent:0.3];
+}
+
+-(void)_addKVO:(BOOL)add
+{
+    if (add) {
+        [self.cropTargetView addKVOObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+        [self.cropTargetView addKVOObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+    }
+    else {
+        [self.cropTargetView removeKVOObserver:self forKeyPath:@"frame" context:nil];
+        [self.cropTargetView removeKVOObserver:self forKeyPath:@"bounds" context:nil];
+    }
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if (object == self.cropTargetView && self.type == YZHCropViewTypeTarget) {
+        if ([keyPath isEqualToString:@"frame"] || [keyPath isEqualToString:@"bounds"]) {
+            [self _layoutChildViews];
+        }
+    }
 }
 
 -(UIView*)_createLine:(NSLineViewTag)tag
@@ -191,51 +240,64 @@
     return point;
 }
 
+-(UIView *)_parentView
+{
+    if (self.type == YZHCropViewTypeOver) {
+        return self;
+    }
+    else if (self.type == YZHCropViewTypeTarget) {
+        return self.cropTargetView;
+    }
+    return nil;
+}
+
 -(void)_setupChildView
 {
     self.backgroundColor = CLEAR_COLOR;
     
     self.lineA = [self _createLine:NSLineViewTagA];
-    [self addSubview:self.lineA];
+    [[self _parentView] addSubview:self.lineA];
     
     self.lineB = [self _createLine:NSLineViewTagB];
-    [self addSubview:self.lineB];
+    [[self _parentView] addSubview:self.lineB];
     
     self.lineC = [self _createLine:NSLineViewTagC];
-    [self addSubview:self.lineC];
+    [[self _parentView] addSubview:self.lineC];
     
     self.lineD = [self _createLine:NSLineViewTagD];
-    [self addSubview:self.lineD];
+    [[self _parentView] addSubview:self.lineD];
     
     self.pointA = [self _createPointView:NSPointViewTagA];
-    [self addSubview:self.pointA];
+    [[self _parentView] addSubview:self.pointA];
     
     self.pointB = [self _createPointView:NSPointViewTagB];
-    [self addSubview:self.pointB];
+    [[self _parentView] addSubview:self.pointB];
     
     self.pointC = [self _createPointView:NSPointViewTagC];
-    [self addSubview:self.pointC];
+    [[self _parentView] addSubview:self.pointC];
     
     self.pointD = [self _createPointView:NSPointViewTagD];
-    [self addSubview:self.pointD];
+    [[self _parentView] addSubview:self.pointD];
     
     
     self.pointE = [self _createPointView:NSPointViewTagE];
-    [self addSubview:self.pointE];
+    [[self _parentView] addSubview:self.pointE];
     
     self.pointF = [self _createPointView:NSPointViewTagF];
-    [self addSubview:self.pointF];
+    [[self _parentView] addSubview:self.pointF];
     
     self.pointG = [self _createPointView:NSPointViewTagG];
-    [self addSubview:self.pointG];
+    [[self _parentView] addSubview:self.pointG];
     
     self.pointH = [self _createPointView:NSPointViewTagH];
-    [self addSubview:self.pointH];
+    [[self _parentView] addSubview:self.pointH];
     
-    [self.cropOverView addSubview:self];
+    if (self.type == YZHCropViewTypeOver) {
+        [self.cropOverView addSubview:self];
+    }
     
     self.shapeLayer = [CAShapeLayer new];
-    [self.layer addSublayer:self.shapeLayer];
+    [[self _parentView].layer addSublayer:self.shapeLayer];
     
     [self.lineA.pointViews addObject:self.pointA];
     [self.lineA.pointViews addObject:self.pointB];
@@ -265,13 +327,16 @@
 
 -(void)_layoutChildViews
 {
-    self.frame = self.cropOverView.bounds;
+    UIView *parentView = [self _parentView];
+    if (self.type == YZHCropViewTypeOver) {
+        self.frame = self.cropOverView.bounds;
+    }
 
     [self _layoutAllPointViews];
     
     [self _updateLine];
     
-    self.shapeLayer.frame = self.bounds;
+    self.shapeLayer.frame = parentView.bounds;
 }
 
 -(void)_layoutAllPointViews
@@ -288,7 +353,7 @@
 
 -(void)_layoutPointView:(UIPointView*)pointView
 {
-    if (!CGSizeEqualToSize(pointView.bounds.size, CGSizeZero)) {
+    if (!CGSizeEqualToSize(pointView.bounds.size, CGSizeZero) || CGSizeEqualToSize([self _parentView].bounds.size, CGSizeZero)) {
         return;
     }
     CGFloat x = 0;
@@ -296,15 +361,17 @@
     CGFloat w = self.panPointWidth;
     CGFloat h = self.panPointWidth;
     
-    CGFloat W = self.bounds.size.width;
-    CGFloat H = self.bounds.size.height;
+    CGFloat W = [self _parentView].bounds.size.width;
+    CGFloat H = [self _parentView].bounds.size.height;
     
     CGFloat minWH = MIN(W, H);
     minWH = minWH * self.panPointWidthMaxRatio;
     
-    w = MIN(minWH, w);
-    h = w;
-    self.panPointWidth = w;
+    if (minWH < w && minWH > 0) {
+        w = minWH;
+        h = w;
+        self.panPointWidth = w;
+    }
     
     CGFloat halfWidth = 0;//self.lineWidth/2;
     switch (pointView.tag) {
@@ -407,7 +474,7 @@
     CGRect frame = pointView.frame;
     frame.origin.x = fromX + transX;
     frame.origin.x = MAX(frame.origin.x, -self.panPointWidth/2);
-    frame.origin.x = MIN(frame.origin.x, self.bounds.size.width - self.panPointWidth/2);
+    frame.origin.x = MIN(frame.origin.x, [self _parentView].bounds.size.width - self.panPointWidth/2);
     pointView.frame = frame;
 }
 
@@ -416,7 +483,7 @@
     CGRect frame = pointView.frame;
     frame.origin.y = fromY + transY;
     frame.origin.y = MAX(frame.origin.y, -self.panPointWidth/2);
-    frame.origin.y = MIN(frame.origin.y, self.bounds.size.height - self.panPointWidth/2);
+    frame.origin.y = MIN(frame.origin.y, [self _parentView].bounds.size.height - self.panPointWidth/2);
     pointView.frame = frame;
 }
 
@@ -442,8 +509,8 @@
     CGRect frame = view.frame;
     CGFloat midX = CGRectGetMidX(frame);
     CGFloat midY = CGRectGetMidY(frame);
-    CGFloat W = self.bounds.size.width;
-    CGFloat H = self.bounds.size.height;
+    CGFloat W = [self _parentView].bounds.size.width;
+    CGFloat H = [self _parentView].bounds.size.height;
     if (midX < 0 || midX > W) {
         trans.x = 0;
     }
@@ -632,7 +699,7 @@
 
 -(void)_updateShapeLayer
 {
-    UIBezierPath *path = [UIBezierPath bezierPathWithRect:self.bounds];
+    UIBezierPath *path = [UIBezierPath bezierPathWithRect:[self _parentView].bounds];
     UIBezierPath *innerPath = [self cropBezierPathForType:NSCropRectTypeOut];
     [path appendPath:[innerPath bezierPathByReversingPath]];
 

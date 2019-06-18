@@ -27,7 +27,7 @@
 {
     self.maxConcurrentRunningTaskCnt = 5;
     _sync = NO;
-    _operationManager = [[YZHTaskOperationManager alloc] initWithExecutionOrder:YZHTaskOperationExecutionOrderFIFO];
+    _operationManager = [[YZHOperationManager alloc] initWithExecutionOrder:YZHOperationExecutionOrderFIFO];
     _operationManager.maxConcurrentOperationCount = 1;
 }
 

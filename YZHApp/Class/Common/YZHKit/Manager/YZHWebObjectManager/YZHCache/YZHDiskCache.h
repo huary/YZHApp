@@ -15,11 +15,13 @@ typedef NSData*(^YZHDiskCacheEncodeBlock)(YZHDiskCache *cache, id object, NSStri
 typedef id(^YZHDiskCacheDecodeBlock)(YZHDiskCache *cache, NSData *data, NSString *path, NSString *inFileName);
 
 typedef void(^YZHDiskCacheSaveCompletionBlock)(YZHDiskCache *cache, id object, NSString *path, NSString *inFileName);
+typedef BOOL(^YZHDiskCacheShouldLoadToMemoryBlock)(YZHDiskCache *cache, NSString *path, NSString *inFileName);
 typedef void(^YZHDiskCacheLoadCompletionBlock)(YZHDiskCache *cache, NSData *data, id object, NSString *path, NSString *inFileName);
 
 typedef void(^YZHDiskCacheRemoveCompletionBlock)(YZHDiskCache *cache, NSString *path);
-typedef void(^YZHDiskCacheDirectoryEnumeratorBlock)(YZHDiskCache *cache, NSDirectoryEnumerator *directoryEnumerator);
-typedef void(^YZHDiskCacheCheckExistsCompletionBlock)(YZHDiskCache *cache, NSString *path, BOOL exists);
+
+typedef void(^YZHDiskCacheEnumerateFilesBlock)(YZHDiskCache *cache, NSDirectoryEnumerator *enumerator,NSString *path, NSInteger idx, BOOL *stop);
+typedef void(^YZHDiskCacheEnumerateFilesCompletionBlock)(YZHDiskCache *cache);
 
 
 /****************************************************
@@ -47,6 +49,9 @@ typedef void(^YZHDiskCacheCheckExistsCompletionBlock)(YZHDiskCache *cache, NSStr
 /* <#name#> */
 @property (nonatomic, assign) BOOL syncDoCompletion;
 
+/* 最大加载文件的大小，默认为20M（20 * 1024 * 1024） */
+@property (nonatomic, assign) int64_t maxLoadToMemoryFileSize;
+
 -(NSString*)fullCacheDirectory;
 
 -(void)createCacheDirectory;
@@ -65,7 +70,14 @@ typedef void(^YZHDiskCacheCheckExistsCompletionBlock)(YZHDiskCache *cache, NSStr
 //可以cancel
 -(NSOperation*)loadObjectForFileName:(NSString*)fileName decode:(YZHDiskCacheDecodeBlock)decode completion:(YZHDiskCacheLoadCompletionBlock)completion;
 
+//这个是直接加载大文件该使用的方法
+//-(NSOperation*)loadObjectForFileName:(NSString*)fileName shouldLoad:(YZHDiskCacheShouldLoadToMemoryBlock)shouldLoad decode:(YZHDiskCacheDecodeBlock)decode completion:(YZHDiskCacheLoadCompletionBlock)completion;
+
 //可以cancel
 -(NSOperation*)removeObjectForFileName:(NSString*)fileName completion:(YZHDiskCacheRemoveCompletionBlock)completion;
 
+//遍历文件，默认递归遍历
+-(NSOperation*)enumerateFilesUsingBlock:(YZHDiskCacheEnumerateFilesBlock)enumerateFilesBlock completion:(YZHDiskCacheEnumerateFilesCompletionBlock)completion;
+
+-(NSOperation*)enumerateFiles:(BOOL)enumerateSubDirectory usingBlock:(YZHDiskCacheEnumerateFilesBlock)enumerateFilesBlock completion:(YZHDiskCacheEnumerateFilesCompletionBlock)completion;
 @end

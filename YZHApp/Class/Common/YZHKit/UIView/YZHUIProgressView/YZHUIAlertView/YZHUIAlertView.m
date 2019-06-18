@@ -3,7 +3,7 @@
 //  yxx_ios
 //
 //  Created by yuan on 2017/4/11.
-//  Copyright © 2017年 GDtech. All rights reserved.
+//  Copyright © 2017年 yuanzh. All rights reserved.
 //
 
 #import "YZHUIAlertView.h"

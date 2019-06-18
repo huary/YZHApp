@@ -85,7 +85,7 @@
     return mergeImage;
 }
 
--(UIImage*)updateImageOrientation
+-(UIImage*)fixImageOrientation
 {
     UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
     [self drawInRect:(CGRect){0, 0, self.size}];
@@ -108,5 +108,36 @@
 {
     CGRect rect = CGRectMake(0, 0, self.size.width, self.size.height);
     return [YZHUIGraphicsImageContext graphicesImage:self graphicsSize:self.size inRect:rect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth borderColor:borderColor];
+}
+
+-(CGSize)contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode
+{
+    if (self.size.width == 0 || self.size.height == 0) {
+        return CGSizeZero;
+    }
+    
+    CGFloat wRatio = inSize.width / self.size.width;
+    CGFloat hRatio = inSize.height / self.size.height;
+    
+    CGSize contentSize = self.size;
+    switch (contentMode) {
+        case UIViewContentModeScaleAspectFit:{
+            CGFloat minRatio = MIN(wRatio, hRatio);
+            contentSize = CGSizeMake(self.size.width * minRatio, self.size.height * minRatio);
+            break;
+        }
+        case UIViewContentModeScaleAspectFill:{
+            CGFloat maxRatio = MAX(wRatio, hRatio);
+            contentSize = CGSizeMake(self.size.width * maxRatio, self.size.height * maxRatio);
+            break;
+        }
+        case UIViewContentModeCenter: {
+            contentSize = self.size;
+            break;
+        }
+        default:
+            break;
+    }
+    return contentSize;
 }
 @end

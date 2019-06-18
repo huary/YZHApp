@@ -7,8 +7,10 @@
 //
 
 #import "YZHAudioManager.h"
-#import "YZHWeakProxy.h"
 #import "YZHKitType.h"
+#import "YZHWeakProxy.h"
+
+NSNotificationName const YZHAudioManagerDidFinishPlayingNotification = @"YZHAudioManagerDidFinishPlayingNotification";
 
 static YZHAudioManager *shareAudioManager_s = nil;
 
@@ -24,6 +26,11 @@ static YZHAudioManager *shareAudioManager_s = nil;
 
 /* <#name#> */
 @property (nonatomic, assign) NSTimeInterval currentDuration;
+
+/* <#name#> */
+@property (nonatomic, assign) NSTimeInterval startRecordDuration;
+
+/* <#注释#> */
 
 @end
 
@@ -136,6 +143,7 @@ static YZHAudioManager *shareAudioManager_s = nil;
 -(void)startRecordWithFilePath:(NSString *)filePath duration:(NSTimeInterval)duration
 {
     self.audioRecordeFilePath = filePath;
+    self.startRecordDuration = duration;
     
     NSInteger iDuration = duration;
     if (iDuration < 0) {
@@ -150,14 +158,13 @@ static YZHAudioManager *shareAudioManager_s = nil;
 
 -(void)endRecord
 {
-    self.currentDuration = [self.audioRecorder currentTime];
-    [self.audioRecorder stop];
+    if (_audioRecorder.isRecording) {
+        self.currentDuration = [_audioRecorder currentTime];
+    }
+    [_audioRecorder stop];
     [self _endRecorderTimer];
     if ([self.delegate respondsToSelector:@selector(audioManager:endRecordFilePath:duration:)]) {
         [self.delegate audioManager:self endRecordFilePath:self.audioRecordeFilePath duration:self.currentDuration];
-    }
-    else {
-        [[NSFileManager defaultManager] removeItemAtPath:self.audioRecordeFilePath error:NULL];
     }
     _audioRecorder = nil;
 }
@@ -187,15 +194,28 @@ static YZHAudioManager *shareAudioManager_s = nil;
 #pragma mark AVAudioRecorderDelegate
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)flag
 {
+
     [self _endRecorderTimer];
 }
 
 #pragma mark AVAudioPlayerDelegate
 -(void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+    if (self.audioPlayURL) {
+        [userInfo setObject:self.audioPlayURL forKey:TYPE_STR(playURL)];
+    }
+    [userInfo setObject:@(self.currentDuration) forKey:TYPE_STR(duration)];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:YZHAudioManagerDidFinishPlayingNotification object:self userInfo:userInfo];
+    
     if ([self.delegate respondsToSelector:@selector(audioManager:endPlayURL:duration:)]) {
         [self.delegate audioManager:self endPlayURL:self.audioPlayURL duration:self.currentDuration];
     }
+    if (self.endPlayBlock) {
+        self.endPlayBlock(self, self.audioPlayURL, self.currentDuration);
+    }
+//    self.endPlayBlock = nil;
     self.audioPlayURL = nil;
     _audioPlayer = nil;
 }

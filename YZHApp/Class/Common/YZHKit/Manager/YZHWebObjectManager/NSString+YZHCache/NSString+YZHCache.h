@@ -1,14 +1,14 @@
 //
 //  NSString+YZHCache.h
-//  contact
+//  YZHApp
 //
 //  Created by yuan on 2019/1/13.
-//  Copyright © 2019年 gdtech. All rights reserved.
+//  Copyright © 2019年 yuanzh. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-typedef NSString*(^YZHCacheKeyBlock)(NSString *url);
+typedef NSString*(^YZHCacheKeyBlock)(NSString *url, id target);
 
 @interface NSString (YZHCache)
 
