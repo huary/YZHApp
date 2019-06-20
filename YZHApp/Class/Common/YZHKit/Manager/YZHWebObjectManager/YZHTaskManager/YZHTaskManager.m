@@ -25,7 +25,7 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
 
 @property (nonatomic, assign) BOOL hasAddToQueue;
 
-@property (nonatomic, strong) NSMutableDictionary *taskStartInfo;
+@property (nonatomic, strong) NSMapTable *taskStartInfo;
 
 @end
 
@@ -41,16 +41,16 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
     return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
--(void)setTaskStartInfo:(NSMutableDictionary *)taskStartInfo
+-(void)setTaskStartInfo:(NSMapTable *)taskStartInfo
 {
     objc_setAssociatedObject(self, @selector(taskStartInfo), taskStartInfo, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSMutableDictionary*)taskStartInfo
+-(NSMapTable*)taskStartInfo
 {
-    NSMutableDictionary *info = objc_getAssociatedObject(self, _cmd);
+    NSMapTable *info = objc_getAssociatedObject(self, _cmd);
     if (!info) {
-        info = [NSMutableDictionary dictionary];
+        info = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
         self.taskStartInfo = info;
     }
     return info;
