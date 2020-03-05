@@ -54,12 +54,12 @@
 #define GET_VIEW_LEFT(VIEW)           GET_VIEW_left(VIEW)
 #define GET_VIEW_RIGHT(VIEW)          GET_VIEW_right(VIEW)
 #define GET_VIEW_BOTTOM(VIEW)         GET_VIEW_bottom(VIEW)
-#define GET_VIEW_WIDTH(VIEW)          SET_VIEW_width(VIEW)
-#define GET_VIEW_HEIGHT(VIEW)         SET_VIEW_height(VIEW)
-#define GET_VIEW_CENTER_X(VIEW)       SET_VIEW_centerX(VIEW)
-#define GET_VIEW_CENTER_Y(VIEW)       SET_VIEW_centerY(VIEW)
-#define GET_VIEW_ORIGIN(VIEW)         SET_VIEW_origin(VIEW)
-#define GET_VIEW_SIZE(VIEW)           SET_VIEW_size(VIEW)
+#define GET_VIEW_WIDTH(VIEW)          GET_VIEW_width(VIEW)
+#define GET_VIEW_HEIGHT(VIEW)         GET_VIEW_height(VIEW)
+#define GET_VIEW_CENTER_X(VIEW)       GET_VIEW_centerX(VIEW)
+#define GET_VIEW_CENTER_Y(VIEW)       GET_VIEW_centerY(VIEW)
+#define GET_VIEW_ORIGIN(VIEW)         GET_VIEW_origin(VIEW)
+#define GET_VIEW_SIZE(VIEW)           GET_VIEW_size(VIEW)
 
 #define GET_PROPERTY(TYPE,PROPERTY)             \
     -(TYPE)PROPERTY                             \

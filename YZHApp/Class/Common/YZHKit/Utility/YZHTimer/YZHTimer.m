@@ -177,6 +177,8 @@
     if (_valid) {
         _endTime = USEC_FROM_DATE_SINCE1970_NOW;
         dispatch_source_cancel(_timerSource);
+        // 在已经suspend的情况下，如果释放source会导致crash
+        [self _resumeAction];
         _timerSource = NULL;
         _target = nil;
         _selector = NULL;
@@ -189,26 +191,37 @@
 
 - (void)fire
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
 
     if (!_valid) {
         dispatch_semaphore_signal(_sem);
         return;
     }
+    // 临时持有各个对象，防止fire和invalidate同时执行的临界情况
+    // 防止出现（null selector）的异常情况
+    BOOL repeat = _repeat;
+    id targetTmp = _target;
+    SEL selectorTmp = _selector;
+    BOOL isToTarget = _isToTarget;
+    YZHTimerFireBlock fireBlockTmp = _fireBlock;
     dispatch_semaphore_signal(_sem);
     
-    if (_fireBlock) {
-        _fireBlock(self);
+    if (fireBlockTmp) {
+        fireBlockTmp(self);
     }
     else {
-        [_target performSelector:_selector withObject:self];
+        if (selectorTmp) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            [targetTmp performSelector:selectorTmp withObject:self];
+#pragma clang diagnostic pop
+        }
     }
-    if (self.repeat == NO || (_isToTarget && _target == nil)) {
+    
+    if (repeat == NO || (isToTarget && targetTmp == nil)) {
         [self invalidate];
     }
-#pragma clang diagnostic pop
+    targetTmp = nil;
 }
 
 -(NSTimeInterval)elapseTime
@@ -223,7 +236,7 @@
     return (endTime - _startTime - _suspendTime) * 1.0 / USEC_PER_SEC;
 }
 
--(void)suspend
+- (void)_suspendAction
 {
     if (_timerSource) {
         if (_isSuspend == NO) {
@@ -233,7 +246,7 @@
     }
 }
 
--(void)resume
+- (void)_resumeAction
 {
     if (_timerSource) {
         if (_isSuspend == YES) {
@@ -241,6 +254,20 @@
             _isSuspend = NO;
         }
     }
+}
+
+-(void)suspend
+{
+    dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
+    [self _suspendAction];
+    dispatch_semaphore_signal(_sem);
+}
+
+-(void)resume
+{
+    dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
+    [self _resumeAction];
+    dispatch_semaphore_signal(_sem);
 }
 
 -(BOOL)isSuspend

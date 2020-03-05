@@ -177,9 +177,15 @@
             }
             if (diffY > 0) {
                 if (!isShow) {
-                    [UIView animateWithDuration:duration animations:^{
+                    if (duration > 0) {
+                        [UIView animateWithDuration:duration animations:^{
+                            self.relatedShiftView.transform = haveShiftTransform ? t : self.relatedShiftViewBeforeShowTransform;
+                        } completion:animateCompletionBlock];
+                    }
+                    else {
                         self.relatedShiftView.transform = haveShiftTransform ? t : self.relatedShiftViewBeforeShowTransform;
-                    } completion:animateCompletionBlock];
+                        animateCompletionBlock(YES);
+                    }
                     return YES;
                 }
                 if (!self.firstResponderShiftToKeyboardMinTop) {
@@ -195,9 +201,15 @@
                 t = CGAffineTransformMakeTranslation(oldTranslationX, ty);
             }
             
-            [UIView animateWithDuration:duration animations:^{
+            if (duration > 0) {
+                [UIView animateWithDuration:duration animations:^{
+                    self.relatedShiftView.transform = t;
+                } completion:animateCompletionBlock];
+            }
+            else {
                 self.relatedShiftView.transform = t;
-            } completion:animateCompletionBlock];
+                animateCompletionBlock(YES);
+            }
         }
         return YES;        
     }
@@ -269,13 +281,14 @@ _DID_BECOME_FIRST_RESPONDER_END:
         BOOL OK = [self _doUpdateWithKeyboardFrame:keyboardFrame duration:time isShow:NO];
         
         if (OK) {
-            self.isKeyboardShowing = NO;
-            self.keyboardNotification = nil;
-            self.relatedShiftViewBeforeShowTransform = CGAffineTransformIdentity;
+//            self.isKeyboardShowing = NO;
+//            self.keyboardNotification = nil;
+//            self.relatedShiftViewBeforeShowTransform = CGAffineTransformIdentity;
             
-            if (!self.isSpecialFirstResponderView) {
-                _firstResponderView = nil;
-            }
+            //这里不应该将firstResponderView赋值为nil,比如在旋转屏幕的时候就不应该
+//            if (!self.isSpecialFirstResponderView) {
+//                _firstResponderView = nil;
+//            }
         }
     }
 }
@@ -311,6 +324,9 @@ _DID_BECOME_FIRST_RESPONDER_END:
 -(void)_keyboardDidHide:(NSNotification*)notification
 {
 //    NSLog(@"%s,notification=%@",__FUNCTION__,notification);
+    self.isKeyboardShowing = NO;
+    self.keyboardNotification = nil;
+    self.relatedShiftView.transform = self.relatedShiftViewBeforeShowTransform;
     if (self.didHideBlock) {
         self.didHideBlock(self, notification);
     }

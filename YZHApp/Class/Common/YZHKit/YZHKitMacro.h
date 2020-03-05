@@ -321,16 +321,29 @@
 #define IS_NULL_OBJ(OBJ)                            IS_OBJ_CLASS(OBJ,NSNull)
 #define IS_NONNULL_OBJ(OBJ)                         (!IS_NULL_OBJ(OBJ))
 
-#define NSOBJECT_VALUE(DICT,NAME)                   DICT[TYPE_STR(NAME)]
+//#define NSOBJECT_VALUE(DICT,NAME)                   DICT[TYPE_STR(NAME)]
+#define NSOBJECT_VALUE(DICT,KEY)                    DICT[KEY]
 
-#define IS_NULL_VALUE(DICT,NAME)                    IS_OBJ_CLASS(NSOBJECT_VALUE(DICT,NAME), NSNull)
-#define IS_NONNULL_VALUE(DICT,NAME)                 (!IS_NULL_VALUE(DICT,NAME))
-#define BOOL_VALUE(DICT,NAME)                       (IS_NULL_VALUE(DICT,NAME) ? NO : [NSOBJECT_VALUE(DICT, NAME) boolValue])
-#define FLOAT_VALUE(DICT,NAME)                      (IS_NULL_VALUE(DICT,NAME) ? 0 : [NSOBJECT_VALUE(DICT, NAME) floatValue])
-#define INTEGER_VALUE(DICT,NAME)                    (IS_NULL_VALUE(DICT,NAME) ? 0 : [NSOBJECT_VALUE(DICT, NAME) integerValue])
-#define INT_VALUE(DICT,NAME)                        (IS_NULL_VALUE(DICT,NAME) ? 0 : [NSOBJECT_VALUE(DICT, NAME) intValue])
-#define STRING_VALUE(DICT,NAME)                     (IS_NULL_VALUE(DICT,NAME) ? nil : NEW_NORMAL_FORMAT_STRING(DICT[TYPE_STR(NAME)]))
-#define NUMBER_VALUE(DICT,NAME)                     (IS_OBJ_CLASS(NSOBJECT_VALUE(DICT,NAME), NSNumber) ? NSOBJECT_VALUE(DICT,NAME) : nil)
+#define IS_NULL_VALUE(DICT,KEY)                     IS_OBJ_CLASS(NSOBJECT_VALUE(DICT,KEY), NSNull)
+#define IS_NONNULL_VALUE(DICT,KEY)                  (!IS_NULL_VALUE(DICT,KEY))
+
+#define CLASS_OBJECT(DICT, KEY, CLS)                ({id OBJ = NSOBJECT_VALUE(DICT,KEY); if (!IS_OBJ_CLASS(OBJ,CLS)) OBJ = nil; OBJ;})
+
+#define NONNULL_OBJECT(DICT, KEY)                   ({id OBJ = NSOBJECT_VALUE(DICT,KEY); if (IS_OBJ_CLASS(OBJ,NSNull)) OBJ = nil; OBJ;})
+
+#define INT_VALUE(DICT,NAME)                        ([NONNULL_OBJECT(DICT,KEY) intValue])
+#define BOOL_VALUE(DICT,NAME)                       ([NONNULL_OBJECT(DICT,KEY) boolValue])
+#define FLOAT_VALUE(DICT,NAME)                      ([NONNULL_OBJECT(DICT,KEY) floatValue])
+#define INTEGER_VALUE(DICT,NAME)                    ([NONNULL_OBJECT(DICT,KEY) integerValue])
+#define LLONG_VALUE(DICT,KEY)                       ([NONNULL_OBJECT(DICT,KEY) longLongValue])
+
+#define NUMBER_VALUE(DICT,KEY)                      CLASS_OBJECT(DICT, KEY, NSNumber)
+#define DATA_VALUE(DICT,KEY)                        CLASS_OBJECT(DICT, KEY, NSData)
+#define DICTIONARY_VALUE(DICT,KEY)                  CLASS_OBJECT(DICT, KEY, NSDictionary)
+#define ARRAY_VALUE(DICT,KEY)                       CLASS_OBJECT(DICT, KEY, NSArray)
+#define STRING_VALUE(DICT,KEY)                      ({id OBJ = NONNULL_OBJECT(DICT,KEY); if (OBJ) OBJ = NEW_NORMAL_FORMAT_STRING([OBJ description]); OBJ;})
+
+
 //-------数据模型请求下来的，比较特殊的宏定义，end
 //n倍向上取整
 #define CEIL_TIMES(VAL,D)                           ((VAL) == 0 ? (VAL) : ( (VAL) > 0 ? ((((VAL)-1)/D + 1) * D) : ((((VAL)+1)/D+1)*D)))

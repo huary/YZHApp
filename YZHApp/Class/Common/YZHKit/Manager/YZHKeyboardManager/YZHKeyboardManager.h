@@ -54,7 +54,7 @@ typedef CGAffineTransform(^YZHKeyboardShiftTransformBlock)(YZHKeyboardManager *k
 @property (nonatomic, assign) BOOL relatedShiftViewUseContentOffsetToShift;
 
 /* 默认为NO */
-@property (nonatomic, assign) BOOL shiftWithFrame;
+//@property (nonatomic, assign) BOOL shiftWithFrame;
 
 @property (nonatomic, copy) YZHKeyboardBecomeFirstResponderBlock becomeFirstResponderBlock;
 @property (nonatomic, copy) YZHKeyboardResignFirstResponderBlock resignFirstResponderBlock;

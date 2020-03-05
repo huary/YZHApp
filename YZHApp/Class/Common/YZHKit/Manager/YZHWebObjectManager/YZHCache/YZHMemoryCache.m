@@ -39,9 +39,6 @@
 //访问的次数
 @property (nonatomic, assign) NSUInteger accessCnt;
 
-/* <#name#> */
-//@property (nonatomic, assign) NSTimeInterval accessTime;
-
 @end
 
 
