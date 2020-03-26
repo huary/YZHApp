@@ -10,6 +10,9 @@
 
 #define YZHTTP  (1)
 #define AFN     (0)
+#if AFN
+#import <AFNetworking.h>
+#endif
 
 typedef void (^httpManagerSuccessBlock)(id result);
 //typedef void (^httpManagerSuccessBlock)(id result, id responseObject);

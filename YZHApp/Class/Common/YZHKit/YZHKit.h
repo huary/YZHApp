@@ -34,6 +34,7 @@
 #import "UIView+YZHAddForUIGestureRecognizer.h"
 #import "NSObject+YZHAdd.h"
 #import "UIResponder+YZHUIRefreshAction.h"
+#import "UIView+UIColor.h"
 
 //utility
 #import "YZHUtil.h"
@@ -63,7 +64,9 @@
 #import "YZHUIExcelView.h"
 #import "YZHUIPopView.h"
 #import "YZHUIProgressView.h"
+#import "YZHUIProgressView+Default.h"
 #import "YZHUITextView.h"
+#import "YZHLoopScrollView.h"
 
 #import "YZHttpManager.h"
 #import "YZHAudioManager.h"

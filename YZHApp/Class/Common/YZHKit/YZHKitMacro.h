@@ -102,12 +102,12 @@
 #undef RGB
 #define RGBA_F(R,G,B,A)                         [UIColor colorWithRed:R green:G blue:B alpha:A]
 #define RGB(R,G,B)                              RGBA_F((R)/255.f,(G)/255.f,(B)/255.f,1.0)
-#define RGBA(R,G,B,A)                           RGBA_F((R)/255.f,(G)/255.f,(B)/255.f,(A)/255.f)
+#define RGBA(R,G,B,A)                           RGBA_F((R)/255.f,(G)/255.f,(B)/255.f,A)
 
 #define RGB_WITH_INT_WITH_NO_ALPHA(C_INT)       RGB(TYPE_AND(TYPE_RS(C_INT,16),255),TYPE_AND(TYPE_RS(C_INT,8),255),TYPE_AND(C_INT,255))
 #define RGB_WITH_STR_WITH_NO_ALPHA(C_STR)       RGB_WITH_INT_WITH_NO_ALPHA([(C_STR) integerValue])
 
-#define RGB_WITH_INT_WITH_ALPHA(C_INT)          RGBA(TYPE_AND(TYPE_RS(C_INT,24),255),TYPE_AND(TYPE_RS(C_INT,16),255),TYPE_AND(TYPE_RS(C_INT,8),255),TYPE_AND(C_INT,255))
+#define RGB_WITH_INT_WITH_ALPHA(C_INT)          RGBA(TYPE_AND(TYPE_RS(C_INT,24),255),TYPE_AND(TYPE_RS(C_INT,16),255),TYPE_AND(TYPE_RS(C_INT,8),255),TYPE_AND(C_INT,255)/255.f)
 #define RGB_WITH_STR_WITH_ALPHA(C_STR)          RGB_WITH_INT_WITH_ALPHA([(C_STR) integerValue])
 
 #define RAND_COLOR                              RGB(TYPE_AND(arc4random(),255),TYPE_AND(arc4random(),255),TYPE_AND(arc4random(),255))
@@ -161,6 +161,8 @@
                                                     [COLOR getRed:&_R_COLOR_ green:&_G_COLOR_ blue:&_B_COLOR_ alpha:&_ALPHA_]; \
                                                     _ALPHA_; \
                                                 })
+
+#define UICOLOR_L_D(LC,DC)   (AVAILABLE_IOS_V(13.0) ? [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {return traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? DC : LC;}] : LC)
 
 #define NSOBJECT_FORMAT                         @"%@"
 #define INTEGER_FORMAT                          @"%ld"
@@ -331,10 +333,10 @@
 
 #define NONNULL_OBJECT(DICT, KEY)                   ({id OBJ = NSOBJECT_VALUE(DICT,KEY); if (IS_OBJ_CLASS(OBJ,NSNull)) OBJ = nil; OBJ;})
 
-#define INT_VALUE(DICT,NAME)                        ([NONNULL_OBJECT(DICT,KEY) intValue])
-#define BOOL_VALUE(DICT,NAME)                       ([NONNULL_OBJECT(DICT,KEY) boolValue])
-#define FLOAT_VALUE(DICT,NAME)                      ([NONNULL_OBJECT(DICT,KEY) floatValue])
-#define INTEGER_VALUE(DICT,NAME)                    ([NONNULL_OBJECT(DICT,KEY) integerValue])
+#define INT_VALUE(DICT,KEY)                          ([NONNULL_OBJECT(DICT,KEY) intValue])
+#define BOOL_VALUE(DICT,KEY)                        ([NONNULL_OBJECT(DICT,KEY) boolValue])
+#define FLOAT_VALUE(DICT,KEY)                       ([NONNULL_OBJECT(DICT,KEY) floatValue])
+#define INTEGER_VALUE(DICT,KEY)                     ([NONNULL_OBJECT(DICT,KEY) integerValue])
 #define LLONG_VALUE(DICT,KEY)                       ([NONNULL_OBJECT(DICT,KEY) longLongValue])
 
 #define NUMBER_VALUE(DICT,KEY)                      CLASS_OBJECT(DICT, KEY, NSNumber)

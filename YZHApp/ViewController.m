@@ -160,6 +160,13 @@
 {
     [self.view endEditing:YES];
     [self.timer invalidate];
+    
+//    YZHUIAlertView *alertView = [[YZHUIAlertView alloc] initWithTitle:@"提示" alertMessage:@"提示信息" alertViewStyle:YZHUIAlertViewStyleAlertForce];
+//
+//    [alertView alertShowInView:nil animated:NO];
+//
+//    UIAlertView *alertView2 = [[UIAlertView alloc] initWithTitle:@"提示" message:@"提示信息" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+//    [alertView2 show];
 }
 
 - (void)_test2 {

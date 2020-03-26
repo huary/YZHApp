@@ -17,6 +17,12 @@
 		1C0341DB21D71F8600AA7C9A /* YZHTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0341D621D71F8600AA7C9A /* YZHTimer.m */; };
 		1C0341DC21D71F8600AA7C9A /* YZHUIGraphicsImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0341D921D71F8600AA7C9A /* YZHUIGraphicsImage.m */; };
 		1C0341E121D721A200AA7C9A /* NSObject+YZHTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0341E021D721A200AA7C9A /* NSObject+YZHTimer.m */; };
+		1C1406EB242C875000324E86 /* UIView+UIColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1406E7242C875000324E86 /* UIView+UIColor.m */; };
+		1C1406EC242C875000324E86 /* UIView+UITraitCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1406E9242C875000324E86 /* UIView+UITraitCollectionView.m */; };
+		1C1406ED242C875000324E86 /* UITraitCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1406EA242C875000324E86 /* UITraitCollectionView.m */; };
+		1C140702242C878600324E86 /* YZHLoopScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1406FB242C878600324E86 /* YZHLoopScrollView.m */; };
+		1C140703242C878600324E86 /* YZHLoopCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1406FE242C878600324E86 /* YZHLoopCell.m */; };
+		1C140704242C878600324E86 /* YZHLoopTransitionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C140700242C878600324E86 /* YZHLoopTransitionView.m */; };
 		1C16B3AA21ECCFAA00EA3338 /* YZHWeakProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C16B3A921ECCFAA00EA3338 /* YZHWeakProxy.m */; };
 		1C444B5E21D65C230033C360 /* UIView+YZHAddForUIGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C444B5D21D65C230033C360 /* UIView+YZHAddForUIGestureRecognizer.m */; };
 		1C444B6121D678B00033C360 /* UITableViewCell+YZHAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C444B6021D678B00033C360 /* UITableViewCell+YZHAdd.m */; };
@@ -156,6 +162,19 @@
 		1C0341DE21D7203D00AA7C9A /* YZHKitType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHKitType.h; sourceTree = "<group>"; };
 		1C0341DF21D721A200AA7C9A /* NSObject+YZHTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YZHTimer.h"; sourceTree = "<group>"; };
 		1C0341E021D721A200AA7C9A /* NSObject+YZHTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YZHTimer.m"; sourceTree = "<group>"; };
+		1C1406E5242C875000324E86 /* UITraitCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITraitCollectionView.h; sourceTree = "<group>"; };
+		1C1406E6242C875000324E86 /* UIView+UITraitCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+UITraitCollectionView.h"; sourceTree = "<group>"; };
+		1C1406E7242C875000324E86 /* UIView+UIColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+UIColor.m"; sourceTree = "<group>"; };
+		1C1406E8242C875000324E86 /* UIView+UIColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+UIColor.h"; sourceTree = "<group>"; };
+		1C1406E9242C875000324E86 /* UIView+UITraitCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+UITraitCollectionView.m"; sourceTree = "<group>"; };
+		1C1406EA242C875000324E86 /* UITraitCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITraitCollectionView.m; sourceTree = "<group>"; };
+		1C1406FB242C878600324E86 /* YZHLoopScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHLoopScrollView.m; sourceTree = "<group>"; };
+		1C1406FC242C878600324E86 /* YZHLoopTransitionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHLoopTransitionView.h; sourceTree = "<group>"; };
+		1C1406FD242C878600324E86 /* YZHLoopCellModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHLoopCellModelProtocol.h; sourceTree = "<group>"; };
+		1C1406FE242C878600324E86 /* YZHLoopCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHLoopCell.m; sourceTree = "<group>"; };
+		1C1406FF242C878600324E86 /* YZHLoopScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHLoopScrollView.h; sourceTree = "<group>"; };
+		1C140700242C878600324E86 /* YZHLoopTransitionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHLoopTransitionView.m; sourceTree = "<group>"; };
+		1C140701242C878600324E86 /* YZHLoopCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHLoopCell.h; sourceTree = "<group>"; };
 		1C16B3A821ECCFAA00EA3338 /* YZHWeakProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YZHWeakProxy.h; sourceTree = "<group>"; };
 		1C16B3A921ECCFAA00EA3338 /* YZHWeakProxy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YZHWeakProxy.m; sourceTree = "<group>"; };
 		1C34381521ECECEF00F915C8 /* YZHKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YZHKit.h; sourceTree = "<group>"; };
@@ -438,6 +457,33 @@
 			path = YZHUIGraphics;
 			sourceTree = "<group>";
 		};
+		1C1406E4242C875000324E86 /* UIColor */ = {
+			isa = PBXGroup;
+			children = (
+				1C1406E5242C875000324E86 /* UITraitCollectionView.h */,
+				1C1406E6242C875000324E86 /* UIView+UITraitCollectionView.h */,
+				1C1406E7242C875000324E86 /* UIView+UIColor.m */,
+				1C1406E8242C875000324E86 /* UIView+UIColor.h */,
+				1C1406E9242C875000324E86 /* UIView+UITraitCollectionView.m */,
+				1C1406EA242C875000324E86 /* UITraitCollectionView.m */,
+			);
+			path = UIColor;
+			sourceTree = "<group>";
+		};
+		1C1406FA242C878600324E86 /* YZHLoopScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				1C1406FB242C878600324E86 /* YZHLoopScrollView.m */,
+				1C1406FC242C878600324E86 /* YZHLoopTransitionView.h */,
+				1C1406FD242C878600324E86 /* YZHLoopCellModelProtocol.h */,
+				1C1406FE242C878600324E86 /* YZHLoopCell.m */,
+				1C1406FF242C878600324E86 /* YZHLoopScrollView.h */,
+				1C140700242C878600324E86 /* YZHLoopTransitionView.m */,
+				1C140701242C878600324E86 /* YZHLoopCell.h */,
+			);
+			path = YZHLoopScrollView;
+			sourceTree = "<group>";
+		};
 		1C16B3A721ECCF9200EA3338 /* YZHWeakProxy */ = {
 			isa = PBXGroup;
 			children = (
@@ -587,6 +633,7 @@
 		1C54293E21EE4363005A5C16 /* UIView */ = {
 			isa = PBXGroup;
 			children = (
+				1C1406FA242C878600324E86 /* YZHLoopScrollView */,
 				1C698EC521F9F8A6005D71FA /* YZHUIHoverView */,
 				1C698EAA21F9F894005D71FA /* YZHUICalendarView */,
 				1C698EB621F9F895005D71FA /* YZHUIPageScrollView */,
@@ -918,6 +965,7 @@
 		1CA9939821D651BB000BA06E /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				1C1406E4242C875000324E86 /* UIColor */,
 				1C0341B721D7079F00AA7C9A /* UIBezierPath+YZHAdd.h */,
 				1C0341B821D7079F00AA7C9A /* UIBezierPath+YZHAdd.m */,
 				1CA9939B21D651BB000BA06E /* UIButton+YZHAdd.h */,
@@ -1310,6 +1358,7 @@
 				1C54298221EE4363005A5C16 /* NSPaintModel.m in Sources */,
 				1C54298F21EE4363005A5C16 /* YZHUIExcelContentView.m in Sources */,
 				1CB4792322B886C3005EEB29 /* UIResponder+YZHUIRefreshAction.m in Sources */,
+				1C1406ED242C875000324E86 /* UITraitCollectionView.m in Sources */,
 				1C0341DC21D71F8600AA7C9A /* YZHUIGraphicsImage.m in Sources */,
 				1CB4792A22B89935005EEB29 /* UIScrollView+YZHAdd.m in Sources */,
 				1CD575EB22B8B9B400A125DD /* YZHAsyncTaskManager.m in Sources */,
@@ -1319,11 +1368,14 @@
 				1C54298B21EE4363005A5C16 /* shaderUtil.c in Sources */,
 				1CD575E622B8B9B400A125DD /* UIImage+YZHCoding.m in Sources */,
 				1C54298A21EE4363005A5C16 /* fileUtil.m in Sources */,
+				1C140704242C878600324E86 /* YZHLoopTransitionView.m in Sources */,
 				1C54299121EE4363005A5C16 /* YZHUIExcelItemCell.m in Sources */,
 				1CD575DF22B8B9B400A125DD /* YZHKeyboardManager.m in Sources */,
+				1C140702242C878600324E86 /* YZHLoopScrollView.m in Sources */,
 				1C5428EC21EE3BEC005A5C16 /* UITabBarController+UITabBarView.m in Sources */,
 				1C698EA521F9F581005D71FA /* YZHUICollectionViewLayout.m in Sources */,
 				1C5428DB21EE3BEC005A5C16 /* YZHBaseModalUIViewController.m in Sources */,
+				1C1406EB242C875000324E86 /* UIView+UIColor.m in Sources */,
 				1C698EA921F9F695005D71FA /* YZHUICropView.m in Sources */,
 				1C698E9621F9ED5C005D71FA /* NSHashTable+YZHAdd.m in Sources */,
 				1CA993BC21D651BC000BA06E /* UIButton+YZHAdd.m in Sources */,
@@ -1353,6 +1405,7 @@
 				1CD575EC22B8B9B400A125DD /* YZHSyncTaskManager.m in Sources */,
 				1C5428DA21EE3BEC005A5C16 /* UISideSlipViewController.m in Sources */,
 				1CD575DE22B8B9B400A125DD /* YZHAudioManager.m in Sources */,
+				1C140703242C878600324E86 /* YZHLoopCell.m in Sources */,
 				1C5428E621EE3BEC005A5C16 /* YZHDefaultAnimatedTransition.m in Sources */,
 				1C698EC421F9F895005D71FA /* YZHUITitleButtonItem.m in Sources */,
 				1C54299421EE4363005A5C16 /* YZHUIExcelViewType.m in Sources */,
@@ -1392,6 +1445,7 @@
 				1C444B5E21D65C230033C360 /* UIView+YZHAddForUIGestureRecognizer.m in Sources */,
 				1C698EBE21F9F895005D71FA /* YZHUICalendarTitleModel.m in Sources */,
 				1C698E6F21F9BCE0005D71FA /* YZHUINavigationBarView.m in Sources */,
+				1C1406EC242C875000324E86 /* UIView+UITraitCollectionView.m in Sources */,
 				1C5428ED21EE3BEC005A5C16 /* UIView+Snapshot.m in Sources */,
 				1CD575F122B8B9B400A125DD /* YZHWebObjectLoaderManager.m in Sources */,
 				1CD575D422B8B9B400A125DD /* YZHAudioController.m in Sources */,
@@ -1536,13 +1590,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = QSXU259F8V;
+				DEVELOPMENT_TEAM = 65T84QCPPQ;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = YZHApp/AppPrefixHeader.pch;
 				INFOPLIST_FILE = YZHApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = yuan.YZHApp;
+				PRODUCT_BUNDLE_IDENTIFIER = fm.lizhi.yuan.YZHApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1554,13 +1608,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = QSXU259F8V;
+				DEVELOPMENT_TEAM = 65T84QCPPQ;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = YZHApp/AppPrefixHeader.pch;
 				INFOPLIST_FILE = YZHApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = yuan.YZHApp;
+				PRODUCT_BUNDLE_IDENTIFIER = fm.lizhi.yuan.YZHApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

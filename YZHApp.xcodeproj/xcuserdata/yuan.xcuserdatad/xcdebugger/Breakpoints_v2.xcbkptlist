@@ -72,16 +72,64 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B4DCC591-3728-440D-B0D1-767B104BFF4C"
+            uuid = "93456451-0CF4-4115-B063-72C7347AB1F7"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "YZHApp/ViewController.m"
+            filePath = "YZHApp/Class/Common/YZHKit/UIView/YZHUIProgressView/YZHUIAlertView/YZHUIAlertView.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
-            landmarkName = "-_test2"
+            startingLineNumber = "645"
+            endingLineNumber = "645"
+            landmarkName = "-initWithTitle:alertMessage:alertViewStyle:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "343379CC-E4E9-46A9-B3F9-E07617483098"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIView/YZHUIProgressView/YZHUIAlertView/YZHUIAlertView.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "624"
+            endingLineNumber = "624"
+            landmarkName = "-initWithFrame:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BAF0EC32-E2FF-4A16-9F65-0DF206DEA069"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIView/YZHUIProgressView/YZHUIAlertView/YZHUIAlertView.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1229"
+            endingLineNumber = "1229"
+            landmarkName = "-_createAlertActionCellWithShowInView:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "64F51A50-E776-4CF8-8819-5A8BA0F5ACAE"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIView/YZHUIProgressView/YZHUIAlertView/YZHUIAlertView.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1144"
+            endingLineNumber = "1144"
+            landmarkName = "-_createAlertActionCellWithShowInView:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

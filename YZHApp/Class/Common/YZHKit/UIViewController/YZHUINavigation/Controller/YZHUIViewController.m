@@ -438,7 +438,7 @@
 -(UIButton*)_createButtonItemWithImage:(UIImage*)image title:(NSString*)title color:(UIColor*)color
 {
     UIButton *buttonItem = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonItem.backgroundColor = CLEAR_COLOR;
+    buttonItem.backgroundColor = [self _navigationBarButtonItemBGColor:UIControlStateNormal];
     if (image) {
         [buttonItem setImage:image forState:UIControlStateNormal];
         [buttonItem setImage:image forState:UIControlStateHighlighted];
@@ -447,6 +447,7 @@
     if (IS_AVAILABLE_NSSTRNG(title)) {
         [buttonItem setTitle:title forState:UIControlStateNormal];
         [buttonItem setTitleColor:color forState:UIControlStateNormal];
+        buttonItem.titleLabel.font = [self _navigationBarButtonItemFont];
     }
     [buttonItem sizeToFit];
     
@@ -483,9 +484,46 @@
     return buttonItem;
 }
 
+-(UIColor*)_navigationBarButtonItemTintColor
+{
+    UIColor *color = [[[UIBarButtonItem appearance] titleTextAttributesForState:UIControlStateNormal] objectForKey:NSForegroundColorAttributeName];
+    if (color) {
+        return color;
+    }
+    color = [UIBarButtonItem appearance].tintColor;
+    if (color) {
+        return color;
+    }
+    color = [[UINavigationBar appearance].titleTextAttributes objectForKey:NSForegroundColorAttributeName];
+    if (color) {
+        return color;
+    }
+    return BLACK_COLOR;
+}
+
+-(UIFont*)_navigationBarButtonItemFont
+{
+    UIFont *font = [[[UIBarButtonItem appearance] titleTextAttributesForState:UIControlStateNormal] objectForKey:NSFontAttributeName];
+    if (font) {
+        return font;
+    }
+    return [[UINavigationBar appearance].titleTextAttributes objectForKey:NSFontAttributeName];
+}
+
+-(UIColor*)_navigationBarButtonItemBGColor:(UIControlState)state
+{
+    UIColor *color = [[[UIBarButtonItem appearance] titleTextAttributesForState:state] objectForKey:NSBackgroundColorAttributeName];
+    if (!color) {
+        color = CLEAR_COLOR;
+    }
+    
+    [[[UIBarButtonItem appearance] titleTextAttributesForState:state] objectForKey:NSBackgroundColorAttributeName];
+    return color;
+}
+
 -(UIButton*)_createButtonItemWithGraphicsImageContext:(YZHUIGraphicsImageContext*)graphicsImageContext title:(NSString*)title target:(id)target action:(SEL)selector
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     UIImage *image = [self _createGraphicesImage:graphicsImageContext strokeColor:color];
     UIButton *buttonItem = [self _createButtonItemWithImage:image title:title color:color target:target action:selector];
     return buttonItem;
@@ -493,7 +531,7 @@
 
 -(UIButton*)_createButtonItemWithGraphicsImageContext:(YZHUIGraphicsImageContext*)graphicsImageContext title:(NSString*)title actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     UIImage *image = [self _createGraphicesImage:graphicsImageContext strokeColor:color];
     UIButton *buttonItem = [self _createButtonItemWithImage:image title:title color:color actionBlock:actionBlock];
     return buttonItem;
@@ -501,7 +539,7 @@
 
 -(UIImage*) _createNavigationItemImageWithImageName:(NSString*)imageName color:(UIColor*)color hasTitle:(BOOL)hasTitle
 {
-//    UIColor *color = [[UINavigationBar appearance] tintColor];
+//    UIColor *color = [self _navigationBarButtonItemTintColor];
     UIImage *image = nil;
     if (IS_AVAILABLE_NSSTRNG(imageName)) {
         image = [self _createNavigationItemImageForImage:[UIImage imageNamed:imageName]];
@@ -520,7 +558,7 @@
 
 -(UIButton*)_createLeftBackButtonItemWithImageName:(NSString*)imageName title:(NSString*)title target:(id)target action:(SEL)selector
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     UIImage *image = [self _createNavigationItemImageWithImageName:imageName color:color hasTitle:IS_AVAILABLE_NSSTRNG(title)];
     UIButton *buttonItem = [self _createButtonItemWithImage:image title:title color:color target:target action:selector];
     return buttonItem;
@@ -528,7 +566,7 @@
 
 -(UIButton*)_createLeftBackButtonItemWithImageName:(NSString*)imageName title:(NSString*)title actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     UIImage *image = [self _createNavigationItemImageWithImageName:imageName color:color hasTitle:IS_AVAILABLE_NSSTRNG(title)];
     UIButton *buttonItem = [self _createButtonItemWithImage:image title:title color:color actionBlock:actionBlock];
     return buttonItem;
@@ -536,7 +574,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithTitles:(NSArray<NSString*> *)titles target:(id)target action:(SEL)selector
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     for (NSString *title in titles) {
@@ -548,7 +586,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithTitles:(NSArray<NSString*> *)titles actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     for (NSString *title in titles) {
@@ -560,7 +598,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithImageNames:(NSArray<NSString*> *)imageNames target:(id)target action:(SEL)selector
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
 
     for (NSString *imageName in imageNames) {
@@ -574,7 +612,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithImageNames:(NSArray<NSString*> *)imageNames actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     for (NSString *imageName in imageNames) {
@@ -588,7 +626,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithImages:(NSArray<UIImage*> *)images target:(id)target action:(SEL)selector
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     for (UIImage *image in images) {
@@ -601,7 +639,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithImages:(NSArray<UIImage*> *)images actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     for (UIImage *image in images) {
@@ -614,7 +652,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithViews:(NSArray<UIView*>*)views target:(id)target action:(SEL)selector
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     for (UIView *view in views) {
@@ -628,7 +666,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithViews:(NSArray<UIView*>*)views actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     for (UIView *view in views) {
@@ -642,7 +680,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithImageNames:(NSArray<NSString*> *)imageNames titles:(NSArray<NSString*> *)titles target:(id)target action:(SEL)selector actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     NSInteger cnt = MAX(imageNames.count, titles.count);
@@ -678,7 +716,7 @@
 
 -(NSArray<UIButton*>*)_createNavigationButtonItemsWithImages:(NSArray<UIImage*> *)images titles:(NSArray<NSString*> *)titles target:(id)target action:(SEL)selector actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
-    UIColor *color = [[UINavigationBar appearance] tintColor];
+    UIColor *color = [self _navigationBarButtonItemTintColor];
     NSMutableArray *navigationButtonItems = [NSMutableArray array];
     
     NSInteger cnt = MAX(images.count, titles.count);
@@ -865,7 +903,7 @@
 -(UIButton *)addNavigationLeftItemWithImage:(UIImage*)image title:(NSString*)title target:(id)target action:(SEL)selector isReset:(BOOL)reset
 {
     image = [self _createNavigationItemImageForImage:image];
-    UIButton *leftButtonItem = [self _createButtonItemWithImage:image title:title color:[[UINavigationBar appearance] tintColor] target:target action:selector];
+    UIButton *leftButtonItem = [self _createButtonItemWithImage:image title:title color:[self _navigationBarButtonItemTintColor] target:target action:selector];
     [self _addNavigationItemWithButton:leftButtonItem isReset:reset left:YES];
     return leftButtonItem;
 }
@@ -874,7 +912,7 @@
 -(UIButton *)addNavigationLeftItemWithImage:(UIImage*)image title:(NSString*)title isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock
 {
     image = [self _createNavigationItemImageForImage:image];
-    UIButton *leftButtonItem = [self _createButtonItemWithImage:image title:title color:[[UINavigationBar appearance] tintColor] actionBlock:actionBlock];
+    UIButton *leftButtonItem = [self _createButtonItemWithImage:image title:title color:[self _navigationBarButtonItemTintColor] actionBlock:actionBlock];
     [self _addNavigationItemWithButton:leftButtonItem isReset:reset left:YES];
     return leftButtonItem;
 }

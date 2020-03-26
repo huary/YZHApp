@@ -31,7 +31,8 @@
 
 + (BOOL)isValidatePhoneNumber:(NSString *)phoneNumber
 {
-    NSString *mobileRegex = @"^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0678])\\d{8}$";
+//    NSString *mobileRegex = @"^1(3[0-9]|4[57]|5[0-35-9]|8[0-9]|7[0678])\\d{8}$";
+    NSString *mobileRegex = @"^(1)\\d{10}$";
     NSPredicate *regextestmobile = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", mobileRegex];
     return [regextestmobile evaluateWithObject:phoneNumber];
 }

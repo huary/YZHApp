@@ -619,6 +619,18 @@ typedef void(^YZHUIAlertActionCellContentViewChangeSizeBlock)(YZHUIAlertActionCe
 
 @synthesize effectView = _effectView;
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.alertTitle = nil;
+        self.alertMessage = nil;
+        self.alertViewStyle = YZHUIAlertViewStyleAlertInfo;
+        [self _setup];
+    }
+    return self;
+}
+
 -(instancetype)initWithTitle:(id)alertTitle alertViewStyle:(YZHUIAlertViewStyle)alertViewStyle
 {
     self = [self initWithTitle:alertTitle alertMessage:nil alertViewStyle:alertViewStyle];
@@ -629,16 +641,24 @@ typedef void(^YZHUIAlertActionCellContentViewChangeSizeBlock)(YZHUIAlertActionCe
 
 -(instancetype)initWithTitle:(id)alertTitle alertMessage:(id)alertMessage alertViewStyle:(YZHUIAlertViewStyle)alertViewStyle
 {
-    self = [super init];
+    self = [super initWithFrame:CGRectZero];
     if (self) {
         self.alertTitle = alertTitle;
         self.alertMessage = alertMessage;
         self.alertViewStyle = alertViewStyle;
-        [self _setupDefaultValue];
-        [self _setupChildView];
-        [self _registerNotification:YES];
+        [self _setup];
     }
     return self;
+}
+
+- (void)_setup
+{
+    if (self.alertTitle && !self.alertMessage) {
+        self.cellHeadTitleMessageHaveSeparatorLine = YES;
+    }
+    [self _setupDefaultValue];
+    [self _setupChildView];
+    [self _registerNotification:YES];
 }
 
 -(UIView*)effectView
