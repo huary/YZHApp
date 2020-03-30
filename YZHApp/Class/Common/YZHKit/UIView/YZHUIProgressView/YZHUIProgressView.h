@@ -53,7 +53,7 @@ typedef void(^YZHUIProgressDismissCompletionBlock)(YZHUIProgressView *progressVi
  * 上部的高度为 top*(1 + midRatio) = X;
  * 中部的高度为 （top+bottom）* （1 - midRatio）= Y;
  * 下部的的高度为 bottom * (1 + midRatio) = Z;
- * 通过已知的（UI设计图）X,Y,Z高度可以求得如下：
+ * 通过已知的（UI设计图 ）X,Y,Z高度可以求得如下：
  * top = (X+Y+Z)*X/(2 * (X+Z))
  * bottom = (X+Y+Z)*Z/(2 * (X+Z))
  * midRatio = (X-Y+Z)/(X+Y+Z)
