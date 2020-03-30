@@ -134,4 +134,8 @@ typedef NS_ENUM(NSInteger, UINavigationControllerBarAndItemStyle)
 - (NSArray *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void(^)(YZHUINavigationController *navigationController))completion;
 
 - (NSArray *)popToRootViewControllerAnimated:(BOOL)animated completion:(void(^)(YZHUINavigationController *navigationController))completion;
+
+- (UIView *)navBarView;
+
+- (CGFloat)navBarTopLayout;
 @end

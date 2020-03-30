@@ -167,6 +167,8 @@
 //
 //    UIAlertView *alertView2 = [[UIAlertView alloc] initWithTitle:@"提示" message:@"提示信息" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
 //    [alertView2 show];
+    
+    [YZHToast toastWithText:@"请稍后..."];
 }
 
 - (void)_test2 {

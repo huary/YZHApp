@@ -74,9 +74,11 @@
     _style = style;
     if (style == UIBarViewStyleNone) {
         self.blurView.alpha = 0;
+        self.blurView.hidden = YES;
     }
     else
     {
+        self.blurView.hidden = NO;
         self.blurView.alpha = ALPHA_FROM_RGB_COLOR(self.contentView.backgroundColor);
         self.blurView.barStyle = (UIBarStyle)style;
     }

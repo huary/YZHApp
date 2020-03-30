@@ -45,12 +45,15 @@ typedef void(^YZHUIProgressDismissCompletionBlock)(YZHUIProgressView *progressVi
 @property (nonatomic, assign) UIEdgeInsets contentInsets;
 
 /** midSpaceWithTopBottomInsetsRatio,中间的距离,默认为0.4
+ * 下面将midSpaceWithTopBottomInsetsRatio简称为midRatio，可以将midRatio理解为上（top）下（bottom）
+ * 同时在contentInsets的top、bottom扩展为R，那么上部为top*(1+R),下部为bottom*(1+R)，则中间重叠为（top+Bottom）*R
+ * (top+Bottom)*R/(top+Bottom) = R = midRatio,所以midRatio理解上下同时扩展比例R。
  * 总共的空白区域为2top + 2bottom，
  * 中间空白区域为 (1-midSpaceWithTopBottomInsetsRatio) *（top+bottom）,值越大的话相距越近，上下越高，
  * 上部的高度为 top*(1 + midRatio) = X;
  * 中部的高度为 （top+bottom）* （1 - midRatio）= Y;
  * 下部的的高度为 bottom * (1 + midRatio) = Z;
- * 通过已知的X,Y,Z高度可以求得如下：
+ * 通过已知的（UI设计图）X,Y,Z高度可以求得如下：
  * top = (X+Y+Z)*X/(2 * (X+Z))
  * bottom = (X+Y+Z)*Z/(2 * (X+Z))
  * midRatio = (X-Y+Z)/(X+Y+Z)

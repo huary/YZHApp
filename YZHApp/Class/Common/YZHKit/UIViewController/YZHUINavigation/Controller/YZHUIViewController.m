@@ -334,6 +334,17 @@
     }
 }
 
+-(BOOL)_shouldGraphiceImage:(UIImage *)image
+{
+    if (image == nil) {
+        return YES;
+    }
+    if (image.size.height > NAV_ITEM_HEIGH) {
+        return YES;
+    }
+    return NO;
+}
+
 -(CGRect)_getNavigationItemFrameForImageSize:(CGSize)imageSize graphicsSize:(CGSize*)graphicsSize
 {
     if (imageSize.width == 0 || imageSize.height == 0) {
@@ -407,6 +418,9 @@
 {
     if (!image) {
         return nil;
+    }
+    if (![self _shouldGraphiceImage:image]) {
+        return image;
     }
     CGSize graphicsSize;
     CGRect frame = [self _getNavigationItemFrameForImageSize:image.size graphicsSize:&graphicsSize];
@@ -1203,6 +1217,29 @@
             [self.navigationBarView addSubview:customView];
         }
     }
+}
+
+- (UIView *)navBarView
+{
+    YZHUINavigationController *navigationController = (YZHUINavigationController*)self.navigationController;
+    UINavigationControllerBarAndItemStyle barAndItemStyle = navigationController.navigationControllerBarAndItemStyle;
+    if (IS_CUSTOM_GLOBAL_UINAVIGATIONCONTROLLER_BAR_STYLE(barAndItemStyle)) {
+        return [navigationController navBarView];
+    }
+    else if (IS_CUSTOM_VIEWCONTROLLER_UINAVIGATIONCONTROLLER_BAR_STYLE(barAndItemStyle))
+    {
+        return self.navigationBarView;
+    }
+    return navigationController.navigationBar;
+}
+
+- (CGFloat)navBarTopLayout
+{
+    UIView *barView = [self navBarView];
+    if ([barView isKindOfClass:[YZHUINavigationBarView class]]) {
+        return STATUS_BAR_HEIGHT;
+    }
+    return 0;
 }
 
 - (void)didReceiveMemoryWarning {

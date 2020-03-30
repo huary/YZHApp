@@ -814,6 +814,20 @@ typedef void(^YZHUINavigationControllerActionCompletionBlock)(YZHUINavigationCon
     self.updateTransitionTimer = nil;
 }
 
+- (UIView *)navBarView
+{
+    if (IS_CUSTOM_GLOBAL_UINAVIGATIONCONTROLLER_BAR_STYLE(self.navigationControllerBarAndItemStyle)) {
+        return self.navigationBarView;
+    }
+    return self.navigationBar;
+}
 
+- (CGFloat)navBarTopLayout
+{
+    if (IS_CUSTOM_GLOBAL_UINAVIGATIONCONTROLLER_BAR_STYLE(self.navigationControllerBarAndItemStyle)) {
+        return STATUS_BAR_HEIGHT;
+    }
+    return 0;
+}
 
 @end

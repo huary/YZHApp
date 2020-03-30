@@ -147,4 +147,7 @@ typedef void(^YZHNavigationItemActionBlock)(UIViewController *viewController, UI
 
 -(void)addNavigationBarCustomView:(UIView*)customView;
 
+- (UIView *)navBarView;
+
+- (CGFloat)navBarTopLayout;
 @end
