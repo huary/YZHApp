@@ -1533,7 +1533,8 @@ typedef void(^YZHUIAlertActionCellContentViewChangeSizeBlock)(YZHUIAlertActionCe
     }
     UIView *showInView = inView;
     if (!showInView) {
-        showInView = [UIApplication sharedApplication].keyWindow;
+//        showInView = [UIApplication sharedApplication].keyWindow;
+        showInView = APP_TOP_WINDOW;
     }
     [self _createAlertActionCellWithShowInView:showInView];
     return self.showInView;
@@ -1831,7 +1832,8 @@ typedef void(^YZHUIAlertActionCellContentViewChangeSizeBlock)(YZHUIAlertActionCe
 +(NSArray<YZHUIAlertView*>*)alertViewsForTag:(NSInteger)tag inView:(UIView*)inView
 {
     if (inView == nil) {
-        inView = [UIApplication sharedApplication].keyWindow;
+//        inView = [UIApplication sharedApplication].keyWindow;
+        inView = APP_TOP_WINDOW;
     }
     NSMutableArray *views = [NSMutableArray array];
     for (UIView *view in inView.subviews) {

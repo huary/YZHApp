@@ -9,8 +9,7 @@
 #import "YZHUITextView.h"
 #import "YZHKitType.h"
 #import "NSObject+YZHAddForKVO.h"
-
-#define USE_TEXTVIEW_TEXT_AS_PLACEHOLDER    (0)
+#import "YZHTransaction.h"
 
 /****************************************************
  *YZHUITextViewLimit
@@ -34,26 +33,14 @@
 /****************************************************
  *YZHUITextView
  ****************************************************/
-#if USE_TEXTVIEW_TEXT_AS_PLACEHOLDER
-@interface YZHUITextView ()
-/* <#注释#> */
-@property (nonatomic, strong) UIColor *originalTextColor;
-
-/* <#注释#> */
-@property (nonatomic, strong) NSString *inputText;
-
-/* <#注释#> */
-@property (nonatomic, strong) NSAttributedString *inputAttributedText;
-
-#else
 @interface YZHUITextView () <UITextViewDelegate>
-/* <#注释#> */
-@property (nonatomic, strong) UITextView *placeHolderTextView;
 
 /* <#注释#> */
 @property (nonatomic, assign) CGSize textSize;
 
-#endif
+/** <#注释#> */
+@property (nonatomic, strong) UIImageView *placeholderView;
+
 /* <#注释#> */
 @property (nonatomic, assign) CGSize lastContentSize;
 
@@ -68,25 +55,23 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self _setupDefaultValue];
+        [self pri_setupDefaultValue];
     }
     return self;
 }
 
--(void)_setupDefaultValue
+-(void)pri_setupDefaultValue
 {
-#if USE_TEXTVIEW_TEXT_AS_PLACEHOLDER
-    self.originalTextColor = self.textColor;
-#endif
-    [self _registNotification:YES];
+    [self pri_registNotification:YES];
     self.lastContentSize = self.contentSize;
     self.normalHeight = -1;
     self.maxLimit = nil;
     self.enablePerformAction = YES;
-    [self _initNormalHeight];
+    [self pri_initNormalHeight];
+    [self addSubview:self.placeholderView];
 }
 
--(void)_initNormalHeight
+-(void)pri_initNormalHeight
 {
     if (self.normalHeight < 0 && self.bounds.size.height > 0) {
         self.normalHeight = self.bounds.size.height;
@@ -96,17 +81,16 @@
 -(void)layoutSubviews
 {
     [super layoutSubviews];
-#if !USE_TEXTVIEW_TEXT_AS_PLACEHOLDER
-    self.placeHolderTextView.frame = self.bounds;
-#endif
-    [self _initNormalHeight];
+
+    [self pri_initNormalHeight];
     
     CGFloat w = self.contentSize.width;
     CGFloat h = MAX(self.contentSize.height, self.bounds.size.height);
-    [self _textContainerView].frame = CGRectMake(0, 0, w, h);
+    [self pri_textContainerView].frame = CGRectMake(0, 0, w, h);
+    [self pri_hiddenPlaceholderView];
 }
 
--(UIView*)_textContainerView
+-(UIView*)pri_textContainerView
 {
     UIView *textContainerView = nil;
     for (UIView *subView in self.subviews) {
@@ -119,9 +103,9 @@
     return textContainerView;
 }
 
--(UIView*)_textSelectRangeView
+-(UIView*)pri_textSelectRangeView
 {
-    UIView *textContainerView = [self _textContainerView];
+    UIView *textContainerView = [self pri_textContainerView];
     UIView *textSelectionView = nil;
     for (UIView *subView in textContainerView.subviews) {
         if ([subView isKindOfClass:NSClassFromString(@"UITextSelectionView")]) {
@@ -133,20 +117,22 @@
     return [textSelectionView.subviews firstObject];
 }
 
--(UIColor*)_placeHolderTextColor
+- (UIFont *)pri_defaultFont
 {
-    CGFloat r,g,b,a;
-    [GRAY_COLOR getRed:&r green:&g blue:&b alpha:&a];
-    UIColor *color = RGBA_F(r * 0.7, g * 0.7, b * 0.7, a * 0.7) ;
-    return color;
+    return [UIFont systemFontOfSize:12];
 }
 
--(void)_registNotification:(BOOL)regist
+- (UIColor*)pri_placeholderDefaultTextColor
+{
+    return [UIColor colorWithRed:0 green:0 blue:25/255.0 alpha:44/255.0];
+}
+
+-(void)pri_registNotification:(BOOL)regist
 {
     if (regist) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didBeginEditingAction:) name:UITextViewTextDidBeginEditingNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didChangeTextAction:) name:UITextViewTextDidChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didEndEditingAction:) name:UITextViewTextDidEndEditingNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pri_didBeginEditingAction:) name:UITextViewTextDidBeginEditingNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pri_didChangeTextAction:) name:UITextViewTextDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pri_didEndEditingAction:) name:UITextViewTextDidEndEditingNotification object:nil];
         
         [self addKVOObserver:self forKeyPath:@"selectedRange" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
     }
@@ -166,168 +152,149 @@
     }
 }
 
-#if USE_TEXTVIEW_TEXT_AS_PLACEHOLDER
--(void)_updateSuperText:(NSString*)text
+- (UIImageView *)placeholderView
 {
-    NSAttributedString *inputAttributedText = self.inputAttributedText;
-    [super setText:text];
-    self.inputAttributedText = inputAttributedText;
-}
-
--(void)setText:(NSString *)text
-{
-    [self _updateSuperText:text];
-    self.inputText = text;
-    [super setTextColor:self.originalTextColor];
-}
-
--(void)setAttributedText:(NSAttributedString *)attributedText
-{
-    [super setAttributedText:attributedText];
-    self.inputAttributedText = attributedText;
-}
-
--(void)setTextColor:(UIColor *)textColor
-{
-    [super setTextColor:textColor];
-    _originalTextColor = textColor;
-    self.placeholder = _placeholder;
-}
-
--(BOOL)_canUpdatePlaceholder
-{
-    if (IS_AVAILABLE_NSSTRNG(self.inputText) || IS_AVAILABLE_ATTRIBUTEDSTRING(self.inputAttributedText)) {
-        return NO;
+    if (_placeholderView == nil) {
+        _placeholderView = [UIImageView new];
+        _placeholderView.userInteractionEnabled = NO;
+        _placeholderView.hidden = YES;
     }
-    return YES;
+    return _placeholderView;
 }
 
--(void)_didBeginEditingAction:(NSNotification*)notification
+-(void)setFrame:(CGRect)frame
 {
-//        NSLog(@"didBegin,notification=%@",notification);
-    if (!IS_AVAILABLE_NSSTRNG(self.inputText) && !IS_AVAILABLE_ATTRIBUTEDSTRING(self.inputAttributedText)) {
-        [self _updateSuperText:nil];
-        [super setTextColor:self.originalTextColor];
-        
+    CGSize oldSize = self.frame.size;
+    CGSize newSize = frame.size;
+    [super setFrame:frame];
+    if (!CGSizeEqualToSize(oldSize, newSize)) {
+        [self pri_updatePlaceholder];
     }
 }
 
--(void)_didChangeTextAction:(NSNotification*)notification
+-(void)setBounds:(CGRect)bounds
 {
-    UITextView *textView = (UITextView*)notification.object;
-    self.inputText = textView.text;
-    self.inputAttributedText = textView.attributedText;
-}
-
--(void)_didEndEditingAction:(NSNotification*)notification
-{
-    NSAttributedString *oldAttributedPlaceholder = _attributedPlaceholder;
-    self.placeholder = _placeholder;
-    if (IS_AVAILABLE_ATTRIBUTEDSTRING(oldAttributedPlaceholder)) {
-        self.attributedPlaceholder = oldAttributedPlaceholder;
+    CGSize oldSize = self.bounds.size;
+    CGSize newSize = bounds.size;
+    [super setBounds:bounds];
+    if (!CGSizeEqualToSize(oldSize, newSize)) {
+        [self pri_updatePlaceholder];
     }
-}
-
--(void)setPlaceholder:(NSString *)placeholder
-{
-    _placeholder = placeholder;
-    _attributedPlaceholder = nil;
-    if (![self _canUpdatePlaceholder]) {
-        return;
-    }
-    
-    [self _updateSuperText:placeholder];
-    
-    if (IS_AVAILABLE_NSSTRNG(placeholder)) {
-        [super setTextColor:[self _placeHolderTextColor]];
-    }
-    else {
-        [super setTextColor:self.originalTextColor];
-    }
-}
-
--(void)setAttributedPlaceholder:(NSAttributedString *)attributedPlaceholder
-{
-    _attributedPlaceholder = attributedPlaceholder;
-    _placeholder = nil;
-    if (![self _canUpdatePlaceholder]) {
-        return;
-    }
-    
-    [super setAttributedText:attributedPlaceholder];
-}
-#else
-
--(UITextView*)placeHolderTextView
-{
-    if (_placeHolderTextView == nil) {
-        _placeHolderTextView = [[UITextView alloc] initWithFrame:self.bounds];
-        _placeHolderTextView.delegate = self;
-        _placeHolderTextView.font = self.font;
-        _placeHolderTextView.backgroundColor = CLEAR_COLOR;
-        _placeHolderTextView.textColor = [self _placeHolderTextColor];
-        [self addSubview:_placeHolderTextView];
-    }
-    return _placeHolderTextView;
 }
 
 -(void)setFont:(UIFont *)font
 {
+    UIFont *oldFont = self.font;
     [super setFont:font];
-    [self _updatePlaceHolder];
+    if (oldFont != font || (font && [oldFont isEqual:font] == NO)) {
+        [self pri_updatePlaceholder];
+    }
 }
 
 -(void)setText:(NSString *)text
 {
     [super setText:text];
-    [self _updateTextAction];
+    [self pri_updateTextAction];
 }
 
 -(void)setAttributedText:(NSAttributedString *)attributedText
 {
     [super setAttributedText:attributedText];
-    [self _updateTextAction];
+    [self pri_updateTextAction];
 }
 
--(void)_updatePlaceHolder
+- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset
 {
-    self.placeHolderTextView.frame = self.bounds;
-    self.placeHolderTextView.font = self.font;
-    self.placeHolderTextView.textContainer.size = self.placeHolderTextView.bounds.size;
-    self.placeHolderTextView.textContainer.lineBreakMode = NSLineBreakByTruncatingTail;
+    UIEdgeInsets oldInsets = self.textContainerInset;
+    [super setTextContainerInset:textContainerInset];
+    if (!UIEdgeInsetsEqualToEdgeInsets(oldInsets, textContainerInset)) {
+        [self pri_updatePlaceholder];
+    }
 }
 
 -(void)setPlaceholder:(NSString *)placeholder
 {
-    _placeholder = placeholder;
-    self.placeHolderTextView.text = placeholder;
-    [self _updatePlaceHolder];
+    BOOL isEqual = ((_placeholder == placeholder) || (placeholder && [_placeholder isEqualToString:placeholder]));
+    if (!isEqual) {
+        _placeholder = placeholder;
+        [self pri_updatePlaceholder];
+    }
+}
+
+-(void)setPlaceholderFont:(UIFont *)placeholderFont
+{
+    if (![_placeholderFont isEqual:placeholderFont]) {
+        _placeholderFont = placeholderFont;
+        [self pri_updatePlaceholder];
+    }
+}
+
+-(void)setPlaceholderColor:(UIColor *)placeholderColor
+{
+    if (![_placeholderColor isEqual:placeholderColor]) {
+        _placeholderColor = placeholderColor;
+        [self pri_updatePlaceholder];
+    }
 }
 
 -(void)setAttributedPlaceholder:(NSAttributedString *)attributedPlaceholder
 {
-    _attributedPlaceholder = attributedPlaceholder;
-    self.placeHolderTextView.attributedText = attributedPlaceholder;
-    [self _updatePlaceHolder];
+    if (![_attributedPlaceholder isEqual:attributedPlaceholder]) {
+        _attributedPlaceholder = attributedPlaceholder;
+        [self pri_updatePlaceholder];
+    }
 }
 
--(BOOL)textViewShouldBeginEditing:(UITextView *)textView
+-(void)pri_updatePlaceholder
 {
-    [self becomeFirstResponder];
-    return NO;
+    [[YZHTransaction transactionWithTransactionId:@"YZHUITextView.updatePlaceholder" action:^(YZHTransaction * _Nonnull transaction) {
+                
+        NSAttributedString *attrPlaceholder = self.attributedPlaceholder;
+        if (attrPlaceholder.length == 0) {
+            if (self.placeholder.length == 0) {
+                return;
+            }
+            UIFont *font = self.placeholderFont;
+            if (!font) {
+                font = self.font ?: [self pri_defaultFont];
+            }
+            UIColor *textColor = self.placeholderColor ?:[self pri_placeholderDefaultTextColor];
+            attrPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder attributes:@{
+                NSFontAttributeName:font,
+                NSForegroundColorAttributeName:textColor
+            }];
+        }
+        
+        NSStringDrawingOptions options = NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading;
+        
+        CGSize size = [attrPlaceholder boundingRectWithSize:self.bounds.size options:options context:nil].size;
+        size = CGSizeMake(ceil(size.width), ceil(size.height));
+        
+        CGRect rect = {.origin = CGPointZero,.size = size};
+        UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+        [attrPlaceholder drawInRect:rect];
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        self.placeholderView.image = image;
+        
+        UIEdgeInsets textContainerInset = self.textContainerInset;
+        CGFloat x = textContainerInset.left + 5;
+        CGFloat y = textContainerInset.top;
+        self.placeholderView.frame = CGRectMake(x, y, size.width, size.height);
+    }] commit];
 }
 
--(void)_hiddenPlaceholderTextView
+-(void)pri_hiddenPlaceholderView
 {
     if (IS_AVAILABLE_NSSTRNG(self.text) || IS_AVAILABLE_ATTRIBUTEDSTRING(self.attributedText)) {
-        self.placeHolderTextView.hidden = YES;
+        self.placeholderView.hidden = YES;
     }
     else {
-        self.placeHolderTextView.hidden = NO;
+        self.placeholderView.hidden = NO;
     }
 }
 
--(void)_didBeginEditingAction:(NSNotification*)notification
+-(void)pri_didBeginEditingAction:(NSNotification*)notification
 {
     if (notification.object == self) {
         if (self.didBeginEditingBlock) {
@@ -336,21 +303,22 @@
     }
 }
 
--(void)_didChangeTextAction:(NSNotification*)notification
+-(void)pri_didChangeTextAction:(NSNotification*)notification
 {
     if (notification.object == self) {
-        [self _updateTextAction];
+        [self pri_updateTextAction];
     }
 }
 
--(void)_updateTextAction
+-(void)pri_updateTextAction
 {
-    [self _hiddenPlaceholderTextView];
+    [self pri_hiddenPlaceholderView];
 
     CGSize textSize = [self sizeThatFits:self.contentSize];
     if (self.textChangeBlock) {
         self.textChangeBlock(self, textSize);
-        
+        textSize = [self sizeThatFits:self.contentSize];
+        [self pri_hiddenPlaceholderView];
     }
     if (!CGSizeEqualToSize(self.textSize, textSize)) {
         if (self.textSizeChangeBlock) {
@@ -358,7 +326,7 @@
         }
     }
     self.textSize = textSize;
-    
+
     if (self.maxLimit) {
         CGRect frame = self.frame;
         CGRect oldFrame = frame;
@@ -388,16 +356,15 @@
     }
 }
 
--(void)_didEndEditingAction:(NSNotification*)notification
+-(void)pri_didEndEditingAction:(NSNotification*)notification
 {
     if (notification.object == self) {
-        [self _hiddenPlaceholderTextView];
+        [self pri_hiddenPlaceholderView];
         if (self.didEndEditingBlock) {
             self.didEndEditingBlock(self,notification);
         }
     }
 }
-#endif
 
 -(void)setContentSize:(CGSize)contentSize
 {
@@ -441,10 +408,10 @@
     return lineCnt;
 }
 
-- (BOOL)_isPasteboardContainsValidValue {
+- (BOOL)pri_isPasteboardContainsValidValue {
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    NSLog(@"pastedboard=%@",pasteboard);
-    NSLog(@"string=%@,strings=%@",pasteboard.string,pasteboard.strings);
+//    NSLog(@"pastedboard=%@",pasteboard);
+//    NSLog(@"string=%@,strings=%@",pasteboard.string,pasteboard.strings);
     if (SYSTEMVERSION_NUMBER >= 10.0) {
         if ([pasteboard hasStrings] ||
             [pasteboard hasURLs] ||
@@ -495,7 +462,7 @@
      increaseSize:
      decreaseSize:
      */
-    BOOL OK = NO;
+    BOOL OK = YES;
     if (self.canPerformActionBlock) {
         OK = self.canPerformActionBlock(self, action, sender);
     }
@@ -508,7 +475,7 @@
                     OK = self.text.length > 0;
                 }
                 if (action == @selector(paste:)) {
-                    OK = [self _isPasteboardContainsValidValue];
+                    OK = [self pri_isPasteboardContainsValidValue];
                 }
             } else {
                 if (action == @selector(cut:)) {
@@ -521,17 +488,17 @@
                     OK = (selectedRange.length < self.text.length);
                 }
                 if (action == @selector(paste:)) {
-                    OK = (self.isFirstResponder && self.editable && [self _isPasteboardContainsValidValue]);
+                    OK = (self.isFirstResponder && self.editable && [self pri_isPasteboardContainsValidValue]);
                 }
             }
         }
     }
-    NSLog(@"action=%@,OK=%@",NSStringFromSelector(action),OK ? @"YES" : @"NO");
+//    NSLog(@"action=%@,OK=%@",NSStringFromSelector(action),OK ? @"YES" : @"NO");
     return OK;
 }
 
 -(void)dealloc
 {
-    [self _registNotification:NO];
+    [self pri_registNotification:NO];
 }
 @end

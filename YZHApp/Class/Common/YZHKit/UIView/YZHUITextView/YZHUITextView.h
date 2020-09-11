@@ -52,6 +52,12 @@ typedef BOOL(^YZHUITextViewCanPerformActionBlock)(YZHUITextView *textView, SEL s
 /* <#注释#> */
 @property (nonatomic, strong) NSString *placeholder;
 
+/** <#注释#> */
+@property (nonatomic, strong) UIFont *placeholderFont;
+
+/** <#注释#> */
+@property (nonatomic, strong) UIColor *placeholderColor;
+
 /* <#注释#> */
 @property (nonatomic, strong) NSAttributedString *attributedPlaceholder;
 

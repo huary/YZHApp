@@ -11,6 +11,7 @@
 #import "UITabBarController+UITabBarView.h"
 #import "UIView+Snapshot.h"
 #import <objc/runtime.h>
+#import "YZHKitType.h"
 
 //static const CGFloat navigationItemViewAlphaPushChangeDurationWithTotalDurationRatio = 1.0;//0.5;//0.2;
 //static const CGFloat navigationItemViewAlphaPopChangeDurationWithTotalDurationRatio = 1.0;//0.5;//0.3;

@@ -7,6 +7,7 @@
 //
 
 #import "YZHUINavigationBarView.h"
+#import "YZHKitType.h"
 
 @interface YZHUINavigationBarView ()
 

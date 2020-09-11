@@ -13,6 +13,7 @@
 @class YZHLoopTransitionView;
 @protocol YZHLoopTransitionViewDelegate <NSObject>
 
+@optional
 - (void)transitionView:(YZHLoopTransitionView *_Nonnull)transitionView didStartAtPoint:(CGPoint)point;
 
 - (void)transitionView:(YZHLoopTransitionView *_Nonnull)transitionView updateAtPoint:(CGPoint)point changedValue:(CGFloat)changedValue;

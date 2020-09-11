@@ -251,8 +251,8 @@ typedef NS_ENUM(NSInteger, _YZHScrollViewDragVector)
     self.nextCell.contentInsets = contentInsets;
     self.prevCell.contentInsets = contentInsets;
    
-    CGSize csize = self.scrollView.contentSize;
-    CGPoint offset = self.scrollView.contentOffset;
+//    CGSize csize = self.scrollView.contentSize;
+//    CGPoint offset = self.scrollView.contentOffset;
     
 //    NSLog(@"offset.x=%f,pages=%ld,w=%f",offset.x,pages,csize.width);
 }

@@ -35,6 +35,8 @@
 #import "NSObject+YZHAdd.h"
 #import "UIResponder+YZHUIRefreshAction.h"
 #import "UIView+UIColor.h"
+#import "UIViewController+YZHAdd.h"
+#import "UIDevice+YZHAdd.h"
 
 //utility
 #import "YZHUtil.h"

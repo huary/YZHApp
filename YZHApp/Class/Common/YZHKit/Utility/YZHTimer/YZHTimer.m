@@ -224,16 +224,21 @@
     targetTmp = nil;
 }
 
+-(NSTimeInterval)startTime
+{
+    return _startTime;
+}
+
 -(NSTimeInterval)elapseTime
 {
     NSTimeInterval endTime = _endTime;
     if (self.valid) {
         endTime = USEC_FROM_DATE_SINCE1970_NOW;
     }
-    if (_wallTime) {
+//    if (_wallTime) {
         return (endTime - _startTime) * 1.0 / USEC_PER_SEC;
-    }
-    return (endTime - _startTime - _suspendTime) * 1.0 / USEC_PER_SEC;
+//    }
+//    return (endTime - _startTime - _suspendTime) * 1.0 / USEC_PER_SEC;
 }
 
 - (void)_suspendAction

@@ -10,7 +10,7 @@
 #import <objc/runtime.h>
 #import "YZHKitMacro.h"
 
-typedef id(^WeakReferenceObjectBlock)();
+typedef id(^WeakReferenceObjectBlock)(void);
 
 @implementation NSObject (YZHAdd)
 
@@ -56,13 +56,13 @@ typedef id(^WeakReferenceObjectBlock)();
 //multi
 -(void)setWeakReferenceObjectsTable:(NSMapTable *)weakReferenceObjectsTable
 {
-    objc_setAssociatedObject(self, @selector(setWeakReferenceObjectsTable:), weakReferenceObjectsTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(weakReferenceObjectsTable), weakReferenceObjectsTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 -(NSMapTable*)weakReferenceObjectsTable
 {
     NSMapTable *mapTable = objc_getAssociatedObject(self, _cmd);
-    if (mapTable) {
+    if (!mapTable) {
         mapTable = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsWeakMemory];
         self.weakReferenceObjectsTable = mapTable;
     }

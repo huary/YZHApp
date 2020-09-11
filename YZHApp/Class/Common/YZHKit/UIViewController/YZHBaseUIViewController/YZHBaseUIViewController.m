@@ -7,6 +7,7 @@
 //
 
 #import "YZHBaseUIViewController.h"
+#import "YZHKitMacro.h"
 
 
 @interface YZHBaseUIViewController ()
@@ -47,7 +48,7 @@
     frame.origin = CGPointMake(SAFE_X, SAFE_Y);
     frame.size = [[self class] contentViewSize];
     self.contentView.frame = frame;
-    _contentViewSize = self.contentView.bounds.size;
+//    _contentViewSize = self.contentView.bounds.size;
     
     self.layoutTopY = STATUS_NAV_BAR_HEIGHT - SAFE_Y;
     

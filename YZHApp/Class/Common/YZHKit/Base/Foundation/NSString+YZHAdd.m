@@ -21,8 +21,13 @@
 
 -(CGFloat)getHeightByWidth:(CGFloat)width font:(UIFont *)font lineBreakMode:(NSLineBreakMode)lineBreakMode
 {
+    return [self sizeForFont:font size:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:lineBreakMode].height;
+}
+
+- (CGSize)sizeForFont:(UIFont *)font size:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode
+{
     if (self.length == 0) {
-        return 0;
+        return CGSizeZero;
     }
     NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:self];
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
@@ -34,9 +39,9 @@
     
     NSStringDrawingOptions options = NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading;
     
-    CGRect rect = [attributeString boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX) options:options context:nil];
+    CGRect rect = [attributeString boundingRectWithSize:size options:options context:nil];
     
-    return rect.size.height;
+    return rect.size;
 }
 
 @end

@@ -68,6 +68,9 @@ typedef UICollectionViewLayoutAttributes*(^YZHUICollectionCellItemLayoutAttribut
 
 @property (nonatomic, assign) NSCellAlignment cellAlignment;
 
+/** <#name#> */
+@property (nonatomic, assign) CGSize contentSize;
+
 @property (nonatomic, weak) id <YZHUICollectionViewLayoutDelegate>delegate;
 
 /*

@@ -284,7 +284,6 @@
 
 -(void)dealloc
 {
-    NSLog(@"audioRecordView------dealloc");
 }
 
 @end

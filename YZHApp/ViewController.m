@@ -61,7 +61,8 @@
 /** <#注释#> */
 @property (nonatomic, strong) YZHTimer *timer;
 
-
+/** <#注释#> */
+@property (nonatomic, strong) YZHUITextView *textView;
 @end
 
 @implementation ViewController
@@ -74,7 +75,9 @@
     
 //    [self _setupChildView];
     
-    [self _test2];
+//    [self _test2];
+    
+    [self pri_testTextView];
 }
 
 
@@ -156,10 +159,43 @@
     self.keyboardManager.relatedShiftView = self.view;
 }
 
+- (void)pri_testTextView
+{
+    CGFloat x = 20;
+    CGFloat y = 200;
+    CGFloat w = self.view.width - 2 *x;
+    CGFloat h = 300;
+    
+    CGFloat X = SAFE_X;
+    
+    int64_t start = MSEC_FROM_DATE_SINCE1970_NOW;
+    YZHUITextView *textView = [[YZHUITextView alloc] initWithFrame:CGRectMake(x, y, w, h)];
+//    textView.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
+//    textView.font = FONT(20);
+//    textView.text = @"123";
+    textView.placeholder = @"123456789";
+//    textView.placeholderColor = BLACK_COLOR;
+    int64_t end = MSEC_FROM_DATE_SINCE1970_NOW;
+//    NSLog(@"time.end=%@,diff=%@",@(end),@(end - start));
+//    textView.textContainerInset = UIEdgeInsetsMake(8, 20, 8, 4);
+//    textView.backgroundColor = RED_COLOR;
+    textView.layer.borderWidth = 1.0;
+    textView.layer.borderColor = BLACK_COLOR.CGColor;
+    
+    NSString *a = @"a";
+    NSString *b = @"b";
+    NSLog(@"isEqual=%@",@([a isEqual:b]));
+    [self.view addSubview:textView];
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+//    CGFloat t = (arc4random() & 7) * 1.0 / 8;
+//    [self pri_ATask:t];
+//
+//    return;
     [self.view endEditing:YES];
-    [self.timer invalidate];
+//    [self.timer invalidate];
     
 //    YZHUIAlertView *alertView = [[YZHUIAlertView alloc] initWithTitle:@"提示" alertMessage:@"提示信息" alertViewStyle:YZHUIAlertViewStyleAlertForce];
 //
@@ -168,7 +204,7 @@
 //    UIAlertView *alertView2 = [[UIAlertView alloc] initWithTitle:@"提示" message:@"提示信息" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
 //    [alertView2 show];
     
-    [YZHToast toastWithText:@"请稍后..."];
+//    [YZHToast toastWithText:@"请稍后..."];
 }
 
 - (void)_test2 {

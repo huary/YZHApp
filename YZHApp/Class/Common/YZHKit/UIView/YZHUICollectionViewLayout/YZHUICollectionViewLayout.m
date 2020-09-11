@@ -85,9 +85,11 @@ NSString * const NSCollectionEdgeInsetsKey = TYPE_STR(NSCollectionEdgeInsetsKey)
 
 -(CGSize)collectionViewContentSize
 {
-    CGSize size = CGSizeMake(self.totalItemWidth, self.totalItemHeight);
-//    NSLog(@"viewContentSize=%@",NSStringFromCGSize(size));
-    return size;
+    if (CGSizeEqualToSize(self.contentSize, CGSizeZero)) {
+        CGSize size = CGSizeMake(self.totalItemWidth, self.totalItemHeight);
+        return size;
+    }
+    return self.contentSize;
 }
 
 -(UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath

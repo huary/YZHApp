@@ -8,6 +8,20 @@
 
 #import "AppDelegate.h"
 
+struct A {
+    int a;
+    int b;
+};
+
+
+struct B {
+    struct A a[0];
+    int b;
+    int c;
+};
+
+
+
 @interface AppDelegate ()
 
 @end
@@ -17,6 +31,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    struct B b;
+    b.a[0].a = 10;
+    b.c = 200;
+//    b.b = 100;
+    NSLog(@"sizeOf(B)=%@,a=%@,b=%@,c=%@",@(sizeof(struct B)),@(b.a[0].a),@(b.b),@(b.c));
     return YES;
 }
 

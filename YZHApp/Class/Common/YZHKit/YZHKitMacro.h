@@ -53,6 +53,17 @@
 #define SCREEN_WIDTH                           [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT                          [UIScreen mainScreen].bounds.size.height
 
+#define APP_TOP_WINDOW                         ({ \
+                                                    NSArray<UIWindow*> *wins = [[[UIApplication sharedApplication].windows reverseObjectEnumerator] allObjects]; \
+                                                    UIWindow *top = [UIApplication sharedApplication].keyWindow; \
+                                                    for(UIWindow *w in wins) \
+                                                        if ([w isKindOfClass:[UIWindow class]] && CGRectEqualToRect(w.bounds, SCREEN_BOUNDS) && w.hidden == NO) { \
+                                                            top = w; \
+                                                            break;\
+                                                        } \
+                                                    top; \
+                                                })
+
 
 
 #define AVAILABLE_IOS_V(IOS_V)                 ({ \
@@ -298,13 +309,13 @@
 
 
 //00(分钟):00(秒)
-#define TIME_SECOND_UNIT_STR(SEC)               (((SEC) >= 6000) ? STRING_FORMAT(@"%03d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN) : STRING_FORMAT(@"%02d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN))
+#define TIME_SECOND_UNIT_STR(SEC)               (((SEC) >= 6000) ? STRING_FORMAT(@"%d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN) : STRING_FORMAT(@"%02d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN))
 
 //xx小时xx分xx秒 格式
 #define TIME_TEXT_FORMAT_HMS(SEC)               ((((int)SEC) >= SEC_PER_MIN) ? ((((int)SEC) >= SEC_PER_HOUR) ? STRING_FORMAT(@"%d%@%d%@%d%@",((int)SEC)/SEC_PER_HOUR,TIME_HOUR_TEXT, (((int)SEC)%SEC_PER_HOUR)/SEC_PER_MIN,TIME_MIN_TEXT, ((int)SEC)%SEC_PER_MIN,TIME_SEC_TEXT) : STRING_FORMAT(@"%d%@%d%@",((int)SEC)/SEC_PER_MIN,TIME_MIN_TEXT, (((int)SEC)%SEC_PER_MIN),TIME_SEC_TEXT)) : STRING_FORMAT(@"%d%@",(int)SEC,TIME_SEC_TEXT))
 
 //00:00:00格式
-#define TIME_TEXT_FORMAT_COLON(SEC)             ((((int)SEC) >= SEC_PER_MIN) ? ((((int)SEC) >= SEC_PER_HOUR) ? STRING_FORMAT(@"%02d:%02d:%02d",(((int)SEC)/SEC_PER_HOUR), ((((int)SEC)%SEC_PER_HOUR)/SEC_PER_MIN), (((int)SEC)%SEC_PER_MIN)) : STRING_FORMAT(@"00:%02d:%02d",(((int)SEC)/SEC_PER_MIN), (((int)SEC)%SEC_PER_MIN))) : STRING_FORMAT(@"00:00:%02d",(int)SEC))
+#define TIME_TEXT_FORMAT_COLON(SEC)             ((((int)SEC) >= SEC_PER_MIN) ? ((((int)SEC) >= SEC_PER_HOUR) ? STRING_FORMAT(@"%02d:%02d:%02d",(((int)SEC)/SEC_PER_HOUR), ((((int)SEC)%SEC_PER_HOUR)/SEC_PER_MIN), (((int)SEC)%SEC_PER_MIN)) : STRING_FORMAT(@"%02d:%02d",(((int)SEC)/SEC_PER_MIN), (((int)SEC)%SEC_PER_MIN))) : STRING_FORMAT(@"00:%02d",(int)SEC))
 
 #define TIME_TEXT_FORMAT_COLON_WITH_MSEC(MSEC)      TIME_TEXT_FORMAT_COLON((unsigned int)(MSEC)/MSEC_PER_SEC)
 #define TIME_MSECOND_UNIT_STR(MSEC)                 TIME_SECOND_UNIT_STR((NSInteger)(MSEC)/MSEC_PER_SEC)
@@ -333,7 +344,7 @@
 
 #define NONNULL_OBJECT(DICT, KEY)                   ({id OBJ = NSOBJECT_VALUE(DICT,KEY); if (IS_OBJ_CLASS(OBJ,NSNull)) OBJ = nil; OBJ;})
 
-#define INT_VALUE(DICT,KEY)                          ([NONNULL_OBJECT(DICT,KEY) intValue])
+#define INT_VALUE(DICT,KEY)                         ([NONNULL_OBJECT(DICT,KEY) intValue])
 #define BOOL_VALUE(DICT,KEY)                        ([NONNULL_OBJECT(DICT,KEY) boolValue])
 #define FLOAT_VALUE(DICT,KEY)                       ([NONNULL_OBJECT(DICT,KEY) floatValue])
 #define INTEGER_VALUE(DICT,KEY)                     ([NONNULL_OBJECT(DICT,KEY) integerValue])
@@ -361,6 +372,7 @@
 
 #define CGPointGeneralEqualToPoint(PT1,PT2)         ((((NSInteger)PT1.x) == ((NSInteger)PT2.x)) && (((NSInteger)PT1.y) == ((NSInteger)PT2.y)))
 
+#define IS_EQUAL_TO_STRING(TEXT1,TEXT2)             (TEXT2 && [TEXT1 isEqualToString:TEXT2])
 
 #define _UI_D_WIDTH                                 (1334.0)
 #define _UI_D_HEIGHT                                (750.0)

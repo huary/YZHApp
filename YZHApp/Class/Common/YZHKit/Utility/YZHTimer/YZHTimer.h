@@ -67,6 +67,8 @@ typedef void(^YZHTimerFireBlock)(YZHTimer *timer);
 
 -(BOOL)isSuspend;
 
+-(NSTimeInterval)startTime;
+
 -(NSTimeInterval)elapseTime;
 
 @end

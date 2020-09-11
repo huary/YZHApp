@@ -11,6 +11,7 @@
 #import "YZHBaseAnimatedTransition.h"
 #import "UIViewController+NavigationBarAndItemView.m"
 #import "YZHTimer.h"
+#import "YZHKitType.h"
 #import "UIImage+YZHAdd.h"
 #import "NSMapTable+YZHAdd.h"
 
@@ -828,6 +829,21 @@ typedef void(^YZHUINavigationControllerActionCompletionBlock)(YZHUINavigationCon
         return STATUS_BAR_HEIGHT;
     }
     return 0;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return self.topViewController.shouldAutorotate;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return self.topViewController.supportedInterfaceOrientations;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return self.topViewController.preferredInterfaceOrientationForPresentation;
 }
 
 @end

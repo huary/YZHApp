@@ -60,7 +60,7 @@ typedef UIView*(^YZHUIPopViewCustomContentViewBlock)(CGSize size);
 /* 这个是arrow的底部的宽和底边上到顶角的高 */
 @property (nonatomic, assign) CGSize baseSize;
 
-/* arrowRadian的弧度 */
+/* arrowRadian的角度大小（弧度） */
 @property (nonatomic, assign) CGFloat arrowRadian;
 
 /* arrowArcRadius的圆弧的半径 */

@@ -38,6 +38,9 @@ typedef void(^YZHUIProgressDismissCompletionBlock)(YZHUIProgressView *progressVi
 //在设置这些属性（contentColor、progressViewStyle、showTimeInterval）的都需要在主线程
 @property (nonatomic, copy) UIColor *contentColor;
 
+/** 最大适配的大小，默认为（SCREEN_WIDTH * 0.8，SCREEN_HEIGHT * 0.9） */
+@property (nonatomic, assign) CGSize maxFitSize;
+
 /** customContentSize 自定义的大小 */
 @property (nonatomic, assign) CGSize customContentSize;
 

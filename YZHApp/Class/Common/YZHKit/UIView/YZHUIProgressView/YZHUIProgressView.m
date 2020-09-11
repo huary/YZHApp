@@ -56,6 +56,7 @@ static YZHUIProgressView *_shareProgressView_s = NULL;
     self.midSpaceWithTopBottomInsetsRatio = 0.4;
     self.indicatorViewSize = CGSizeMake(40, 40);
     self.customContentSize = CGSizeZero;
+    self.maxFitSize = CGSizeMake(SCREEN_WIDTH * 0.8, SCREEN_HEIGHT * 0.9);
     self.canClose = YES;
 }
 
@@ -79,6 +80,7 @@ static YZHUIProgressView *_shareProgressView_s = NULL;
     
     _titleView = [[UILabel alloc] init];
     self.titleView.font = FONT(18);
+    self.titleView.numberOfLines = 0;
     self.titleView.backgroundColor = CLEAR_COLOR;
     self.titleView.textAlignment = NSTextAlignmentCenter;
     [self addSubview:self.titleView];
@@ -217,15 +219,30 @@ static YZHUIProgressView *_shareProgressView_s = NULL;
 
 -(CGSize)_getContentSizeByContentWithImageViewRect:(CGRect*)imageViewRect titleRect:(CGRect*)titleRect
 {
-    [self.titleView sizeToFit];
+//    [self.titleView sizeToFit];
+//    [self.animationView sizeToFit];
+//    CGSize titleSize = self.titleView.bounds.size;
+//    CGSize animationSize = self.animationView.bounds.size;
+    CGFloat l = self.contentInsets.left;
+    CGFloat r = self.contentInsets.right;
+    CGSize titleSize = CGSizeZero;
+    CGSize animationSize = CGSizeZero;
+    if (CGSizeEqualToSize(self.maxFitSize, CGSizeZero)) {
+        [self.titleView sizeToFit];
+        titleSize = self.titleView.bounds.size;
+    }
+    else {
+        CGSize fitSize = CGSizeMake(self.maxFitSize.width - l - r, self.maxFitSize.height);
+        titleSize = [self.titleView sizeThatFits:fitSize];
+    }
     [self.animationView sizeToFit];
-    CGSize titleSize = self.titleView.bounds.size;
-    CGSize animationSize = self.animationView.bounds.size;
+    animationSize = self.animationView.bounds.size;
+    
     if (CGSizeEqualToSize(animationSize, CGSizeZero)) {
         animationSize = self.indicatorViewSize;
     }
     
-    CGFloat width = MAX(animationSize.width, titleSize.width) + self.contentInsets.left + self.contentInsets.right;
+    CGFloat width = MAX(animationSize.width, titleSize.width) + l + r;
     
     /** midSpaceWithTopBottomInsetsRatio,中间的距离,默认为0.4
      * 总共的空白区域为2top + 2bottom，
@@ -251,11 +268,11 @@ static YZHUIProgressView *_shareProgressView_s = NULL;
     }
     
     if (imageViewRect) {
-        *imageViewRect = CGRectMake(0, 0, width, imageHeight);
+        *imageViewRect = CGRectMake(l, 0, width - l - r, imageHeight);
     }
     if (titleRect) {
         CGFloat y = height - titleHeight;
-        *titleRect = CGRectMake(0, y, width, titleHeight);
+        *titleRect = CGRectMake(l, y, width - l - r, titleHeight);
     }
     return CGSizeMake(width, height);
 }
@@ -273,14 +290,18 @@ static YZHUIProgressView *_shareProgressView_s = NULL;
         if (contentSize.height > 0) {
             heightRatio = self.customContentSize.height / contentSize.height;
         }
-        titleRectTmp.size.width = self.customContentSize.width;
+        
+        CGFloat x = self.contentInsets.left;
+        CGFloat w = self.customContentSize.width - self.contentInsets.left - self.contentInsets.right;
+        
+        titleRectTmp.size.width = w;
         titleRectTmp.size.height = titleRectTmp.size.height * heightRatio;
-        titleRectTmp.origin.x = 0;
+        titleRectTmp.origin.x = x;
         titleRectTmp.origin.y = titleRectTmp.origin.y * heightRatio;
         
-        imageViewRectTmp.size.width = self.customContentSize.width;
+        imageViewRectTmp.size.width = w;
         imageViewRectTmp.size.height = imageViewRectTmp.size.height * heightRatio;
-        imageViewRectTmp.origin.x = 0;
+        imageViewRectTmp.origin.x = x;
         imageViewRectTmp.origin.y = imageViewRectTmp.origin.y * heightRatio;
         
         if (imageViewRect) {

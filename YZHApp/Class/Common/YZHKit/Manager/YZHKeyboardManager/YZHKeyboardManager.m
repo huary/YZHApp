@@ -125,7 +125,8 @@
     firstResponderViewFrame = [self.firstResponderView.superview convertRect:firstResponderViewFrame toView:[UIApplication sharedApplication].keyWindow];
     
     CGFloat off = 0;
-    if (keyboardFrame.origin.y == SCREEN_HEIGHT) {
+    CGFloat diff = keyboardFrame.origin.y - SCREEN_HEIGHT;
+    if ((int)diff == 0) {
         off = SAFE_BOTTOM;
     }
     
@@ -151,9 +152,11 @@
             UIScrollView *scrollView = (UIScrollView*)self.relatedShiftView;
             CGPoint contentOffset = scrollView.contentOffset;
             CGFloat offsetY = contentOffset.y - diffY;
-            offsetY = MAX(offsetY, 0);
+            
             if (isShow) {
-                [scrollView setContentOffset:CGPointMake(contentOffset.x, offsetY)];
+                if ((diffY > 0 && self.firstResponderShiftToKeyboardMinTop) || diffY <= 0) {
+                    [scrollView setContentOffset:CGPointMake(contentOffset.x, offsetY)];
+                }
             }
             else {
                 CGFloat maxOffsetY = scrollView.contentSize.height - scrollView.bounds.size.height;
@@ -162,6 +165,18 @@
                     [scrollView setContentOffset:CGPointMake(contentOffset.x, maxOffsetY)];
                 }
             }
+            
+//            offsetY = MAX(offsetY, 0);
+//            if (isShow) {
+//                [scrollView setContentOffset:CGPointMake(contentOffset.x, offsetY)];
+//            }
+//            else {
+//                CGFloat maxOffsetY = scrollView.contentSize.height - scrollView.bounds.size.height;
+//                maxOffsetY = MAX(maxOffsetY, 0);
+//                if (contentOffset.y > maxOffsetY) {
+//                    [scrollView setContentOffset:CGPointMake(contentOffset.x, maxOffsetY)];
+//                }
+//            }
             animateCompletionBlock(YES);
         }
         else {
@@ -186,6 +201,7 @@
                         self.relatedShiftView.transform = haveShiftTransform ? t : self.relatedShiftViewBeforeShowTransform;
                         animateCompletionBlock(YES);
                     }
+//                    NSLog(@"shiftView=%@",self.relatedShiftView);
                     return YES;
                 }
                 if (!self.firstResponderShiftToKeyboardMinTop) {
@@ -326,7 +342,11 @@ _DID_BECOME_FIRST_RESPONDER_END:
 //    NSLog(@"%s,notification=%@",__FUNCTION__,notification);
     self.isKeyboardShowing = NO;
     self.keyboardNotification = nil;
-    self.relatedShiftView.transform = self.relatedShiftViewBeforeShowTransform;
+    /*这里不需要将relatedShiftView的transform更改为relatedShiftViewBeforeShowTransform，
+     有可能在didHide时不需要将relatedShiftView还原为relatedShiftViewBeforeShowTransform，
+     比如在IM键盘时，keyboard已经hide了，但是可以通过content（emoji）输入
+     */
+//    self.relatedShiftView.transform = self.relatedShiftViewBeforeShowTransform;
     if (self.didHideBlock) {
         self.didHideBlock(self, notification);
     }

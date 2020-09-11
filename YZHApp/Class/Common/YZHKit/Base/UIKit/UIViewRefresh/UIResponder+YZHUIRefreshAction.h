@@ -15,11 +15,11 @@
 
 @property (nonatomic, copy) YZHUIRefreshBlock refreshBlock;
 
-@property (nonatomic, copy) YZHUIRefreshViewDidBandBlock didBandBlock;
+@property (nonatomic, copy) YZHUIRefreshViewDidBindBlock didBindBlock;
 
 //这里是通过模型来找到对应绑定的view进行刷新。
--(void)bindToRefreshModel:(id)refreshModel;
+-(void)bindRefreshModel:(id)refreshModel;
 
--(void)bindToRefreshModel:(id)refreshModel forKey:(id)key;
+-(void)bindRefreshModel:(id)refreshModel forKey:(id)key;
 
 @end

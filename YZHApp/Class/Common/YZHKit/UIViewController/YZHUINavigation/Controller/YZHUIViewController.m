@@ -12,6 +12,7 @@
 #import "YZHUIBarButtonItem.h"
 #import "UIImage+YZHAdd.h"
 #import "UIButton+YZHAdd.h"
+#import "YZHKitType.h"
 
 @interface YZHUIViewController ()
 

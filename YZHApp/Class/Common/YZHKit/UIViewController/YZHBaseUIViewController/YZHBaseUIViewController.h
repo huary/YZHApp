@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong, readonly) UIView *contentView;
 
-@property (nonatomic, assign, readonly) CGSize contentViewSize;
+//@property (nonatomic, assign, readonly) CGSize contentViewSize;
 
 +(CGSize)contentViewSize;
 

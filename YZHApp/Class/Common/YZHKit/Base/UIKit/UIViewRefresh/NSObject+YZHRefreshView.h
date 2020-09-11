@@ -14,7 +14,7 @@
 typedef BOOL(^YZHUIRefreshConditionBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model);
 typedef BOOL(^YZHUIRefreshBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model);
 
-typedef void(^YZHUIRefreshViewDidBandBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model);
+typedef void(^YZHUIRefreshViewDidBindBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model, id key);
 
 @protocol YZHUIRefreshViewProtocol <NSObject>
 
@@ -24,13 +24,13 @@ typedef void(^YZHUIRefreshViewDidBandBlock)(UIResponder<YZHUIRefreshViewProtocol
 @property (nonatomic, copy) YZHUIRefreshBlock refreshBlock;
 
 //绑定完成的block
-@property (nonatomic, copy) YZHUIRefreshViewDidBandBlock didBandBlock;
+@property (nonatomic, copy) YZHUIRefreshViewDidBindBlock didBindBlock;
 
 //刷新方法、同refreshBlock
 -(BOOL)refreshViewWithModel:(id)model;
 
-//绑定完成的方法，和上面的didBandBlock同效
--(void)refreshViewDidBandToModel:(id)model;
+//绑定完成的方法，和上面的didBindBlock同效
+-(void)refreshViewDidBindModel:(id)model withKey:(id)key;
 @end
 
 

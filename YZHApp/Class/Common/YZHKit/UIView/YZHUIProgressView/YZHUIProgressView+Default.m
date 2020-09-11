@@ -7,6 +7,8 @@
 //
 
 #import "YZHUIProgressView+Default.h"
+#import "YZHKitType.h"
+#import "UIImage+YZHAdd.h"
 
 static const CGFloat dismissTime_s = 1.0f;
 

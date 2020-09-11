@@ -27,7 +27,7 @@
 
 -(instancetype)initWithInputView:(UIView<YZHKeyboardInputViewProtocol>*)inputView
 {
-    return [self initWithInputView:inputView inView:nil];
+    return [self initWithInputView:inputView inView:inputView.superview];
 }
 
 -(instancetype)initWithInputView:(UIView<YZHKeyboardInputViewProtocol>*)inputView inView:(UIView*)inView
@@ -90,7 +90,9 @@
         inView = [UIApplication sharedApplication].keyWindow;
     }
     self.inView = inView;
-    [inView addSubview:self.inputView];
+    if (self.inputView.superview != inView) {
+        [inView addSubview:self.inputView];        
+    }
 }
 
 
@@ -121,7 +123,7 @@
 {
     UIScrollView *scrollView = nil;
     if ([self.relatedShiftView isKindOfClass:[UIScrollView class]]) {
-        scrollView = self.relatedShiftView;
+        scrollView = (UIScrollView*)self.relatedShiftView;
     }
     CGSize size = scrollView.contentSize;
     if (size.height >= scrollView.height && self.shiftType == YZHShiftTypeContentSizePoint) {

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "YZHKitType.h"
 
 typedef NS_ENUM(NSInteger, UIBarViewStyle)
 {

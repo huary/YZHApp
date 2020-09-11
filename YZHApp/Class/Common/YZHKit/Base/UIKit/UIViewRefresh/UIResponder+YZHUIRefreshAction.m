@@ -31,27 +31,28 @@
     return objc_getAssociatedObject(self, _cmd);
 }
 
--(void)setDidBandBlock:(YZHUIRefreshViewDidBandBlock)didBandBlock
+-(void)setDidBindBlock:(YZHUIRefreshViewDidBindBlock)didBindBlock
 {
-    objc_setAssociatedObject(self, @selector(didBandBlock), didBandBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(didBindBlock), didBindBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(YZHUIRefreshViewDidBandBlock)didBandBlock
+-(YZHUIRefreshViewDidBindBlock)didBindBlock
 {
     return objc_getAssociatedObject(self, _cmd);
 }
 
--(void)bindToRefreshModel:(id)refreshModel
+-(void)bindRefreshModel:(id)refreshModel
 {
-    [self bindToRefreshModel:refreshModel forKey:nil];
+    [self bindRefreshModel:refreshModel forKey:nil];
 }
 
--(void)bindToRefreshModel:(id)refreshModel forKey:(id)key
+-(void)bindRefreshModel:(id)refreshModel forKey:(id)key
 {
     if (key == nil) {
         key = @([self hash]);//[NSValue valueWithPointer:(__bridge void*)self];
     }
-    BOOL r = NO;
+    BOOL r = YES;
+    UIResponder<YZHUIRefreshViewProtocol> *responder = (UIResponder<YZHUIRefreshViewProtocol> *)self;
     //refresh
     if ([self respondsToSelector:@selector(refreshViewWithModel:)]) {
         UIResponder<YZHUIRefreshViewProtocol> *target = nil;
@@ -61,26 +62,26 @@
         r = [target refreshViewWithModel:refreshModel];
     }
     else if (self.refreshBlock) {
-        r = self.refreshBlock(self, refreshModel);
+        r = self.refreshBlock(responder, refreshModel);
     }
     
     //bind
     self.refreshModel = refreshModel;
     if (r) {
         NSObject *obj = refreshModel;
-        [obj hz_addRefreshView:self forKey:key];
+        [obj hz_addRefreshView:responder forKey:key];
     }
     
-    //did band
-    if ([self respondsToSelector:@selector(refreshViewDidBandToModel:)]) {
+    //did bind
+    if ([self respondsToSelector:@selector(refreshViewDidBindModel:withKey:)]) {
         UIResponder<YZHUIRefreshViewProtocol> *target = nil;
         if ([self conformsToProtocol:@protocol(YZHUIRefreshViewProtocol)]) {
             target = (UIResponder<YZHUIRefreshViewProtocol>*)self;
         }
-        [target refreshViewDidBandToModel:refreshModel];
+        [target refreshViewDidBindModel:refreshModel withKey:key];
     }
-    else if (self.didBandBlock) {
-        self.didBandBlock(self, refreshModel);
+    else if (self.didBindBlock) {
+        self.didBindBlock(responder, refreshModel, key);
     }
     
 }

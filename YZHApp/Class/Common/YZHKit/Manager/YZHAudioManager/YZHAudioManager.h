@@ -28,6 +28,18 @@ typedef void(^YZHAudioManagerEndPlayBlock)(YZHAudioManager* audioManager, NSURL 
 
 @end
 
+@interface YZHAudioPlayOption : NSObject
+
+/** 默认扬声器播放 */
+@property (nonatomic, strong) AVAudioSessionCategory defaultSessionCategory;
+
+/** 默认启用传感器进行听筒扬声器切换 */
+@property (nonatomic, assign) BOOL enableProximityMonitoring;
+
++ (instancetype)defaultPlayOption;
+
+@end
+
 @interface YZHAudioManager : NSObject
 
 /* <#注释#> */
@@ -40,6 +52,9 @@ typedef void(^YZHAudioManagerEndPlayBlock)(YZHAudioManager* audioManager, NSURL 
 @property (nonatomic, weak) id<YZHAudioManagerDelegate> delegate;
 
 @property (nonatomic, copy) YZHAudioManagerEndPlayBlock endPlayBlock;
+
+/** 播放option */
+//@property (nonatomic, strong) YZHAudioPlayOption *playOption;
 
 
 +(instancetype)shareAudioManager;
@@ -63,6 +78,11 @@ typedef void(^YZHAudioManagerEndPlayBlock)(YZHAudioManager* audioManager, NSURL 
  * 进行播放录音
  */
 -(void)playAudioWithURL:(NSURL*)url;
+
+/*
+ * 进行播放录音
+ */
+-(void)playAudioWithURL:(NSURL*)url playOption:(YZHAudioPlayOption*)playOption;
 
 /*
  * 结束录音播放
