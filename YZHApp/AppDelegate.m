@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "YZHKit.h"
 
 struct A {
     int a;
@@ -31,11 +32,13 @@ struct B {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    struct B b;
-    b.a[0].a = 10;
-    b.c = 200;
-//    b.b = 100;
-    NSLog(@"sizeOf(B)=%@,a=%@,b=%@,c=%@",@(sizeof(struct B)),@(b.a[0].a),@(b.b),@(b.c));
+    
+//    UIEdgeInsets insets = AVAILABLE_IOS_V_EXP(11.0, UIEdgeInsets insets = [[UIApplication sharedApplication].windows firstObject].safeAreaInsets; UIEdgeInsets insets = UIEdgeInsetsZero;);
+    
+    UIEdgeInsets insets = AVAILABLE_IOS_V_EXT_R(11.0, UIEdgeInsets, UIEdgeInsetsZero, [[UIApplication sharedApplication].windows firstObject].safeAreaInsets);
+    
+    NSLog(@"insets=%@",NSStringFromUIEdgeInsets(insets));
+    
     return YES;
 }
 

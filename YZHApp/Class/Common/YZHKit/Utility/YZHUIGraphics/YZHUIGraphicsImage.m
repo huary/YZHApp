@@ -9,6 +9,7 @@
 #import "YZHUIGraphicsImage.h"
 #import "UIBezierPath+YZHAdd.h"
 #import "YZHKitType.h"
+#import "YZHCGUtil.h"
 
 @implementation YZHUIGraphicsImageBeginInfo
 
@@ -408,6 +409,25 @@
     return [YZHUIGraphicsImageContext graphicesImage:image graphicsSize:graphicsSize inRect:rect byRoundingCorners:UIRectCornerAllCorners cornerRadius:cornerRadius borderWidth:borderWidth borderColor:borderColor];
 }
 
+//将图片按contentMode放入到graphicsSize中
++(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize contentMode:(UIViewContentMode)mode
+{
+    return [self graphicesImage:image graphicsSize:graphicsSize contentMode:mode byRoundingCorners:0 cornerRadius:0];
+}
+
+//将图片按contentMode放入到graphicsSize中，并进行圆角，可以设置corners
++(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize contentMode:(UIViewContentMode)mode byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius
+{
+    return [self graphicesImage:image graphicsSize:graphicsSize contentMode:mode byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:0 borderColor:nil];
+}
+
+//将图片按contentMode放入到graphicsSize中，并进行圆角，可以设置corners
++(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize contentMode:(UIViewContentMode)mode byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor
+{
+    CGRect rect = rectWithContentMode(graphicsSize, image.size, mode);
+    return [self graphicesImage:image graphicsSize:graphicsSize inRect:rect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth borderColor:borderColor];
+}
+
 +(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize inRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor
 {
     
@@ -419,8 +439,13 @@
     //交换top和bottom，从UIRectCorner枚举值来看就是相互交换高低各两位
     corners = TYPE_OR(TYPE_LS(TYPE_AND(corners, 3), 2), TYPE_RS(TYPE_AND(corners, 12), 2));
     
-    CGRect drawRect = rect;
-    drawRect.origin.y = graphicsSize.height - CGRectGetMaxY(rect);
+    CGRect drawInRect = rect;
+    CGRect roundedRect = drawInRect;
+    if (cornerRadius > 0) {
+        CGRect grapRect = {.origin = CGPointZero,.size = graphicsSize};
+        roundedRect = CGRectIntersection(grapRect, drawInRect);
+    }
+//    drawRect.origin.y = graphicsSize.height - CGRectGetMaxY(rect);
     
     YZHUIGraphicsImageContext *ctx = [[YZHUIGraphicsImageContext alloc] initWithBeginBlock:^(YZHUIGraphicsImageContext *context) {
         context.beginInfo = [[YZHUIGraphicsImageBeginInfo alloc] init];
@@ -430,22 +455,23 @@
         CGFloat width = context.beginInfo.graphicsSize.width;
         CGFloat height = context.beginInfo.graphicsSize.height;
         
-        CGContextScaleCTM(context.ctx, 1, -1);
-        CGContextTranslateCTM(context.ctx, 0, -height);
-        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:drawRect byRoundingCorners:corners cornerRadius:cornerRadius];
+//        CGContextScaleCTM(context.ctx, 1, -1);
+//        CGContextTranslateCTM(context.ctx, 0, -height);
+        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:roundedRect byRoundingCorners:corners cornerRadius:cornerRadius];
         [path closePath];
-//        CGContextSaveGState(context.ctx);
         [path addClip];
-        CGContextDrawImage(context.ctx, drawRect, image.CGImage);
-//        CGContextRestoreGState(context.ctx);
+        [image drawInRect:drawInRect];
+        /*如果是这种方法，需要调用
+         *CGContextScaleCTM(context.ctx, 1, -1);
+         *CGContextTranslateCTM(context.ctx, 0, -height);
+         */
+//        CGContextDrawImage(context.ctx, drawRect, image.CGImage);
         
         CGFloat minWH = MIN(width, height);
         if (borderWidth > 0 && borderColor && borderWidth < minWH) {
-            UIBezierPath *borderPath = [UIBezierPath borderBezierPathWithRoundedRect:drawRect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth];
+            UIBezierPath *borderPath = [UIBezierPath borderBezierPathWithRoundedRect:roundedRect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth];
             [borderPath closePath];
-//            [borderColor setStroke];
             CGContextAddPath(context.ctx, borderPath.CGPath);
-//            CGContextDrawPath(context.ctx, kCGPathStroke);
         }
     } endPathBlock:nil];
     return [ctx createGraphicesImageWithStrokeColor:borderColor];

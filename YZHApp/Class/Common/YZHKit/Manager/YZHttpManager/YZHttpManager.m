@@ -500,6 +500,143 @@ static YZHttpManager *yzHttpManager_s = NULL;
     
     return uploadTask;
 }
+#else
+-(NSURLSessionDataTask*)httpGet:(NSString*)url
+                         params:(NSDictionary*)params
+                       progress:(httpManagerProgressBlock)progressBlock
+                        success:(httpManagerSuccessBlock)successBlock
+                        failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpPost:(NSString*)url
+                          params:(NSDictionary*)params
+                        progress:(httpManagerProgressBlock)progressBlock
+                         success:(httpManagerSuccessBlock)successBlock
+                         failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpPostFile:(NSString*)url
+                              params:(NSDictionary*)params
+                            fileData:(NSData*)fileData
+                            fileName:(NSString*)fileName
+                            mimeType:(NSString*)mimeType
+                            progress:(httpManagerProgressBlock)progressBlock
+                             success:(httpManagerSuccessBlock)successBlock
+                             failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpPostImage:(NSString*)url
+                               params:(NSDictionary*)params
+                            imageData:(NSData*)imageData
+                        imageFileName:(NSString*)imageFileName
+                             progress:(httpManagerProgressBlock)progressBlock
+                              success:(httpManagerSuccessBlock)successBlock
+                              failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpPostAudioFile:(NSString*)url
+                                   params:(NSDictionary*)params
+                                audioData:(NSData*)audioData
+                            audioFileName:(NSString*)audioFileName
+                                 progress:(httpManagerProgressBlock)progressBlock
+                                  success:(httpManagerSuccessBlock)successBlock
+                                  failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpsGet:(NSString*)url
+                          params:(NSDictionary*)params
+                        progress:(httpManagerProgressBlock)progressBlock
+                         success:(httpManagerSuccessBlock)successBlock
+                         failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpsPost:(NSString*)url
+                           params:(NSDictionary*)params
+                         progress:(httpManagerProgressBlock)progressBlock
+                          success:(httpManagerSuccessBlock)successBlock
+                          failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpsPostFile:(NSString*)url
+                               params:(NSDictionary*)params
+                             fileData:(NSData*)fileData
+                             fileName:(NSString*)fileName
+                             mimeType:(NSString*)mimeType
+                             progress:(httpManagerProgressBlock)progressBlock
+                              success:(httpManagerSuccessBlock)successBlock
+                              failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpsPostImage:(NSString*)url
+                                params:(NSDictionary*)params
+                             imageData:(NSData*)imageData
+                         imageFileName:(NSString*)imageFileName
+                              progress:(httpManagerProgressBlock)progressBlock
+                               success:(httpManagerSuccessBlock)successBlock
+                               failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+-(NSURLSessionDataTask*)httpsPostAudioFile:(NSString*)url
+                                    params:(NSDictionary*)params
+                                 audioData:(NSData*)audioData
+                             audioFileName:(NSString*)audioFileName
+                                  progress:(httpManagerProgressBlock)progressBlock
+                                   success:(httpManagerSuccessBlock)successBlock
+                                   failure:(httpManagerFailureBlock)failureBlcok
+{
+    return nil;
+}
+
+//download
+-(NSURLSessionDownloadTask*)httpDownload:(NSString*)url
+                          destinationDir:(NSString*)destinationDir
+                                progress:(httpManagerProgressBlock)progressBlock
+                              completion:(httpManagerDownloadCompletionBlock)completionBlock
+{
+    return nil;
+}
+
+-(NSURLSessionDownloadTask*)httpResumeDownload:(NSData*)resumeData
+                                destinationDir:(NSString*)destinationDir
+                                      progress:(httpManagerProgressBlock)progressBlock
+                                    completion:(httpManagerDownloadCompletionBlock)completionBlock
+{
+    return nil;
+}
+
+-(NSURLSessionUploadTask*)httpUpload:(NSString*)url
+                            fromFile:(NSString*)filePath
+                            progress:(httpManagerProgressBlock)progressBlock
+                          completion:(httpManagerSuccessBlock)completionBlock
+{
+    return nil;
+}
+
+-(NSURLSessionUploadTask*)httpUpload:(NSString*)url
+                            fromData:(NSData*)data
+                            progress:(httpManagerProgressBlock)progressBlock
+                          completion:(httpManagerSuccessBlock)completionBlock
+{
+    return nil;
+}
 #endif
 
 @end

@@ -90,11 +90,11 @@
     CGFloat toViewTransitionX = CGRectGetWidth(containerView.bounds);
     CGFloat fromViewTransitionX = toViewTransitionX/2;
     
-    UIColor *fromColor = [fromVC navigationBarViewBGColor];
-    UIColor *toColor = [toVC navigationBarViewBGColor];
+    UIColor *fromColor = nil;//[fromVC hz_navigationBarViewBGColor];
+    UIColor *toColor = nil;//[toVC hz_navigationBarViewBGColor];
     
-    CGFloat fromAlpha = [fromVC navigationItemViewAlpha];
-    CGFloat toAlpha = [toVC navigationItemViewAlpha];
+    CGFloat fromAlpha = 0;//[fromVC hz_navigationItemViewAlpha];
+    CGFloat toAlpha = 0;//[toVC hz_navigationItemViewAlpha];
     
     UIColor *shadowColor = BLACK_COLOR;
     CGSize shadowOffset = CGSizeMake(-3, 0);

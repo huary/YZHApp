@@ -9,13 +9,18 @@
 #import "YZHImageBrowser.h"
 #import "UIImageView+YZHAdd.h"
 #import "YZHImageCell.h"
+#import "YZHCGUtil.h"
+#import "UIView+YZHAdd.h"
 
+@implementation YZHImageBrowserAnimationContext
+
+@end
 
 @interface YZHImageBrowser ()<YZHLoopScrollViewDelegate, YZHImageCellDelegate,YZHImageBrowserViewDelegate>
 
 @property (nonatomic, strong) UIView *showInView;
 
-@property (nonatomic, strong) UIImageView *fromView;
+@property (nonatomic, strong) UIView *fromView;
 @end
 
 @implementation YZHImageBrowser
@@ -33,7 +38,7 @@
 
 - (void)_setupImageBrowserDefault
 {
-    self.animateTimeInterval = 0.3;
+    self.animateDuration = 0.3;
     self.minZoomScale = 1.0;
     self.maxZoomScale = 5.0;
     self.actionOptions = -1;
@@ -60,11 +65,7 @@
 
 - (void)_dismissFromImageCell:(YZHImageCell*)imageCell
 {
-//    id<YZHImageCellModelProtocol> cellModel = (id<YZHImageCellModelProtocol>)imageCell.model;
-    UIImageView *dismissToView = self.fromView;
-//    if ([cellModel respondsToSelector:@selector(dismissToImageViewBlock)] && cellModel.dismissToImageViewBlock) {
-//        dismissToView = cellModel.dismissToImageViewBlock(cellModel, imageCell);
-//    }
+    UIView *dismissToView = self.fromView;
     CGRect dismissToFrame = [dismissToView.superview convertRect:dismissToView.frame toView:self.showInView];
     
     UIImageView *imageView = [UIImageView new];
@@ -74,15 +75,15 @@
     [self.showInView addSubview:imageView];
     self.imageBrowserView.loopScrollView.hidden = YES;
     
-    self.fromView.hidden = YES;
+//    self.fromView.hidden = YES;
     dismissToView.hidden = YES;
-    [UIView animateWithDuration:self.animateTimeInterval delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+    [UIView animateWithDuration:self.animateDuration delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
         imageView.frame = dismissToFrame;
         self.imageBrowserView.alpha = 0.0;
     } completion:^(BOOL finished) {
         [imageView removeFromSuperview];
         [self pri_removeImageBrowserView];
-        self.fromView.hidden = NO;
+//        self.fromView.hidden = NO;
         dismissToView.hidden = NO;
     }];
     
@@ -103,22 +104,12 @@
     if (!cell) {
         cell = [self.imageCellClass new];//[YZHImageCell new];
     }
+    
+    cell.zoomView.scrollView.minimumZoomScale = self.minZoomScale;
+    cell.zoomView.scrollView.maximumZoomScale = self.maxZoomScale;
+    
     cell.delegate = self;
     cell.model = cellModel;
-
-//    CGPoint scale = [cell.zoomView imageViewScaleForContentMode:cell.zoomView.imageView.contentMode];
-    CGPoint scale = [cell.zoomView imageViewScaleInSize:[self.imageBrowserView.loopScrollView cellContentViewFrame].size forContentMode:cell.zoomView.imageView.contentMode];
-    
-    CGFloat max = MAX(scale.x, scale.y);
-    CGFloat min = MIN(scale.x, scale.y);
-    
-    cell.zoomView.scrollView.minimumZoomScale = MIN(self.minZoomScale, min);
-    cell.zoomView.scrollView.maximumZoomScale = MAX(self.maxZoomScale, max);
-    
-//    if ([cellModel respondsToSelector:@selector(didUpdateBlock)] && cellModel.didUpdateBlock) {
-//        cellModel.didUpdateBlock(cellModel, cell);
-//    }
-    
     return cell;
 }
 
@@ -127,14 +118,20 @@
     if (cell == nil || cell.zoomView.image == nil) {
         return;
     }
+    
     CGFloat zoomScale = cell.zoomView.scrollView.zoomScale;
+    CGFloat minScale = cell.zoomView.scrollView.minimumZoomScale;
+    CGFloat maxScale = cell.zoomView.scrollView.maximumZoomScale;
     
-//    CGPoint scale = [cell.zoomView imageViewScaleForContentMode:UIViewContentModeScaleAspectFit];
-    CGPoint scale = [cell.zoomView imageViewScaleInSize:[self.imageBrowserView.loopScrollView cellContentViewFrame].size forContentMode:UIViewContentModeScaleAspectFit];
-    CGFloat fitScale = MIN(scale.x, scale.y);
-    CGFloat fullScale = MAX(scale.x, scale.y);
-    
-    zoomScale = (fullScale - zoomScale > 0.01) ? fullScale : fitScale;
+    if (zoomScale < minScale) {
+        zoomScale = minScale;
+    }
+    else if (zoomScale < maxScale) {
+        zoomScale = maxScale;
+    }
+    else if (zoomScale >= maxScale) {
+        zoomScale = minScale;
+    }
     
     [cell.zoomView zoomScale:zoomScale inPoint:point];
 }
@@ -209,7 +206,9 @@
 - (void)imageCell:(YZHImageCell *)cell didDoubleTap:(UITapGestureRecognizer *)doubleTap
 {
     if (self.actionOptions & YZHImageBrowserActionOptionsDoubleTapZoomScale) {
-        [self _imageCell:cell zoomScaleInPoint:[doubleTap locationInView:cell.zoomView]];
+//        CGPoint point = [doubleTap locationInView:cell.zoomView.scrollView];
+        CGPoint pt = [doubleTap locationInView:cell.zoomView.imageView];
+        [self _imageCell:cell zoomScaleInPoint:pt];
     }
     if ([self.delegate respondsToSelector:@selector(imageBrowser:didDoubleTapImageCell:)]) {
         [self.delegate imageBrowser:self didDoubleTapImageCell:cell];
@@ -231,12 +230,60 @@
     self.imageBrowserView.loopScrollView.separatorSpace = separatorSpace;
 }
 
+- (UIView *)showInView
+{
+    return _showInView;
+}
+
+- (UIView *)fromView
+{
+    return _fromView;
+}
+
 - (YZHImageCell*)currentShowCell
 {
     return (YZHImageCell*)[self.imageBrowserView.loopScrollView currentShowCell];
 }
 
-- (void)showInView:(UIView*)showInView fromView:(UIImageView*)fromView withModel:(id<YZHImageCellModelProtocol>)model
+- (void)showInView:(UIView *_Nullable)showInView
+          fromView:(UIView *)fromView
+             image:(UIImage *)image
+         withModel:(id<YZHImageCellModelProtocol>)model
+{
+    YZHImageBrowserAnimationContext *ctx = [YZHImageBrowserAnimationContext new];
+    ctx.willAnimateBlock = ^(YZHImageBrowser * _Nonnull imageBrowser, YZHImageBrowserAnimationContext * _Nonnull context) {
+        
+        UIView *showInView = context.showInView;
+        
+        CGRect fromFrame = CGRectMake(showInView.frame.size.width/2, context.showInView.frame.size.height/2, 0, 0);
+        if (fromView) {
+            fromFrame = [fromView.superview convertRect:fromView.frame toView:showInView];
+        }
+    
+        UIViewContentMode contentMode = contentModeThatFits(showInView.size, image.size);
+        
+        UIImageView *fromImageView = [UIImageView new];
+        fromImageView.image = image;
+        fromImageView.frame = fromFrame;
+        fromImageView.contentMode = contentMode;
+        fromImageView.layer.masksToBounds = YES;
+        context.animationView = fromImageView;
+    
+        CGRect toFrame = rectWithContentMode(showInView.bounds.size, image.size, contentMode);
+        //如果是长图，用fill显示时，从位置0开始
+        if (contentMode == UIViewContentModeScaleAspectFill &&
+            toFrame.origin.y < 0) {
+            toFrame.origin.y = 0;
+        }
+        context.animationViewEndFrame = toFrame;
+    };
+    [self showInView:showInView fromView:fromView withModel:model animationContext:ctx];
+}
+
+- (void)showInView:(UIView *_Nullable)showInView
+          fromView:(UIView *)fromView
+         withModel:(id<YZHImageCellModelProtocol>)model
+  animationContext:(YZHImageBrowserAnimationContext *)animationContext
 {
     if (showInView == nil) {
         showInView = [UIApplication sharedApplication].keyWindow;
@@ -248,34 +295,37 @@
     self.imageBrowserView.frame = showInView.bounds;
     [self.imageBrowserView.loopScrollView loadViewWithModel:model];
     
-    CGRect fromFrame = CGRectMake(self.showInView.frame.size.width/2, self.showInView.frame.size.height/2, 0, 0);
-    if (fromView) {
-        fromFrame = [fromView.superview convertRect:fromView.frame toView:showInView];
+    animationContext.showInView = showInView;
+    
+    if (animationContext.willAnimateBlock) {
+        animationContext.willAnimateBlock(self, animationContext);
     }
     
-    UIImageView *fromImageView = [UIImageView new];
-    fromImageView.image = fromView.image;
-    fromImageView.frame = fromFrame;
-    [self.showInView addSubview:fromImageView];
+    if (animationContext.animationBlock) {
+        animationContext.animationBlock(self, animationContext);
+    }
+    else {
+        UIView *animationView = animationContext.animationView;
+        [self.showInView addSubview:animationView];
     
-    //这里按UIViewContentModeScaleAspectFit来进行
-    UIViewContentMode contentMode = UIViewContentModeScaleAspectFit;
+        CGRect toFrame = animationContext.animationViewEndFrame;
     
-    CGRect toFrame = CGRectZero;
-    toFrame.size = [UIImageView image:fromImageView.image contentSizeInSize:showInView.bounds.size contentMode:contentMode];
-    toFrame.origin = CGPointMake((showInView.bounds.size.width - toFrame.size.width)/2, (showInView.bounds.size.height - toFrame.size.height)/2);
+        self.imageBrowserView.alpha = 0.0;
+        self.imageBrowserView.loopScrollView.hidden = YES;
+        fromView.hidden = YES;
+        [UIView animateWithDuration:self.animateDuration delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+            animationView.frame = toFrame;
+            self.imageBrowserView.alpha = 1.0;
+        } completion:^(BOOL finished) {
+            fromView.hidden = NO;
+            self.imageBrowserView.loopScrollView.hidden = NO;
+            [animationView removeFromSuperview];
+        }];
+    }
     
-    self.imageBrowserView.alpha = 0.0;
-    self.imageBrowserView.loopScrollView.hidden = YES;
-    fromView.hidden = YES;
-    [UIView animateWithDuration:self.animateTimeInterval delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
-        fromImageView.frame = toFrame;
-        self.imageBrowserView.alpha = 1.0;
-    } completion:^(BOOL finished) {
-        fromView.hidden = NO;
-        self.imageBrowserView.loopScrollView.hidden = NO;
-        [fromImageView removeFromSuperview];
-    }];
+    if (animationContext.didAnimateBlock) {
+        animationContext.didAnimateBlock(self, animationContext);
+    }
 }
 
 - (void)dismiss
@@ -286,7 +336,7 @@
 
 #pragma mark - YZHImageBrowserViewDelegate
 - (CGRect)imageBrowserView:(YZHImageBrowserView * _Nonnull)imageBrowserView dismissToFrameForCell:(nonnull YZHImageCell *)imageCell {
-    UIImageView *dismissToView = self.fromView;
+    UIView *dismissToView = self.fromView;
     CGRect dismissToFrame = [dismissToView.superview convertRect:dismissToView.frame toView:self.showInView];
     return dismissToFrame;
 }

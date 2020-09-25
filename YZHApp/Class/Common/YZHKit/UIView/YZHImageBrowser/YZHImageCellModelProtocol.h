@@ -21,4 +21,7 @@ typedef void(^YZHImageCellUpdateBlock)(id<YZHImageCellModelProtocol> model, YZHI
 //该model绑定的cell
 @property (nonatomic, weak) YZHImageCell *bindImageCell;
 
+/** imageView的contentMode */
+@property (nonatomic, assign) UIViewContentMode imageViewContentMode;
+
 @end

@@ -48,6 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
  ***********************************************************************/
 @interface YZHLoopTransitionView : UIView
 
+@property (nonatomic, strong, readonly) UIPanGestureRecognizer *panGestureRecognizer;
+
 @property (nonatomic, strong, readonly) YZHLoopScrollView *loopScrollView;
 
 @property (nonatomic, weak) id<YZHLoopTransitionViewDelegate> delegate;

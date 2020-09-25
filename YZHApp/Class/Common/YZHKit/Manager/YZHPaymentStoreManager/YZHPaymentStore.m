@@ -211,7 +211,10 @@ NSString * const YZHPaymentStoreErrorDomain = @"com.paymentStore.yuanzh";
 + (NSData *)transactionReceipt:(SKPaymentTransaction *)transaction ofType:(YZHPaymentTransactionReceiptType)receiptType
 {
     if (receiptType == YZHPaymentTransactionReceiptTypeOld) {
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         return transaction.transactionReceipt;
+        #pragma clang diagnostic pop
     }
     else {
         return [NSData dataWithContentsOfURL:[NSBundle mainBundle].appStoreReceiptURL];

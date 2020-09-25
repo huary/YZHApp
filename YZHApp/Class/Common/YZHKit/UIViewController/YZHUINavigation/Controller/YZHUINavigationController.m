@@ -9,7 +9,6 @@
 #import "YZHUINavigationController.h"
 #import "YZHUINavigationItemView.h"
 #import "YZHBaseAnimatedTransition.h"
-#import "UIViewController+NavigationBarAndItemView.m"
 #import "YZHTimer.h"
 #import "YZHKitType.h"
 #import "UIImage+YZHAdd.h"

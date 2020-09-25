@@ -34,17 +34,17 @@ GET_SET_PROPERTY(CGSize, size, Size)
 
 
 
--(UIImage*)snapshotImage
+-(UIImage*)hz_snapshotImage
 {
-    return [self.layer snapshotImage];
+    return [self.layer hz_snapshotImage];
 }
 
--(UIImageView*)snapshotImageView
+-(UIImageView*)hz_snapshotImageView
 {
-    return [self.layer snapshotImageView];
+    return [self.layer hz_snapshotImageView];
 }
 
--(UIViewController*)viewController
+-(UIViewController*)hz_viewController
 {
     UIResponder *next = self.nextResponder;
     while (next) {

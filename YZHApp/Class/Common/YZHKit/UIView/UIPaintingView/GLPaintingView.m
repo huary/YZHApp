@@ -745,7 +745,7 @@ typedef struct {
     
     // OpenGL ES measures data in PIXELS
     // Create a graphics context with the target size measured in POINTS
-    if (NULL != UIGraphicsBeginImageContextWithOptions) {
+//    if (NULL != &UIGraphicsBeginImageContextWithOptions) {
         // On iOS 4 and later, use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
         // Set the scale parameter to your OpenGL ES view's contentScaleFactor
         // so that you get a high-resolution snapshot when its value is greater than 1.0
@@ -753,11 +753,11 @@ typedef struct {
         width = width / scale;
         height = height / scale;
         UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, scale);
-    }
-    else {
-        // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
-        UIGraphicsBeginImageContext(CGSizeMake(width, height));
-    }
+//    }
+//    else {
+//        // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
+//        UIGraphicsBeginImageContext(CGSizeMake(width, height));
+//    }
     
     
     CGContextRef cgcontext = UIGraphicsGetCurrentContext();

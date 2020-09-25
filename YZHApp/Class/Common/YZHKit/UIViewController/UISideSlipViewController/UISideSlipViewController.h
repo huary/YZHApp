@@ -22,8 +22,8 @@ typedef NS_ENUM(NSInteger, NSSideShowVCViewAlignmentType)
     NSSideShowVCViewAlignmentTypeRight  = 1,
 };
 
+NS_ASSUME_NONNULL_BEGIN
 @class UISideSlipViewController;
-
 @protocol UISideSlipViewControllerDelegate <NSObject>
 
 -(void)sideSlipViewController:(UISideSlipViewController*)sideSlipViewController willBeginSlipFromViewController:(UIViewController*)fromViewController toViewController:(UIViewController*)toViewController;
@@ -63,3 +63,5 @@ typedef NS_ENUM(NSInteger, NSSideShowVCViewAlignmentType)
 -(void)updateRightViewController:(nullable UIViewController *)rightViewController;
 
 @end
+
+NS_ASSUME_NONNULL_END

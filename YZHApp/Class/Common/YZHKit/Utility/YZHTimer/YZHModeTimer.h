@@ -7,11 +7,9 @@
 
 #import <Foundation/Foundation.h>
 
-
+NS_ASSUME_NONNULL_BEGIN
 @class YZHModeTimer;
 typedef void(^YZHModeTimerTaskBlock)(YZHModeTimer *timer);
-
-NS_ASSUME_NONNULL_BEGIN
 
 //这个是需要在主线程运行的timer
 @interface YZHModeTimer : NSObject

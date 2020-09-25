@@ -27,12 +27,12 @@
 @property (nonatomic, assign) CGSize  size;
 
 
--(UIImage*)snapshotImage;
+-(UIImage*)hz_snapshotImage;
 
--(UIImageView*)snapshotImageView;
+-(UIImageView*)hz_snapshotImageView;
 
--(void)bringSubLayerToFront:(CALayer*)subLayer;
+-(void)hz_bringSubLayerToFront:(CALayer*)subLayer;
 
--(void)sendSubLayerToBack:(CALayer*)subLayer;
+-(void)hz_sendSubLayerToBack:(CALayer*)subLayer;
 
 @end

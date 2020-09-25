@@ -8,7 +8,7 @@
 
 #import "YZHUIPageScrollView.h"
 #import "YZHUITitleButtonItem.h"
-#import "CALayer+SubLayer.h"
+#import "CALayer+YZHAdd.h"
 #import "YZHKitType.h"
 
 NSString *const YZHPageTitleNormalColorKey = TYPE_STR(YZHPageTitleNormalColorKey);
@@ -243,7 +243,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
         self.scrollView.contentSize = CGSizeMake(self.bounds.size.width, totalHeight);
         self.maxContentOffset = CGPointMake(0, totalHeight - self.bounds.size.height);
     }
-    [self.scrollView.layer bringSubLayerToFront:self.scrollIndicatorLine];
+    [self.scrollView.layer hz_bringSubLayerToFront:self.scrollIndicatorLine];
 }
 
 -(CGSize)_getPageTitleSizeWithText:(NSString*)title

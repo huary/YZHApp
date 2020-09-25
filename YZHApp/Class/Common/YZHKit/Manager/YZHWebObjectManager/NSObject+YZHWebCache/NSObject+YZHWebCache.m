@@ -43,7 +43,7 @@
          progress:(YZHWebObjectLoadProgressBlock)progressBlock
     webCompletion:(YZHWebObjectWebLoadCompletionBlock)webCompletionBlock
 {
-    YZHWebObjectLoadOperation *lastOperation = [self.loadOperationMapTable objectForKey:url];
+//    YZHWebObjectLoadOperation *lastOperation = [self.loadOperationMapTable objectForKey:url];
 //    [lastOperation cancelForURL:url];
     [self _cancelPrevAllOperation];
     

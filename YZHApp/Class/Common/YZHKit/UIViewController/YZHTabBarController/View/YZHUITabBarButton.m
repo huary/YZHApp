@@ -209,7 +209,8 @@ static float tabBarImageRatio = 0.65;
 
 -(UIColor*)_badgeColor
 {
-    if (![self.tabBarItem respondsToSelector:@selector(badgeColor)] || self.tabBarItem.badgeColor == nil) {
+    UIColor *badgeColor = AVAILABLE_IOS_V_EXT_R(10.0, UIColor *, nil, self.tabBarItem.badgeColor);
+    if (badgeColor == nil/*![self.tabBarItem respondsToSelector:@selector(badgeColor)] || self.tabBarItem.badgeColor == nil*/) {
         if (self.tabBarItem.badgeBackgroundColor == nil) {
             UIColor *colorTmp = [[self _badgeTextAttributes] objectForKey:NSBackgroundColorAttributeName];
             if (colorTmp != nil) {
@@ -219,25 +220,28 @@ static float tabBarImageRatio = 0.65;
         }
         return self.tabBarItem.badgeBackgroundColor;
     }
-    return self.tabBarItem.badgeColor;
+    AVAILABLE_IOS_V_EXP(10.0, return self.tabBarItem.badgeColor;, return nil;);
 }
 
 -(NSDictionary<NSString*,id>*)_badgeTextAttributes
 {
     NSDictionary *dict = nil;
     if ([self.tabBarItem respondsToSelector:@selector(badgeTextAttributesForState:)]) {
-        dict = [self.tabBarItem badgeTextAttributesForState:self.state];
-        if (dict == nil) {
-            dict = [self.tabBarItem badgeTextAttributesForState:UIControlStateNormal];
-        }
-        if (dict == nil) {
-            dict = [self.tabBarItem badgeTextAttributesForState:UIControlStateSelected];
-        }
-        if (dict == nil) {
-            dict = [self.tabBarItem badgeTextAttributesForState:UIControlStateHighlighted];
-        }
-        if (dict == nil) {
-            dict = [self.tabBarItem badgeTextAttributesForState:UIControlStateSelected|UIControlStateHighlighted];
+        if (@available(iOS 10.0, *)) {
+            dict = [self.tabBarItem badgeTextAttributesForState:self.state];
+            if (dict == nil) {
+                dict = [self.tabBarItem badgeTextAttributesForState:UIControlStateNormal];
+            }
+            if (dict == nil) {
+                dict = [self.tabBarItem badgeTextAttributesForState:UIControlStateSelected];
+            }
+            if (dict == nil) {
+                dict = [self.tabBarItem badgeTextAttributesForState:UIControlStateHighlighted];
+            }
+            if (dict == nil) {
+                dict = [self.tabBarItem badgeTextAttributesForState:UIControlStateSelected|UIControlStateHighlighted];
+            }
+        } else {
         }
     }
     else {

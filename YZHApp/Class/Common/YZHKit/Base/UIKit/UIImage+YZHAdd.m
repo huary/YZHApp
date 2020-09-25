@@ -8,6 +8,7 @@
 
 #import "UIImage+YZHAdd.h"
 #import "YZHUIGraphicsImage.h"
+#import "YZHCGUtil.h"
 
 @implementation UIImage (YZHAdd)
 
@@ -112,32 +113,6 @@
 
 -(CGSize)contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode
 {
-    if (self.size.width == 0 || self.size.height == 0) {
-        return CGSizeZero;
-    }
-    
-    CGFloat wRatio = inSize.width / self.size.width;
-    CGFloat hRatio = inSize.height / self.size.height;
-    
-    CGSize contentSize = self.size;
-    switch (contentMode) {
-        case UIViewContentModeScaleAspectFit:{
-            CGFloat minRatio = MIN(wRatio, hRatio);
-            contentSize = CGSizeMake(self.size.width * minRatio, self.size.height * minRatio);
-            break;
-        }
-        case UIViewContentModeScaleAspectFill:{
-            CGFloat maxRatio = MAX(wRatio, hRatio);
-            contentSize = CGSizeMake(self.size.width * maxRatio, self.size.height * maxRatio);
-            break;
-        }
-        case UIViewContentModeCenter: {
-            contentSize = self.size;
-            break;
-        }
-        default:
-            break;
-    }
-    return contentSize;
+    return rectWithContentMode(inSize, self.size, contentMode).size;
 }
 @end

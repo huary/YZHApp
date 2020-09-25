@@ -218,11 +218,15 @@
     
     if (key != nil) {
         if (ON_LATER_IOS_VERSION(10.0)) {
-            NSKeyedArchiver *encoder = [[NSKeyedArchiver alloc] init];
-            [encoder encodeObject:object forKey:key];
-            [encoder finishEncoding];
             
-            return encoder.encodedData;
+            AVAILABLE_IOS_V_EXP(10.0,
+                                NSKeyedArchiver *encoder = [[NSKeyedArchiver alloc] init];
+                                [encoder encodeObject:object forKey:key];
+                                [encoder finishEncoding];
+                                return encoder.encodedData;
+                                ,
+                                return nil;);
+            
         }
         else {
             NSMutableData *mutData = [NSMutableData data];

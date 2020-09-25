@@ -31,22 +31,22 @@
     return encode;
 }
 
-//-(void)setDecodeBlock:(YZHDiskCacheDecodeBlock)decodeBlock
-//{
-//    objc_setAssociatedObject(self, @selector(decodeBlock), decodeBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-//}
-//
-//-(YZHDiskCacheDecodeBlock)decodeBlock
-//{
-//    YZHDiskCacheDecodeBlock decode = objc_getAssociatedObject(self, _cmd);
-//    if (decode) {
-//        decode = ^id(YZHDiskCache *cache, NSData *data) {
-//            return data;
-//        };
-//        self.decodeBlock = decode;
-//    }
-//    return decode;
-//}
+-(void)setDecodeBlock:(YZHDiskCacheDecodeBlock)decodeBlock
+{
+    objc_setAssociatedObject(self, @selector(decodeBlock), decodeBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+-(YZHDiskCacheDecodeBlock)decodeBlock
+{
+    YZHDiskCacheDecodeBlock decode = objc_getAssociatedObject(self, _cmd);
+    if (!decode) {
+        decode = ^id(YZHDiskCache *cache, NSData *data, NSString *path, NSString *inFileName) {
+            return [UIImage imageWithData:data];
+        };
+        self.decodeBlock = decode;
+    }
+    return decode;
+}
 
 
 @end

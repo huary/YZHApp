@@ -202,8 +202,8 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
     sync_lock(self.lock, ^{
         [self.taskList removeObject:operation];
         [self.taskMapTable removeObjectForKey:operation.key];
-        --_currentRunningTaskCnt;
-        _currentRunningTaskCnt = MAX(self.currentRunningTaskCnt, 0);
+        --self->_currentRunningTaskCnt;
+        self->_currentRunningTaskCnt = MAX(self.currentRunningTaskCnt, 0);
     });
 }
 
@@ -236,7 +236,7 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
         }];
         [self.taskList removeAllObjects];
         [self.taskMapTable removeAllObjects];
-        _currentRunningTaskCnt = 0;
+        self->_currentRunningTaskCnt = 0;
     });
 }
 
@@ -264,8 +264,8 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
             [self.taskMapTable setObject:newTaskOperation forKey:key];
         }
 
-        --_currentRunningTaskCnt;
-        _currentRunningTaskCnt = MAX(_currentRunningTaskCnt, 0);
+        --self->_currentRunningTaskCnt;
+        self->_currentRunningTaskCnt = MAX(self->_currentRunningTaskCnt, 0);
         [self _checkTaskListQueue];
     });
 }
@@ -274,7 +274,7 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
 -(void)_taskStartAction
 {
     sync_lock(self.lock, ^{
-        ++_currentRunningTaskCnt;
+        ++self->_currentRunningTaskCnt;
     });
 }
 

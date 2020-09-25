@@ -264,7 +264,7 @@ typedef NS_ENUM(NSInteger, NSTabBarButtonType)
 //    [btn addTarget:self action:@selector(_tabBarClick:) forControlEvents:controlEvents];
     WEAK_SELF(weakSelf);
     [btn addControlEvent:controlEvents actionBlock:^(UIButton *button) {
-        [weakSelf _tabBarClick:button];
+        [weakSelf _tabBarClick:(YZHUITabBarButton *)button];
     }];
     if (tabBarButtonType == NSTabBarButtonTypeDefault || tabBarButtonType == NSTabBarButtonTypeCustomLayout)
     {

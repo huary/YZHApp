@@ -56,7 +56,7 @@
         [value getValue:&r];
     }
     else {
-        [value getValue:&r size:sizeof(r)];
+        AVAILABLE_IOS_V_EXP(11.0, [value getValue:&r size:sizeof(r)];, );
     }
     return r;
 }
@@ -75,7 +75,8 @@
         [value getValue:&r];
     }
     else {
-        [value getValue:&r size:sizeof(r)];
+        AVAILABLE_IOS_V_EXP(11.0, [value getValue:&r size:sizeof(r)];, );
+//        [value getValue:&r size:sizeof(r)];
     }
     return r;
 }

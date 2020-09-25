@@ -45,8 +45,14 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        [self pri_setupImageBrowserView];
     }
     return self;
+}
+
+- (void)pri_setupImageBrowserView
+{
+    
 }
 
 - (YZHLoopTransitionContext*)panContext
@@ -215,6 +221,9 @@
     CGPoint ts = [panGestureRecognizer translationInView:panGestureRecognizer.view];
     YZHImageCell *currentShowCell = (YZHImageCell*)self.loopScrollView.currentShowCell;
     if (![currentShowCell isKindOfClass:[YZHImageCell class]]) {
+        return NO;
+    }
+    if (currentShowCell.zoomView.scrollView.isZooming) {
         return NO;
     }
     

@@ -72,16 +72,29 @@
                                                         OK = YES; \
                                                     OK; \
                                                 })
+
+#define AVAILABLE_IOS_V_EXT_R(IOS_V, T, DEF, EXP)   ({ \
+                                                        T r = DEF; \
+                                                        if(@available(iOS IOS_V,*)) \
+                                                            r = EXP; \
+                                                        r; \
+                                                     })
+
+#define AVAILABLE_IOS_V_EXP(IOS_V, T_EXP, F_EXP)   ({ \
+                                                        if(@available(iOS IOS_V,*)) {T_EXP} \
+                                                        else { F_EXP }\
+                                                    })
+
 #define AVAILABLE_IOS_11                        AVAILABLE_IOS_V(11.0)
 
-#define SAFE_INSETS                            (AVAILABLE_IOS_11 ? [[UIApplication sharedApplication].windows firstObject].safeAreaInsets : UIEdgeInsetsZero)
-#define SAFE_X                                 (AVAILABLE_IOS_11 ? SAFE_INSETS.left : 0)
-#define SAFE_Y                                 (AVAILABLE_IOS_11 ? SAFE_INSETS.top : 0)
-#define SAFE_BOTTOM                            (AVAILABLE_IOS_11 ? SAFE_INSETS.bottom : 0)
-#define SAFE_RIGHT                             (AVAILABLE_IOS_11 ? SAFE_INSETS.right : 0)
+#define SAFE_INSETS                            AVAILABLE_IOS_V_EXT_R(11.0, UIEdgeInsets, UIEdgeInsetsZero, [[UIApplication sharedApplication].windows firstObject].safeAreaInsets)
+#define SAFE_X                                 SAFE_INSETS.left
+#define SAFE_Y                                 SAFE_INSETS.top
+#define SAFE_BOTTOM                            SAFE_INSETS.bottom
+#define SAFE_RIGHT                             SAFE_INSETS.right
 
-#define SAFE_WIDTH                             (AVAILABLE_IOS_11 ? SCREEN_WIDTH - SAFE_INSETS.left - SAFE_INSETS.right : SCREEN_WIDTH)
-#define SAFE_HEIGHT                            (AVAILABLE_IOS_11 ? SCREEN_HEIGHT - SAFE_INSETS.top - SAFE_INSETS.bottom : SCREEN_HEIGHT)
+#define SAFE_WIDTH                             (SCREEN_WIDTH - SAFE_INSETS.left - SAFE_INSETS.right)
+#define SAFE_HEIGHT                            (SCREEN_HEIGHT - SAFE_INSETS.top - SAFE_INSETS.bottom)
 #define SAFE_SIZE                              CGSizeMake(SAFE_WIDTH,SAFE_HEIGHT)
 #define SAFE_FRAME                             CGRectMake(SAFE_X,SAFE_Y,SAFE_WIDTH,SAFE_HEIGHT)
 #define SAFE_BOUNDS                            CGRectMake(0,0,SAFE_WIDTH,SAFE_HEIGHT)
@@ -356,6 +369,8 @@
 #define ARRAY_VALUE(DICT,KEY)                       CLASS_OBJECT(DICT, KEY, NSArray)
 #define STRING_VALUE(DICT,KEY)                      ({id OBJ = NONNULL_OBJECT(DICT,KEY); if (OBJ) OBJ = NEW_NORMAL_FORMAT_STRING([OBJ description]); OBJ;})
 
+#define FLOAT_EQUAL_DIFFER                          (0.001)
+#define FLOAT_EQUAL(FA,FB)                          (fabs(FA-FB) <= FLOAT_EQUAL_DIFFER)
 
 //-------数据模型请求下来的，比较特殊的宏定义，end
 //n倍向上取整

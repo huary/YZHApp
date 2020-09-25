@@ -13,9 +13,9 @@
 
 @property (nonatomic, strong, readonly) YZHUINavigationController *YZHNavigationController;
 
--(void)setNavigationBarViewBGColor:(UIColor*)color;
--(UIColor*)navigationBarViewBGColor;
+-(void)setHz_NavigationBarViewBGColor:(UIColor*)color;
+-(UIColor*)hz_navigationBarViewBGColor;
 
--(void)setNavigationItemViewAlpha:(CGFloat)alpha;
--(CGFloat)navigationItemViewAlpha;
+-(void)setHz_NavigationItemViewAlpha:(CGFloat)alpha;
+-(CGFloat)hz_navigationItemViewAlpha;
 @end

@@ -342,9 +342,15 @@
         else if (self.maxLimit.limitType == NSTextViewLimitTypeLines) {
             NSInteger limitCnt = [self.maxLimit.limitValue integerValue];
             NSInteger lineCnt = [self textLines];
-            if (lineCnt > 0 && lineCnt <= limitCnt && limitCnt > 0) {
-                CGFloat height = MAX(self.normalHeight, textSize.height);
-                frame.size.height = height;
+            if (lineCnt > 0 && limitCnt > 0) {
+                CGFloat height = frame.size.height;
+                if (lineCnt <= limitCnt) {
+                    height = textSize.height;
+                }
+                else {
+                    height = limitCnt * [self textLineHeight] + self.textContainerInset.top + self.textContainerInset.bottom;
+                }
+                frame.size.height = MAX(self.normalHeight, height);
             }
         }
         if (!CGRectEqualToRect(frame, oldFrame)) {
@@ -408,94 +414,94 @@
     return lineCnt;
 }
 
-- (BOOL)pri_isPasteboardContainsValidValue {
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-//    NSLog(@"pastedboard=%@",pasteboard);
-//    NSLog(@"string=%@,strings=%@",pasteboard.string,pasteboard.strings);
-    if (SYSTEMVERSION_NUMBER >= 10.0) {
-        if ([pasteboard hasStrings] ||
-            [pasteboard hasURLs] ||
-            [pasteboard hasImages] ||
-            [pasteboard hasColors]) {
-            return YES;
-        }
-        return NO;
-    }
-    else {
-        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-        if (pasteboard.string.length > 0) {
-            return YES;
-        }
-//        if (pasteboard.attributedString.length > 0) {
+//- (BOOL)pri_isPasteboardContainsValidValue {
+//    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+////    NSLog(@"pastedboard=%@",pasteboard);
+////    NSLog(@"string=%@,strings=%@",pasteboard.string,pasteboard.strings);
+//    if (SYSTEMVERSION_NUMBER >= 10.0) {
+//        if ([pasteboard hasStrings] ||
+//            [pasteboard hasURLs] ||
+//            [pasteboard hasImages] ||
+//            [pasteboard hasColors]) {
 //            return YES;
 //        }
-        return NO;
-    }
-}
+//        return NO;
+//    }
+//    else {
+//        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+//        if (pasteboard.string.length > 0) {
+//            return YES;
+//        }
+////        if (pasteboard.attributedString.length > 0) {
+////            return YES;
+////        }
+//        return NO;
+//    }
+//}
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    /*
-     ------------------------------------------------------
-     Default menu actions list:
-     cut:                                   Cut
-     copy:                                  Copy
-     select:                                Select
-     selectAll:                             Select All
-     paste:                                 Paste
-     delete:                                Delete
-     _promptForReplace:                     Replace...
-     _transliterateChinese:                 简⇄繁
-     _showTextStyleOptions:                 BIU
-     _define:                               Define
-     _addShortcut:                          Add...
-     _accessibilitySpeak:                   Speak
-     _accessibilitySpeakLanguageSelection:  Speak...
-     _accessibilityPauseSpeaking:           Pause Speak
-     makeTextWritingDirectionRightToLeft:   ⇋
-     makeTextWritingDirectionLeftToRight:   ⇌
-     
-     ------------------------------------------------------
-     Default attribute modifier list:
-     toggleBoldface:
-     toggleItalics:
-     toggleUnderline:
-     increaseSize:
-     decreaseSize:
-     */
-    BOOL OK = YES;
-    if (self.canPerformActionBlock) {
-        OK = self.canPerformActionBlock(self, action, sender);
-    }
-    else {
-        if (self.enablePerformAction) {
-            NSRange selectedRange = self.selectedRange;
-            if (selectedRange.length == 0) {
-                if (action == @selector(select:) ||
-                    action == @selector(selectAll:)) {
-                    OK = self.text.length > 0;
-                }
-                if (action == @selector(paste:)) {
-                    OK = [self pri_isPasteboardContainsValidValue];
-                }
-            } else {
-                if (action == @selector(cut:)) {
-                    OK = (self.isFirstResponder && self.editable);
-                }
-                if (action == @selector(copy:)) {
-                    OK = YES;
-                }
-                if (action == @selector(selectAll:)) {
-                    OK = (selectedRange.length < self.text.length);
-                }
-                if (action == @selector(paste:)) {
-                    OK = (self.isFirstResponder && self.editable && [self pri_isPasteboardContainsValidValue]);
-                }
-            }
-        }
-    }
-//    NSLog(@"action=%@,OK=%@",NSStringFromSelector(action),OK ? @"YES" : @"NO");
-    return OK;
-}
+//- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+//    /*
+//     ------------------------------------------------------
+//     Default menu actions list:
+//     cut:                                   Cut
+//     copy:                                  Copy
+//     select:                                Select
+//     selectAll:                             Select All
+//     paste:                                 Paste
+//     delete:                                Delete
+//     _promptForReplace:                     Replace...
+//     _transliterateChinese:                 简⇄繁
+//     _showTextStyleOptions:                 BIU
+//     _define:                               Define
+//     _addShortcut:                          Add...
+//     _accessibilitySpeak:                   Speak
+//     _accessibilitySpeakLanguageSelection:  Speak...
+//     _accessibilityPauseSpeaking:           Pause Speak
+//     makeTextWritingDirectionRightToLeft:   ⇋
+//     makeTextWritingDirectionLeftToRight:   ⇌
+//     
+//     ------------------------------------------------------
+//     Default attribute modifier list:
+//     toggleBoldface:
+//     toggleItalics:
+//     toggleUnderline:
+//     increaseSize:
+//     decreaseSize:
+//     */
+//    BOOL OK = YES;
+//    if (self.canPerformActionBlock) {
+//        OK = self.canPerformActionBlock(self, action, sender);
+//    }
+//    else {
+//        if (self.enablePerformAction) {
+//            NSRange selectedRange = self.selectedRange;
+//            if (selectedRange.length == 0) {
+//                if (action == @selector(select:) ||
+//                    action == @selector(selectAll:)) {
+//                    OK = self.text.length > 0;
+//                }
+//                if (action == @selector(paste:)) {
+//                    OK = [self pri_isPasteboardContainsValidValue];
+//                }
+//            } else {
+//                if (action == @selector(cut:)) {
+//                    OK = (self.isFirstResponder && self.editable);
+//                }
+//                if (action == @selector(copy:)) {
+//                    OK = YES;
+//                }
+//                if (action == @selector(selectAll:)) {
+//                    OK = (selectedRange.length < self.text.length);
+//                }
+//                if (action == @selector(paste:)) {
+//                    OK = (self.isFirstResponder && self.editable && [self pri_isPasteboardContainsValidValue]);
+//                }
+//            }
+//        }
+//    }
+////    NSLog(@"action=%@,OK=%@",NSStringFromSelector(action),OK ? @"YES" : @"NO");
+//    return OK;
+//}
 
 -(void)dealloc
 {

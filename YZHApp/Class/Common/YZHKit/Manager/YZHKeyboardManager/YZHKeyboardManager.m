@@ -10,6 +10,12 @@
 #import <objc/runtime.h>
 #import "YZHKitType.h"
 
+static inline CGRect pri_keyboardEndFrameFromNotification(NSNotification *notification) {
+    CGRect keyboardFrame = CGRectZero;
+    [notification.userInfo[UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
+    return keyboardFrame;
+}
+
 /************************************************************
  *YZHKeyboardManager ()
  ************************************************************/
@@ -125,8 +131,7 @@
     firstResponderViewFrame = [self.firstResponderView.superview convertRect:firstResponderViewFrame toView:[UIApplication sharedApplication].keyWindow];
     
     CGFloat off = 0;
-    CGFloat diff = keyboardFrame.origin.y - SCREEN_HEIGHT;
-    if ((int)diff == 0) {
+    if (FLOAT_EQUAL(keyboardFrame.origin.y, SCREEN_HEIGHT)) {
         off = SAFE_BOTTOM;
     }
     
@@ -217,6 +222,7 @@
                 t = CGAffineTransformMakeTranslation(oldTranslationX, ty);
             }
             
+//            NSLog(@"t.ty=%f",t.ty);
             if (duration > 0) {
                 [UIView animateWithDuration:duration animations:^{
                     self.relatedShiftView.transform = t;
@@ -226,6 +232,7 @@
                 self.relatedShiftView.transform = t;
                 animateCompletionBlock(YES);
             }
+//            NSLog(@"shiftView2=%@",self.relatedShiftView);
         }
         return YES;        
     }
@@ -274,8 +281,7 @@ _DID_BECOME_FIRST_RESPONDER_END:
 //    NSLog(@"notification=%@",notification);
     NSTimeInterval time = [[notification.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     
-    CGRect keyboardFrame = CGRectZero;
-    [notification.userInfo[UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
+    CGRect keyboardFrame = pri_keyboardEndFrameFromNotification(notification);
     
     if (show) {
         if (!self.isKeyboardShowing) {

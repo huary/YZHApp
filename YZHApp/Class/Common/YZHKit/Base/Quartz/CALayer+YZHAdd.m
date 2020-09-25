@@ -44,7 +44,7 @@ GET_SET_PROPERTY(CGPoint, origin, Origin)
 
 GET_SET_PROPERTY(CGSize, size, Size)
 
--(UIImage*)snapshotImage
+-(UIImage*)hz_snapshotImage
 {
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.opaque, 0);
     
@@ -59,21 +59,21 @@ GET_SET_PROPERTY(CGSize, size, Size)
     return image;
 }
 
--(UIImageView*)snapshotImageView
+-(UIImageView*)hz_snapshotImageView
 {
-    UIImage *image = [self snapshotImage];
+    UIImage *image = [self hz_snapshotImage];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.frame = self.bounds;
     return imageView;
 }
 
--(void)bringSubLayerToFront:(CALayer*)subLayer
+-(void)hz_bringSubLayerToFront:(CALayer*)subLayer
 {
     [subLayer removeFromSuperlayer];
     [self addSublayer:subLayer];
 }
 
--(void)sendSubLayerToBack:(CALayer*)subLayer
+-(void)hz_sendSubLayerToBack:(CALayer*)subLayer
 {
     [subLayer removeFromSuperlayer];
     if (self.sublayers.count > 0) {

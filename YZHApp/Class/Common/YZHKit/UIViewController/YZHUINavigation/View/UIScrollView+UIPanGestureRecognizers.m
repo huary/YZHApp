@@ -58,43 +58,43 @@ static char panRecognizersShouldRecognizeSimultaneouslyBlockKey;
 //    self.panRecognizersBlock = panRecognizersBlock;
 //}
 
--(void)setUIPanGestureRecognizersEnabled:(BOOL)enabled whitPanGestureRecognizerShouldBeginBlock:(UIPanGestureRecognizerShouldBeginBlock)panRecognizerShouldBeginBlock panGestureRecognizersShouldRecognizeSimultaneouslyBlock:(UIPanGestureRecognizersShouldRecognizeSimultaneouslyBlock)panRecognizersShouldRecognizeSimultaneouslyBlock
-{
-    if (enabled) {
-        self.panGestureRecognizer.delegate = self;
-//        self.delaysContentTouches = NO;
-//        self.canCancelContentTouches = NO;
-    }
-    else
-    {
-        self.panGestureRecognizer.delegate = nil;
-//        self.delaysContentTouches = YES;
-//        self.canCancelContentTouches = YES;
-    }
-    self.panRecognizerShouldBeginBlock = panRecognizerShouldBeginBlock;
-    self.panRecognizersShouldRecognizeSimultaneouslyBlock = panRecognizersShouldRecognizeSimultaneouslyBlock;
-}
+//-(void)setUIPanGestureRecognizersEnabled:(BOOL)enabled whitPanGestureRecognizerShouldBeginBlock:(UIPanGestureRecognizerShouldBeginBlock)panRecognizerShouldBeginBlock panGestureRecognizersShouldRecognizeSimultaneouslyBlock:(UIPanGestureRecognizersShouldRecognizeSimultaneouslyBlock)panRecognizersShouldRecognizeSimultaneouslyBlock
+//{
+//    if (enabled) {
+//        self.panGestureRecognizer.delegate = self;
+////        self.delaysContentTouches = NO;
+////        self.canCancelContentTouches = NO;
+//    }
+//    else
+//    {
+//        self.panGestureRecognizer.delegate = nil;
+////        self.delaysContentTouches = YES;
+////        self.canCancelContentTouches = YES;
+//    }
+//    self.panRecognizerShouldBeginBlock = panRecognizerShouldBeginBlock;
+//    self.panRecognizersShouldRecognizeSimultaneouslyBlock = panRecognizersShouldRecognizeSimultaneouslyBlock;
+//}
 
 
--(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{    
-    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        if (self.panRecognizersShouldRecognizeSimultaneouslyBlock) {
-            WEAK_SELF(weakSelf);
-            return self.panRecognizersShouldRecognizeSimultaneouslyBlock(weakSelf,gestureRecognizer, otherGestureRecognizer);
-        }
-    }
-    return NO;
-}
-
--(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-{
-    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        if (self.panRecognizerShouldBeginBlock) {
-            WEAK_SELF(weakSelf);
-            return self.panRecognizerShouldBeginBlock(weakSelf, gestureRecognizer);
-        }
-    }
-    return YES;
-}
+//-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+//{
+//    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+//        if (self.panRecognizersShouldRecognizeSimultaneouslyBlock) {
+//            WEAK_SELF(weakSelf);
+//            return self.panRecognizersShouldRecognizeSimultaneouslyBlock(weakSelf,gestureRecognizer, otherGestureRecognizer);
+//        }
+//    }
+//    return NO;
+//}
+//
+//-(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+//{
+//    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+//        if (self.panRecognizerShouldBeginBlock) {
+//            WEAK_SELF(weakSelf);
+//            return self.panRecognizerShouldBeginBlock(weakSelf, gestureRecognizer);
+//        }
+//    }
+//    return YES;
+//}
 @end

@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
 @class UITraitCollectionView;
 typedef void(^YZHTraitCollectionValueChangedBlock)(UITraitCollectionView *view, id<NSCopying> key);
-
-NS_ASSUME_NONNULL_BEGIN
 
 @interface UITraitCollectionView : UIView
 

@@ -115,6 +115,18 @@ typedef void(^UIGraphicsImageCompletionBlock)(YZHUIGraphicsImageContext *context
 //将图片放入到Rect中，并进行圆角
 +(UIImage*)graphicesImage:(UIImage*)image inRect:(CGRect)rect cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
 
+//将图片放入到Rect中，并进行圆角，在graphicsSize中按rect进行绘画
++(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize inRect:(CGRect)rect cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
+
+//将图片按contentMode放入到graphicsSize中
++(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize contentMode:(UIViewContentMode)mode;
+
+//将图片按contentMode放入到graphicsSize中，并进行圆角，可以设置corners
++(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize contentMode:(UIViewContentMode)mode byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius;
+
+//将图片按contentMode放入到graphicsSize中，并进行圆角，可以设置corners
++(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize contentMode:(UIViewContentMode)mode byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
+
 //将图片放入到Rect中，并进行圆角，在graphicsSize中按rect进行绘画,可以设置corners
 +(UIImage*)graphicesImage:(UIImage*)image graphicsSize:(CGSize)graphicsSize inRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
 

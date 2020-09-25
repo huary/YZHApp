@@ -41,7 +41,7 @@ typedef void(^YZHCacheRemoveCompletionBlock)(YZHCache *cache, NSString *key, NSS
 
 -(NSOperation*)queryObjectForKey:(NSString*)key decode:(YZHDiskCacheDecodeBlock)decode completion:(YZHCacheQueryCompletionBlock)completion;
 
--(NSOperation*)queryObjectForKey:(NSString*)key shouldLoad:(YZHDiskCacheShouldLoadToMemoryBlock)shouldLoad decode:(YZHDiskCacheDecodeBlock)decode completion:(YZHCacheQueryCompletionBlock)completion;
+//-(NSOperation*)queryObjectForKey:(NSString*)key shouldLoad:(YZHDiskCacheShouldLoadToMemoryBlock)shouldLoad decode:(YZHDiskCacheDecodeBlock)decode completion:(YZHCacheQueryCompletionBlock)completion;
 
 -(NSOperation*)removeObjectForKey:(NSString*)key removeOnDisk:(BOOL)removeOnDisk completion:(YZHCacheRemoveCompletionBlock)completion;
 

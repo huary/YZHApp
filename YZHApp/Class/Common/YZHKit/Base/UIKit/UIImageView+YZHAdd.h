@@ -12,5 +12,9 @@
 
 -(CGSize)contentImageSize;
 
+-(CGSize)contentImageSizeInSize:(CGSize)size;
+
++(CGSize)image:(UIImage*)image contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode;
+
 
 @end

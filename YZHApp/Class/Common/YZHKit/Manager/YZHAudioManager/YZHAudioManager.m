@@ -129,6 +129,8 @@ static YZHAudioManager *shareAudioManager_s = nil;
 {
     if (self.playOption.enableProximityMonitoring) {
         UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         AudioSessionSetProperty(kAudioSessionProperty_AudioCategory,
                                 sizeof(sessionCategory),
                                 &sessionCategory);
@@ -137,6 +139,7 @@ static YZHAudioManager *shareAudioManager_s = nil;
         AudioSessionSetProperty (kAudioSessionProperty_OverrideAudioRoute,
                                  sizeof (audioRouteOverride),
                                  &audioRouteOverride);
+        #pragma clang diagnostic pop
     }
     
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];

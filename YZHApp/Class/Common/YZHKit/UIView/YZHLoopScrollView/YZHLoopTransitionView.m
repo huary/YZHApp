@@ -48,7 +48,7 @@
 
 @property (nonatomic, strong) YZHLoopTransitionContext *panInfo;
 
-@property (nonatomic, strong) UIPanGestureRecognizer *pan;
+//@property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 
 @end
 
@@ -95,7 +95,7 @@
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizerAction:)];
     pan.delegate = self;
     [self addGestureRecognizer:pan];
-    self.pan = pan;
+    _panGestureRecognizer = pan;
 }
 
 - (YZHLoopTransitionContext *)panInfo
@@ -181,7 +181,7 @@
 - (void)setEnableTransition:(BOOL)enableTransition
 {
     _enableTransition = enableTransition;
-    self.pan.enabled = enableTransition;
+    self.panGestureRecognizer.enabled = enableTransition;
 }
 
 #pragma mark public can override

@@ -24,10 +24,10 @@
 @property (nonatomic, assign) CGPoint origin;
 @property (nonatomic, assign) CGSize  size;
 
--(UIImage*)snapshotImage;
+-(UIImage*)hz_snapshotImage;
 
--(UIImageView*)snapshotImageView;
+-(UIImageView*)hz_snapshotImageView;
 
--(UIViewController*)viewController;
+-(UIViewController*)hz_viewController;
 
 @end

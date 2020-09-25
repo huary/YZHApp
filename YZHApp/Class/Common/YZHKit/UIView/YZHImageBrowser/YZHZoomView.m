@@ -8,6 +8,9 @@
 
 #import "YZHZoomView.h"
 #import "UIImageView+YZHAdd.h"
+#import "YZHCGUtil.h"
+
+static YZHZoomViewDidUpdateBlock _didImageViewUpdateBlock_s = nil;
 
 @interface YZHZoomView () <UIScrollViewDelegate>
 
@@ -18,11 +21,21 @@
 @synthesize scrollView = _scrollView;
 @synthesize imageView = _imageView;
 
++ (void)setDidImageViewUpdateBlock:(YZHZoomViewDidUpdateBlock)didImageViewUpdateBlock
+{
+    _didImageViewUpdateBlock_s = didImageViewUpdateBlock;
+}
+
++ (YZHZoomViewDidUpdateBlock)didImageViewUpdateBlock
+{
+    return _didImageViewUpdateBlock_s;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self _setupZoomImageViewChildView];
+        [self pri_setupZoomImageViewChildView];
     }
     return self;
 }
@@ -33,7 +46,7 @@
     if (!CGRectEqualToRect(self.scrollView.frame, self.bounds)) {
         self.scrollView.frame = self.bounds;
     }
-    [self _updateZoomImageView:self.scrollView.zoomScale];
+    [self pri_updateZoomImageView];
 }
 
 - (UIScrollView *)scrollView
@@ -42,6 +55,10 @@
         _scrollView = [UIScrollView new];
         _scrollView.delegate = self;
         _scrollView.delaysContentTouches = NO;
+        if (@available(iOS 11.0, *)) {
+            _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        } else {
+        }
     }
     return _scrollView;
 }
@@ -51,12 +68,24 @@
     if (_imageView == nil) {
         _imageView = [UIImageView new];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        [_imageView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+        [self pri_setupImageViewKeyPathObserver:YES];
     }
     return _imageView;
 }
 
-- (void)_setupZoomImageViewChildView
+- (void)pri_setupImageViewKeyPathObserver:(BOOL)add
+{
+    if (add) {
+        [_imageView addObserver:self forKeyPath:@"image" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+//        [_imageView addObserver:self forKeyPath:@"contentMode" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+    }
+    else {
+        [_imageView removeObserver:self forKeyPath:@"image"];
+//        [_imageView removeObserver:self forKeyPath:@"contentMode"];
+    }
+}
+
+- (void)pri_setupZoomImageViewChildView
 {
     [self addSubview:self.scrollView];
     self.scrollView.frame = self.bounds;
@@ -66,8 +95,12 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"image"]) {
+        self.scrollView.zoomScale = 1.0;
         _image = self.imageView.image;
-        [self _updateZoomImageView:1.0];
+        [self pri_updateZoomImageView];
+    }
+    else if ([keyPath isEqualToString:@"contentMode"]) {
+        [self pri_updateZoomImageView];
     }
 }
 
@@ -77,30 +110,30 @@
     self.imageView.image = image;
 }
 
-- (void)_updateZoomImageView:(CGFloat)zoomScale
+- (void)pri_updateZoomImageView
 {
-    self.scrollView.zoomScale = zoomScale;
-
     CGSize scrollViewSize = self.scrollView.bounds.size;
-    if (scrollViewSize.width == 0 || scrollViewSize.height == 0) {
+    if (scrollViewSize.width == 0 || scrollViewSize.height == 0 /*|| self.image == nil*/) {
         return;
     }
-    
-    CGSize scrollContentSize = self.scrollView.contentSize;
-    CGFloat w = MAX(scrollContentSize.width, scrollViewSize.width);
-    CGFloat h = MAX(scrollContentSize.height, scrollViewSize.height);
-    scrollContentSize = CGSizeMake(w, h);
-    
-    CGSize contentSize = [self.imageView contentImageSizeInSize:scrollContentSize];
-    
-    if (contentSize.width == 0 || contentSize.height == 0) {
-        return;
+    CGSize imgSize = self.image.size;
+    UIViewContentMode contentMode = self.imageView.contentMode;
+    if (self.autoFitImageViewContentModeWithImage) {
+        contentMode = contentModeThatFits(scrollViewSize, imgSize);
+        self.imageView.contentMode = contentMode;
     }
     
-    CGFloat x = (scrollContentSize.width - contentSize.width)/2;
-    CGFloat y = (scrollContentSize.height - contentSize.height)/2;
+    CGRect frame = rectWithContentMode(scrollViewSize, imgSize, contentMode);
+    CGFloat w = MAX(scrollViewSize.width, frame.size.width);
+    CGFloat h = MAX(scrollViewSize.height, frame.size.height);
     
-    self.imageView.frame = CGRectMake(x, y, contentSize.width, contentSize.height);
+    CGFloat x = (w - frame.size.width)/2;
+    CGFloat y = (h - frame.size.height)/2;
+    self.imageView.frame = CGRectMake(x, y, frame.size.width, frame.size.height);
+    self.scrollView.contentSize = CGSizeMake(w, h);
+    if (_didImageViewUpdateBlock_s) {
+        _didImageViewUpdateBlock_s(self);
+    }
 }
 
 - (CGRect)_zoomRectForScale:(float)scale inPoint:(CGPoint)point
@@ -108,8 +141,8 @@
     CGRect zoomRect;
     zoomRect.size.height = self.scrollView.frame.size.height / scale;
     zoomRect.size.width  = self.scrollView.frame.size.width  / scale;
-    zoomRect.origin.x = point.x - (zoomRect.size.width/2.0);
-    zoomRect.origin.y = point.y - (zoomRect.size.height/2.0);
+    zoomRect.origin.x = point.x - zoomRect.size.width * 0.5;
+    zoomRect.origin.y = point.y - zoomRect.size.height * 0.5;
     return zoomRect;
 }
 
@@ -121,26 +154,6 @@
     CGRect zoomRect = [self _zoomRectForScale:zoomScale inPoint:point];
     [self.scrollView zoomToRect:zoomRect animated:YES];
 }
-
-- (CGPoint)imageViewScaleInSize:(CGSize)size forContentMode:(UIViewContentMode)contentMode
-{
-    if (self.image == nil) {
-        return CGPointZero;
-    }
-    CGSize contentSize = [UIImageView image:self.image contentSizeInSize:size contentMode:contentMode];
-    
-    if (contentSize.width == 0 || contentSize.height == 0) {
-        return CGPointZero;
-    }
-    
-    CGSize scrollViewSize = size;//self.scrollView.bounds.size;
-    
-    CGFloat xScale = scrollViewSize.width/contentSize.width;
-    CGFloat yScale = scrollViewSize.height/contentSize.height;
-    
-    return CGPointMake(xScale, yScale);
-}
-
 
 #pragma mark UIScrollViewDelegate
 -(UIView*)viewForZoomingInScrollView:(UIScrollView *)scrollView
@@ -160,7 +173,7 @@
 
 - (void)dealloc
 {
-    [self.imageView removeObserver:self forKeyPath:@"image"];
+    [self pri_setupImageViewKeyPathObserver:NO];
 }
 
 @end

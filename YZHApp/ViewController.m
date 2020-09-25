@@ -166,16 +166,16 @@
     CGFloat w = self.view.width - 2 *x;
     CGFloat h = 300;
     
-    CGFloat X = SAFE_X;
+//    CGFloat X = SAFE_X;
     
-    int64_t start = MSEC_FROM_DATE_SINCE1970_NOW;
+//    int64_t start = MSEC_FROM_DATE_SINCE1970_NOW;
     YZHUITextView *textView = [[YZHUITextView alloc] initWithFrame:CGRectMake(x, y, w, h)];
 //    textView.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
 //    textView.font = FONT(20);
 //    textView.text = @"123";
     textView.placeholder = @"123456789";
 //    textView.placeholderColor = BLACK_COLOR;
-    int64_t end = MSEC_FROM_DATE_SINCE1970_NOW;
+//    int64_t end = MSEC_FROM_DATE_SINCE1970_NOW;
 //    NSLog(@"time.end=%@,diff=%@",@(end),@(end - start));
 //    textView.textContainerInset = UIEdgeInsetsMake(8, 20, 8, 4);
 //    textView.backgroundColor = RED_COLOR;

@@ -28,7 +28,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "382"
             endingLineNumber = "382"
-            landmarkName = "-setContentOffset:"
+            landmarkName = "-setContentSize:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -45,22 +45,6 @@
             startingLineNumber = "386"
             endingLineNumber = "386"
             landmarkName = "-setContentOffset:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "720B93FB-912A-44C3-AAB1-82CB76520FAC"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/Class/Common/YZHKit/UIView/YZHUITextView/YZHUITextView.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "502"
-            endingLineNumber = "502"
-            landmarkName = "-dealloc"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

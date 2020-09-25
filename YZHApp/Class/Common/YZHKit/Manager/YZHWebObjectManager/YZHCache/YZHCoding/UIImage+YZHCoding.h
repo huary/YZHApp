@@ -13,6 +13,6 @@
 
 @property (nonatomic, copy) YZHDiskCacheEncodeBlock encodeBlock;
 
-//@property (nonatomic, copy) YZHDiskCacheDecodeBlock decodeBlock;
+@property (nonatomic, copy) YZHDiskCacheDecodeBlock decodeBlock;
 
 @end

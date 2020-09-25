@@ -67,6 +67,7 @@
 {
     id<YZHImageCellModelProtocol> cellModel = (id<YZHImageCellModelProtocol>)self.model;
     cellModel.bindImageCell = self;
+    self.zoomView.imageView.contentMode = cellModel.imageViewContentMode;
     if ([cellModel respondsToSelector:@selector(updateBlock)] && cellModel.updateBlock) {
         cellModel.updateBlock(cellModel, self);
     }

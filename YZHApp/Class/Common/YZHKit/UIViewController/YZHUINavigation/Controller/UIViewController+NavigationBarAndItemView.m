@@ -8,7 +8,6 @@
 
 #import "UIViewController+NavigationBarAndItemView.h"
 #import "YZHUINavigationController.h"
-#import "YZHUIViewController.h"
 
 @implementation UIViewController (NavigationBarAndItemView)
 
@@ -21,7 +20,7 @@
     return nil;
 }
 
--(void)setNavigationBarViewBGColor:(UIColor*)color
+-(void)setHz_NavigationBarViewBGColor:(UIColor*)color
 {
     if ([self isKindOfClass:[YZHUIViewController class]]) {
         YZHUIViewController *YZHVC = (YZHUIViewController*)self;
@@ -29,7 +28,7 @@
     }
 }
 
--(UIColor*)navigationBarViewBGColor
+-(UIColor*)hz_navigationBarViewBGColor
 {
     if ([self isKindOfClass:[YZHUIViewController class]]) {
         YZHUIViewController *YZHVC = (YZHUIViewController*)self;
@@ -41,7 +40,7 @@
     }
 }
 
--(void)setNavigationItemViewAlpha:(CGFloat)alpha
+-(void)setHz_NavigationItemViewAlpha:(CGFloat)alpha
 {
     if ([self isKindOfClass:[YZHUIViewController class]]) {
         YZHUIViewController *YZHVC = (YZHUIViewController*)self;
@@ -49,7 +48,7 @@
     }
 }
 
--(CGFloat)navigationItemViewAlpha
+-(CGFloat)hz_navigationItemViewAlpha
 {
     if ([self isKindOfClass:[YZHUIViewController class]]) {
         YZHUIViewController *YZHVC = (YZHUIViewController*)self;

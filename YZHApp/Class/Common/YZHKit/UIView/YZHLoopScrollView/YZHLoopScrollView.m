@@ -72,6 +72,9 @@ typedef NS_ENUM(NSInteger, _YZHScrollViewDragVector)
         _scrollView = [UIScrollView new];
         _scrollView.delegate = self;
         _scrollView.pagingEnabled = YES;
+        _scrollView.minimumZoomScale = 1.0;
+        _scrollView.maximumZoomScale = 1.0;
+        _scrollView.pinchGestureRecognizer.enabled = NO;
         _scrollView.showsVerticalScrollIndicator = NO;
         _scrollView.showsHorizontalScrollIndicator = NO;
     }

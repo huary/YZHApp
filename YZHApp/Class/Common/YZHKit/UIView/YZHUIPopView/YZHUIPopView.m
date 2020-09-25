@@ -1606,9 +1606,14 @@ POP_ACTION_END:
         self.transform = CGAffineTransformMakeScale(0.1, 0.1);
     } completion:^(BOOL finished) {
         [self.cover removeFromSuperview];
-        _cover = nil;
+        [self pri_releaseCover];
         [self removeFromSuperview];
     }];
+}
+
+- (void)pri_releaseCover
+{
+    _cover = nil;
 }
 
 

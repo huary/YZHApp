@@ -23,5 +23,5 @@
 
 -(BOOL)isLogin;
 
--(void)doLogout;
+//-(void)doLogout;
 @end
