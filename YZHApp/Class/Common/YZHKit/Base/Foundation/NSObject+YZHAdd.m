@@ -14,22 +14,22 @@ typedef id(^WeakReferenceObjectBlock)(void);
 
 @implementation NSObject (YZHAdd)
 
--(void)setIdentity:(NSInteger)identity
+-(void)setHz_identity:(NSInteger)hz_identity
 {
-    objc_setAssociatedObject(self, @selector(identity), @(identity), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_identity), @(hz_identity), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSInteger)identity
+-(NSInteger)hz_identity
 {
     return [objc_getAssociatedObject(self, _cmd) integerValue];
 }
 
--(void)setIdentityString:(NSString *)identityString
+-(void)setHz_identityString:(NSString *)hz_identityString
 {
-    objc_setAssociatedObject(self, @selector(identityString), identityString, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_identityString), hz_identityString, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSString*)identityString
+-(NSString*)hz_identityString
 {
     return objc_getAssociatedObject(self, _cmd);
 }
@@ -37,16 +37,16 @@ typedef id(^WeakReferenceObjectBlock)(void);
 
 //weak reference object
 //single
--(void)setWeakReferenceObject:(id)weakReferenceObject
+-(void)setHz_weakReferenceObject:(id)hz_weakReferenceObject
 {
-    WEAK_NSOBJ(weakReferenceObject, weakObject);
+    WEAK_NSOBJ(hz_weakReferenceObject, weakObject);
     WeakReferenceObjectBlock block = ^{
         return weakObject;
     };
-    objc_setAssociatedObject(self, @selector(weakReferenceObject), block, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_weakReferenceObject), block, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(id)weakReferenceObject
+-(id)hz_weakReferenceObject
 {
     WeakReferenceObjectBlock block = objc_getAssociatedObject(self, _cmd);
     id weakObject = (block ? block() : nil);
@@ -54,37 +54,37 @@ typedef id(^WeakReferenceObjectBlock)(void);
 }
 
 //multi
--(void)setWeakReferenceObjectsTable:(NSMapTable *)weakReferenceObjectsTable
+-(void)setHz_weakReferenceObjectsTable:(NSMapTable *)hz_weakReferenceObjectsTable
 {
-    objc_setAssociatedObject(self, @selector(weakReferenceObjectsTable), weakReferenceObjectsTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_weakReferenceObjectsTable), hz_weakReferenceObjectsTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSMapTable*)weakReferenceObjectsTable
+-(NSMapTable*)hz_weakReferenceObjectsTable
 {
     NSMapTable *mapTable = objc_getAssociatedObject(self, _cmd);
     if (!mapTable) {
         mapTable = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsWeakMemory];
-        self.weakReferenceObjectsTable = mapTable;
+        self.hz_weakReferenceObjectsTable = mapTable;
     }
     return mapTable;
 }
 
--(void)setStrongReferenceObjectsTable:(NSMapTable *)strongReferenceObjectsTable
+-(void)setHz_strongReferenceObjectsTable:(NSMapTable *)hz_strongReferenceObjectsTable
 {
-    objc_setAssociatedObject(self, @selector(strongReferenceObjectsTable), strongReferenceObjectsTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_strongReferenceObjectsTable), hz_strongReferenceObjectsTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSMapTable*)strongReferenceObjectsTable
+-(NSMapTable*)hz_strongReferenceObjectsTable
 {
     NSMapTable *table = objc_getAssociatedObject(self, _cmd);
     if (!table) {
         table = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsStrongMemory];
-        self.strongReferenceObjectsTable = table;
+        self.hz_strongReferenceObjectsTable = table;
     }
     return table;
 }
 
--(id)respondsAndPerformSelector:(SEL)selector;
+-(id)hz_respondsAndPerformSelector:(SEL)selector
 {
     if (selector == NULL) {
         return nil;
@@ -99,7 +99,7 @@ typedef id(^WeakReferenceObjectBlock)(void);
     return obj;
 }
 
--(id)respondsAndPerformSelector:(SEL)selector withObject:(id)object
+-(id)hz_respondsAndPerformSelector:(SEL)selector withObject:(id)object
 {
     if (selector == NULL) {
         return nil;
@@ -114,7 +114,7 @@ typedef id(^WeakReferenceObjectBlock)(void);
     return obj;
 }
 
-+(id)respondsToSelector:(SEL)selector forClass:(Class)cls
++(id)hz_respondsToSelector:(SEL)selector forClass:(Class)cls
 {
     if (selector == NULL || cls == NULL) {
         return nil;
@@ -129,7 +129,7 @@ typedef id(^WeakReferenceObjectBlock)(void);
     return obj;
 }
 
-+(id)respondsToSelector:(SEL)selector forClass:(Class)cls withObject:(id)object
++(id)hz_respondsToSelector:(SEL)selector forClass:(Class)cls withObject:(id)object
 {
     if (selector == NULL || cls == NULL) {
         return nil;
@@ -144,27 +144,27 @@ typedef id(^WeakReferenceObjectBlock)(void);
     return obj;
 }
 
--(void)addWeakReferenceObject:(id)object forKey:(id)key
+-(void)hz_addWeakReferenceObject:(id)object forKey:(id)key
 {
-    [self.weakReferenceObjectsTable setObject:object forKey:key];
+    [self.hz_weakReferenceObjectsTable setObject:object forKey:key];
 }
 
--(id)weakReferenceObjectForKey:(id)key
+-(id)hz_weakReferenceObjectForKey:(id)key
 {
-    return [self.weakReferenceObjectsTable objectForKey:key];
+    return [self.hz_weakReferenceObjectsTable objectForKey:key];
 }
 
--(void)addStrongReferenceObject:(id)object forKey:(id)key
+-(void)hz_addStrongReferenceObject:(id)object forKey:(id)key
 {
-    [self.strongReferenceObjectsTable setObject:object forKey:key];
+    [self.hz_strongReferenceObjectsTable setObject:object forKey:key];
 }
 
--(id)strongReferenceObjectForKey:(id)key
+-(id)hz_strongReferenceObjectForKey:(id)key
 {
-    return [self.strongReferenceObjectsTable objectForKey:key];
+    return [self.hz_strongReferenceObjectsTable objectForKey:key];
 }
 
--(BOOL)exchangeInstanceMethodFrom:(SEL)from to:(SEL)to
+-(BOOL)hz_exchangeInstanceMethodFrom:(SEL)from to:(SEL)to
 {
     Class cls = [self class];
     Method fromMethod = class_getInstanceMethod(cls, from);
@@ -178,7 +178,7 @@ typedef id(^WeakReferenceObjectBlock)(void);
     return YES;
 }
 
--(BOOL)exchangeClassMethodFrom:(SEL)from to:(SEL)to
+-(BOOL)hz_exchangeClassMethodFrom:(SEL)from to:(SEL)to
 {
     Class cls = [self class];
     Method fromMethod = class_getClassMethod(cls, from);

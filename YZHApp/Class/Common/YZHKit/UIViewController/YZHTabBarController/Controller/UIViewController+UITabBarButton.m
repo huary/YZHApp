@@ -11,12 +11,12 @@
 
 @implementation UIViewController (UITabBarButton)
 
--(void)setTabBarButton:(YZHUITabBarButton *)tabBarButton
+-(void)setHz_tabBarButton:(YZHUITabBarButton *)hz_tabBarButton
 {
-    objc_setAssociatedObject(self, @selector(tabBarButton), tabBarButton, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_tabBarButton), hz_tabBarButton, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(YZHUITabBarButton*)tabBarButton
+-(YZHUITabBarButton*)hz_tabBarButton
 {
     return (YZHUITabBarButton*)objc_getAssociatedObject(self, _cmd);
 }

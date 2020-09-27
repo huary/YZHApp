@@ -10,39 +10,63 @@
 
 @implementation CALayer (YZHAdd)
 
-GET_SET_PROPERTY(CGFloat, top, Top)
+GET_SET_PROPERTY(CGFloat, top, hz_top, Hz_top)
 
-GET_SET_PROPERTY(CGFloat, left, Left)
+GET_SET_PROPERTY(CGFloat, left, hz_left, Hz_left)
 
-GET_SET_PROPERTY(CGFloat, right, Right)
+GET_SET_PROPERTY(CGFloat, right, hz_right, Hz_right)
 
-GET_SET_PROPERTY(CGFloat, bottom, Bottom)
+GET_SET_PROPERTY(CGFloat, bottom, hz_bottom, Hz_bottom)
 
-GET_SET_PROPERTY(CGFloat, width, Width)
+GET_SET_PROPERTY(CGFloat, width, hz_width, Hz_width)
 
-GET_SET_PROPERTY(CGFloat, height, Height)
+GET_SET_PROPERTY(CGFloat, height, hz_height, Hz_height)
 
--(CGPoint)center
+-(CGPoint)hz_center
 {
     return CGPointMake(self.frame.origin.x + self.frame.size.width * 0.5,
                        self.frame.origin.y + self.frame.size.height * 0.5);
 }
 
--(void)setCenter:(CGPoint)center
+-(void)setHz_center:(CGPoint)hz_center
 {
     CGRect frame = self.frame;
-    frame.origin.x = center.x - frame.size.width * 0.5;
-    frame.origin.y = center.y - frame.size.height * 0.5;
+    frame.origin.x = hz_center.x - frame.size.width * 0.5;
+    frame.origin.y = hz_center.y - frame.size.height * 0.5;
     self.frame = frame;
 }
 
-GET_SET_PROPERTY(CGFloat, centerX, CenterX)
+- (CGFloat)hz_centerX
+{
+    return self.hz_center.x;
+}
 
-GET_SET_PROPERTY(CGFloat, centerY, CenterY)
+- (void)setHz_centerX:(CGFloat)hz_centerX
+{
+    CGPoint c = self.hz_center;
+    c.x = hz_centerX;
+    self.hz_center = c;
+}
 
-GET_SET_PROPERTY(CGPoint, origin, Origin)
+- (CGFloat)hz_centerY
+{
+    return self.hz_center.y;
+}
 
-GET_SET_PROPERTY(CGSize, size, Size)
+- (void)setHz_centerY:(CGFloat)hz_centerY
+{
+    CGPoint c = self.hz_center;
+    c.y = hz_centerY;
+    self.hz_center = c;
+}
+
+//GET_SET_PROPERTY(CGFloat, centerX, hz_centerX, Hz_centerX)
+
+//GET_SET_PROPERTY(CGFloat, centerY, hz_centerY, Hz_centerY)
+
+GET_SET_PROPERTY(CGPoint, origin, hz_origin, Hz_origin)
+
+GET_SET_PROPERTY(CGSize, size, hz_size, Hz_size)
 
 -(UIImage*)hz_snapshotImage
 {

@@ -243,10 +243,10 @@
     CGFloat width = 0;
     CGFloat height = 0;
     if ([self.delegate respondsToSelector:@selector(excelContentView:widthForColumnAtIndex:)]) {
-        width = [self.delegate excelContentView:self widthForColumnAtIndex:indexPath.excelColumn];
+        width = [self.delegate excelContentView:self widthForColumnAtIndex:indexPath.hz_excelColumn];
     }
     if ([self.delegate respondsToSelector:@selector(excelContentView:heightForRowAtIndex:)]) {
-        height = [self.delegate excelContentView:self heightForRowAtIndex:indexPath.excelRow];
+        height = [self.delegate excelContentView:self heightForRowAtIndex:indexPath.hz_excelRow];
     }
     return CGSizeMake(width, height);
 }
@@ -288,8 +288,8 @@
     NSInteger rowCnt = self.contentViewModel.excelRowCnt;
     NSInteger startRowIndex = self.contentViewModel.startRowIndex;
     [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.excelRow >= startRowIndex && obj.excelRow < startRowIndex + rowCnt) {
-            [reloadRows addObject:[NSIndexPath indexPathForRow:obj.excelRow - startRowIndex inSection:0]];
+        if (obj.hz_excelRow >= startRowIndex && obj.hz_excelRow < startRowIndex + rowCnt) {
+            [reloadRows addObject:[NSIndexPath indexPathForRow:obj.hz_excelRow - startRowIndex inSection:0]];
         }
     }];
     
@@ -311,7 +311,7 @@
     [self.tableView.indexPathsForVisibleRows enumerateObjectsUsingBlock:^(NSIndexPath * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSInteger excelRowIndex = obj.row + startRowIndex;
         [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj.excelRow == excelRowIndex) {
+            if (obj.hz_excelRow == excelRowIndex) {
                 [reloadItems addObject:obj];
             }
         }];

@@ -203,7 +203,7 @@
         
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:@(countDown-1) forKey:COUNT_DOWN_KEY];
         
-        _timer = [self addTimerInterval:1.0 actionBlock:^(id object, YZHTimer *timer) {
+        _timer = [self hz_addTimerInterval:1.0 actionBlock:^(id object, YZHTimer *timer) {
             [(YZHAudioController*)object _timerAction:timer];
         }];
         _timer.userInfo = userInfo;
@@ -228,7 +228,7 @@
 
 -(void)_endTimer
 {
-    [self cancelTimer:self.timer];
+    [self hz_cancelTimer:self.timer];
     self.timer = nil;
 }
 

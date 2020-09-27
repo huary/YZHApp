@@ -10,10 +10,10 @@
 
 @interface NSMapTable (YZHAdd)
 
-- (void)enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(id key, id obj, BOOL *stop))block;
+- (void)hz_enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(id key, id obj, BOOL *stop))block;
 
--(NSArray*)allValues;
+-(NSArray*)hz_allValues;
 
--(NSArray*)allKeys;
+-(NSArray*)hz_allKeys;
 
 @end

@@ -10,24 +10,24 @@
 
 @interface UIImage (YZHAdd)
 
--(UIImage*)tintColor:(UIColor*)color;
+-(UIImage*)hz_tintColor:(UIColor*)color;
 
--(UIImage*)tintColor:(UIColor*)color alpha:(CGFloat)alpha inRect:(CGRect)rect;
+-(UIImage*)hz_tintColor:(UIColor*)color alpha:(CGFloat)alpha inRect:(CGRect)rect;
 
--(UIImage*)createImageWithSize:(CGSize)size tintColor:(UIColor*)color;
+-(UIImage*)hz_createImageWithSize:(CGSize)size tintColor:(UIColor*)color;
 
--(UIImage*)resizeImageToSize:(CGSize)size;
+-(UIImage*)hz_resizeImageToSize:(CGSize)size;
 
--(UIImage*)scaleAspectFitInSize:(CGSize)size backgroundColor:(UIColor*)backgroundColor;
+-(UIImage*)hz_scaleAspectFitInSize:(CGSize)size backgroundColor:(UIColor*)backgroundColor;
 
--(UIImage*)fixImageOrientation;
+-(UIImage*)hz_fixImageOrientation;
 
--(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius;
+-(UIImage*)hz_imageByCornerRadius:(CGFloat)cornerRadius;
 
--(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
+-(UIImage*)hz_imageByCornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
 
--(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius corners:(UIRectCorner)corners borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
+-(UIImage*)hz_imageByCornerRadius:(CGFloat)cornerRadius corners:(UIRectCorner)corners borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor;
 
--(CGSize)contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode;
+-(CGSize)hz_contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode;
 
 @end

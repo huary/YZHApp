@@ -11,15 +11,15 @@
 
 @interface UIResponder (YZHUIRefreshAction)
 
-@property (nonatomic, strong) id refreshModel;
+@property (nonatomic, strong) id hz_refreshModel;
 
-@property (nonatomic, copy) YZHUIRefreshBlock refreshBlock;
+@property (nonatomic, copy) YZHUIRefreshBlock hz_refreshBlock;
 
-@property (nonatomic, copy) YZHUIRefreshViewDidBindBlock didBindBlock;
+@property (nonatomic, copy) YZHUIRefreshViewDidBindBlock hz_didBindBlock;
 
 //这里是通过模型来找到对应绑定的view进行刷新。
--(void)bindRefreshModel:(id)refreshModel;
+-(void)hz_bindRefreshModel:(id)refreshModel;
 
--(void)bindRefreshModel:(id)refreshModel forKey:(id)key;
+-(void)hz_bindRefreshModel:(id)refreshModel forKey:(id)key;
 
 @end

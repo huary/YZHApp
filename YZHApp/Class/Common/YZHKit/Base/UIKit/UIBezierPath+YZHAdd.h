@@ -14,13 +14,13 @@
  *此方法为了和UIView的layer的corneradius保持一致，
  *+ (instancetype)bezierPathWithRoundedRect:(CGRect)rect cornerRadius:(CGFloat)cornerRadius;方法同layer上的corneradius存在微小的差别
  */
-+(instancetype)bezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius;
++(instancetype)hz_bezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius;
 
 /*
  *创建一个rect边缘的border的bezierPath
  */
-+(instancetype)borderBezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth;
++(instancetype)hz_borderBezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth;
 
-+(CGRect)borderRectForRoundedRect:(CGRect)rect borderWidth:(CGFloat)borderWidth;
++(CGRect)hz_borderRectForRoundedRect:(CGRect)rect borderWidth:(CGFloat)borderWidth;
 
 @end

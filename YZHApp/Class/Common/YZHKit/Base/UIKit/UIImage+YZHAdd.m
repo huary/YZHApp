@@ -12,12 +12,12 @@
 
 @implementation UIImage (YZHAdd)
 
--(UIImage*)tintColor:(UIColor*)color
+-(UIImage*)hz_tintColor:(UIColor*)color
 {
-    return [self tintColor:color alpha:1.0 inRect:CGRectMake(0, 0, self.size.width, self.size.height)];
+    return [self hz_tintColor:color alpha:1.0 inRect:CGRectMake(0, 0, self.size.width, self.size.height)];
 }
 
--(UIImage*)tintColor:(UIColor*)color alpha:(CGFloat)alpha inRect:(CGRect)rect
+-(UIImage*)hz_tintColor:(UIColor*)color alpha:(CGFloat)alpha inRect:(CGRect)rect
 {
     CGRect graphicsImageRect = CGRectMake(0, 0, self.size.width, self.size.height);
     UIGraphicsBeginImageContextWithOptions(graphicsImageRect.size, NO, self.scale);
@@ -37,7 +37,7 @@
     return image;
 }
 
--(UIImage*)createImageWithSize:(CGSize)size tintColor:(UIColor*)color
+-(UIImage*)hz_createImageWithSize:(CGSize)size tintColor:(UIColor*)color
 {
     UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
@@ -48,7 +48,7 @@
     return image;
 }
 
--(UIImage*)resizeImageToSize:(CGSize)size
+-(UIImage*)hz_resizeImageToSize:(CGSize)size
 {
     UIGraphicsBeginImageContextWithOptions(size, NO, self.scale);
     [self drawInRect:(CGRect){0, 0, size}];
@@ -57,7 +57,7 @@
     return imageNew;
 }
 
--(UIImage*)scaleAspectFitInSize:(CGSize)size backgroundColor:(UIColor*)backgroundColor
+-(UIImage*)hz_scaleAspectFitInSize:(CGSize)size backgroundColor:(UIColor*)backgroundColor
 {
     if (size.width == 0 || size.height == 0) {
         return nil;
@@ -86,7 +86,7 @@
     return mergeImage;
 }
 
--(UIImage*)fixImageOrientation
+-(UIImage*)hz_fixImageOrientation
 {
     UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
     [self drawInRect:(CGRect){0, 0, self.size}];
@@ -95,23 +95,23 @@
     return imageNew;
 }
 
--(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius
+-(UIImage*)hz_imageByCornerRadius:(CGFloat)cornerRadius
 {
-    return [self imageByCornerRadius:cornerRadius borderWidth:0 borderColor:nil];
+    return [self hz_imageByCornerRadius:cornerRadius borderWidth:0 borderColor:nil];
 }
 
--(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor
+-(UIImage*)hz_imageByCornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor
 {
-    return [self imageByCornerRadius:cornerRadius corners:UIRectCornerAllCorners borderWidth:borderWidth borderColor:borderColor];
+    return [self hz_imageByCornerRadius:cornerRadius corners:UIRectCornerAllCorners borderWidth:borderWidth borderColor:borderColor];
 }
 
--(UIImage*)imageByCornerRadius:(CGFloat)cornerRadius corners:(UIRectCorner)corners borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor
+-(UIImage*)hz_imageByCornerRadius:(CGFloat)cornerRadius corners:(UIRectCorner)corners borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor
 {
     CGRect rect = CGRectMake(0, 0, self.size.width, self.size.height);
     return [YZHUIGraphicsImageContext graphicesImage:self graphicsSize:self.size inRect:rect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth borderColor:borderColor];
 }
 
--(CGSize)contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode
+-(CGSize)hz_contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode
 {
     return rectWithContentMode(inSize, self.size, contentMode).size;
 }

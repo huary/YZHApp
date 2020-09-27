@@ -222,7 +222,7 @@ typedef void(^YZHUINavigationControllerActionCompletionBlock)(YZHUINavigationCon
     if (self.navigationItemRootContentView) {
         self.navigationItemRootContentView.frame = self.navigationBarView.bounds;
     }
-    [self.navigationItemViewWithVCMapTable enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, YZHUINavigationItemView * _Nonnull obj, BOOL * _Nonnull stop) {
+    [self.navigationItemViewWithVCMapTable hz_enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, YZHUINavigationItemView * _Nonnull obj, BOOL * _Nonnull stop) {
         obj.frame = self.navigationItemRootContentView.bounds;
     }];
 }
@@ -635,7 +635,7 @@ typedef void(^YZHUINavigationControllerActionCompletionBlock)(YZHUINavigationCon
     if (navigationItemView == nil) {
         return;
     }
-    [self.navigationItemViewWithVCMapTable enumerateKeysAndObjectsUsingBlock:^(id key, YZHUINavigationItemView *itemView, BOOL *stop) {
+    [self.navigationItemViewWithVCMapTable hz_enumerateKeysAndObjectsUsingBlock:^(id key, YZHUINavigationItemView *itemView, BOOL *stop) {
         if (itemView == navigationItemView) {
             [self.navigationItemViewWithVCMapTable removeObjectForKey:key];
             *stop = YES;
@@ -676,7 +676,7 @@ typedef void(^YZHUINavigationControllerActionCompletionBlock)(YZHUINavigationCon
     }
     else {
         if (navigationBarBottomLineColor) {
-            UIImage *image = [[UIImage new] createImageWithSize:CGSizeMake(self.navigationBar.bounds.size.width, SINGLE_LINE_WIDTH) tintColor:navigationBarBottomLineColor];
+            UIImage *image = [[UIImage new] hz_createImageWithSize:CGSizeMake(self.navigationBar.bounds.size.width, SINGLE_LINE_WIDTH) tintColor:navigationBarBottomLineColor];
             [self.navigationBar setShadowImage:image];
         }
         else {

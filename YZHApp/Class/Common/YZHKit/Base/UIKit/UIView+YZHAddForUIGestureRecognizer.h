@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, YZHIntervalGestureRecognizerActionOptions)
  ****************************************************/
 @interface UIGestureRecognizer (GestureRecognizerInfo)
 
-@property (nonatomic, strong) NSDictionary *userInfo;
+@property (nonatomic, strong) NSDictionary *hz_userInfo;
 
 @end
 
@@ -110,24 +110,24 @@ typedef NS_ENUM(NSInteger, YZHIntervalGestureRecognizerActionOptions)
  ****************************************************/
 @interface UIView (YZHAddForUIGestureRecognizer)
 
--(UITapGestureRecognizer *)addTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock;
--(UITapGestureRecognizer *)addDoubleTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock;
--(UIPanGestureRecognizer *)addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock;
+-(UITapGestureRecognizer *)hz_addTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock;
+-(UITapGestureRecognizer *)hz_addDoubleTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock;
+-(UIPanGestureRecognizer *)hz_addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock;
 //这里长按只会调用一次的YZHIntervalGestureRecognizerActionOptionsOnlyOnce，如果没有特别指点系统的那种options的话，长按只会调用一次。
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock;
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock;
 //这里长按只会调用一次的YZHIntervalGestureRecognizerActionOptionsOnlyEnd，如果没有特别指点系统的那种options的话，长按只会调用一次。
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlockOnlyEnd:(YZHGestureRecognizerBlock)gestureBlock;
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlockOnlyEnd:(YZHGestureRecognizerBlock)gestureBlock;
 
--(UITapGestureRecognizer *)addTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock;
--(UITapGestureRecognizer *)addDoubleTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock;
--(UIPanGestureRecognizer *)addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock;
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock;
+-(UITapGestureRecognizer *)hz_addTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock;
+-(UITapGestureRecognizer *)hz_addDoubleTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock;
+-(UIPanGestureRecognizer *)hz_addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock;
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock;
 
--(UIPanGestureRecognizer *)addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo;
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo;
+-(UIPanGestureRecognizer *)hz_addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo;
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo;
 
--(UIPanGestureRecognizer *)addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo;
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo;
+-(UIPanGestureRecognizer *)hz_addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo;
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo*)optionsInfo;
 
 
 @end

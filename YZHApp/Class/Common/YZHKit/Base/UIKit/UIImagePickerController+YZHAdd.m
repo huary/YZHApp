@@ -11,22 +11,21 @@
 
 @implementation UIImagePickerController (YZHAdd)
 
--(void)setTag:(NSUInteger)tag
+- (void)setHz_tag:(NSUInteger)hz_tag
 {
-    objc_setAssociatedObject(self, @selector(tag), @(tag), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_tag), @(hz_tag), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSUInteger)tag
+- (NSUInteger)hz_tag
 {
     return [objc_getAssociatedObject(self, _cmd) unsignedIntegerValue];
 }
 
--(void)setOrientationsBlock:(SupportedInterfaceOrientationsBlock)orientationsBlock
-{
-    objc_setAssociatedObject(self, @selector(orientationsBlock), orientationsBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setHz_orientationsBlock:(YZHSupportedInterfaceOrientationsBlock)hz_orientationsBlock {
+    objc_setAssociatedObject(self, @selector(hz_orientationsBlock), hz_orientationsBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(SupportedInterfaceOrientationsBlock)orientationsBlock
+- (YZHSupportedInterfaceOrientationsBlock)hz_orientationsBlock
 {
     return objc_getAssociatedObject(self, _cmd);
 }
@@ -39,8 +38,8 @@
 
 -(UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-    if (self.orientationsBlock) {
-        UIInterfaceOrientationMask mask = self.orientationsBlock(self);
+    if (self.hz_orientationsBlock) {
+        UIInterfaceOrientationMask mask = self.hz_orientationsBlock(self);
         if (mask >= UIInterfaceOrientationMaskPortrait && mask <= UIInterfaceOrientationMaskAll) {
             return mask;
         }

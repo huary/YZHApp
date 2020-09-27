@@ -10,9 +10,9 @@
 
 @interface UITableViewCell (YZHAdd)
 
-@property (nonatomic, weak) NSIndexPath *indexPath;
+@property (nonatomic, weak) NSIndexPath *hz_indexPath;
 
--(void)setSeparatorLineInsets:(UIEdgeInsets)insets;
+-(void)hz_setSeparatorLineInsets:(UIEdgeInsets)insets;
 
 
 @end

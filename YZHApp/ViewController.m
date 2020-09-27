@@ -148,7 +148,7 @@
     
     UITextField *textField2 = [UITextField new];
     textField2.placeholder = @"text2";
-    textField2.frame = CGRectMake(x, textField.bottom + 10, w, h);
+    textField2.frame = CGRectMake(x, textField.hz_bottom + 10, w, h);
     textField2.layer.borderWidth = 1.0;
     textField2.keyboardType = UIKeyboardTypeNumberPad;
     textField2.layer.borderColor = [UIColor purpleColor].CGColor;
@@ -163,7 +163,7 @@
 {
     CGFloat x = 20;
     CGFloat y = 200;
-    CGFloat w = self.view.width - 2 *x;
+    CGFloat w = self.view.hz_width - 2 *x;
     CGFloat h = 300;
     
 //    CGFloat X = SAFE_X;

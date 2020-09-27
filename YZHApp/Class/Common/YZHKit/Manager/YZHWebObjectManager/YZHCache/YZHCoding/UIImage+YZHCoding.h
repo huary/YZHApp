@@ -11,8 +11,8 @@
 
 @interface UIImage (YZHCoding) <YZHDiskCacheObjectCodingProtocol>
 
-@property (nonatomic, copy) YZHDiskCacheEncodeBlock encodeBlock;
+@property (nonatomic, copy) YZHDiskCacheEncodeBlock hz_encodeBlock;
 
-@property (nonatomic, copy) YZHDiskCacheDecodeBlock decodeBlock;
+@property (nonatomic, copy) YZHDiskCacheDecodeBlock hz_decodeBlock;
 
 @end

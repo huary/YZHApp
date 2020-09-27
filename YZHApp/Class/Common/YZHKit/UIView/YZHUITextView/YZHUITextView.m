@@ -134,14 +134,14 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pri_didChangeTextAction:) name:UITextViewTextDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pri_didEndEditingAction:) name:UITextViewTextDidEndEditingNotification object:nil];
         
-        [self addKVOObserver:self forKeyPath:@"selectedRange" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+        [self hz_addKVOObserver:self forKeyPath:@"selectedRange" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
     }
     else {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidBeginEditingNotification object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidEndEditingNotification object:nil];
         
-        [self removeKVOObserver:self forKeyPath:@"selectedRange" context:nil];
+        [self hz_removeKVOObserver:self forKeyPath:@"selectedRange" context:nil];
     }
 }
 

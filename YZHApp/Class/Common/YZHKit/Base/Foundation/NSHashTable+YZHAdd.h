@@ -10,7 +10,7 @@
 
 @interface NSHashTable (YZHAdd)
 
-- (void)enumerateObjectsUsingBlock:(void (NS_NOESCAPE ^)(id obj, NSUInteger idx, BOOL *stop))block;
+- (void)hz_enumerateObjectsUsingBlock:(void (NS_NOESCAPE ^)(id obj, NSUInteger idx, BOOL *stop))block;
 
 
 @end

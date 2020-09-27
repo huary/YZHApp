@@ -11,22 +11,22 @@
 
 @implementation UIView (UITraitCollectionView)
 
-- (void)setTraitCollectionView:(UITraitCollectionView *)traitCollectionView
+- (void)setHz_traitCollectionView:(UITraitCollectionView *)hz_traitCollectionView
 {
-    UITraitCollectionView *prevView = self.traitCollectionView;
-    if (traitCollectionView != prevView) {
+    UITraitCollectionView *prevView = self.hz_traitCollectionView;
+    if (hz_traitCollectionView != prevView) {
         [prevView removeFromSuperview];
-        if (traitCollectionView) {
-            traitCollectionView.hidden = YES;
-            [self insertSubview:traitCollectionView atIndex:0];
+        if (hz_traitCollectionView) {
+            hz_traitCollectionView.hidden = YES;
+            [self insertSubview:hz_traitCollectionView atIndex:0];
         }
     }
-    objc_setAssociatedObject(self, @selector(traitCollectionView), traitCollectionView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_traitCollectionView), hz_traitCollectionView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (UITraitCollectionView *)traitCollectionView
+- (UITraitCollectionView *)hz_traitCollectionView
 {
-    return objc_getAssociatedObject(self, @selector(traitCollectionView));
+    return objc_getAssociatedObject(self, _cmd);
 }
 
 @end

@@ -129,11 +129,11 @@ static CGFloat defaultProgressLineWidth_s = 5.0;
 
 -(void)_updateLabelFrame
 {
-    CGFloat w = MIN(self.width, self.height);
+    CGFloat w = MIN(self.hz_width, self.hz_height);
     w = w/sqrt(2);
     CGFloat h = w;
-    CGFloat x = (self.width - w)/2;
-    CGFloat y = (self.height - h)/2;
+    CGFloat x = (self.hz_width - w)/2;
+    CGFloat y = (self.hz_height - h)/2;
     self.titleLabel.frame = CGRectMake(x, y, w, h);
 }
 

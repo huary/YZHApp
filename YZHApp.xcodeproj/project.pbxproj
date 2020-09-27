@@ -112,13 +112,10 @@
 		1CC790B2250B9545009EE7A3 /* YZHBaseAnimatedTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FD5250B9545009EE7A3 /* YZHBaseAnimatedTransition.m */; };
 		1CC790B3250B9545009EE7A3 /* YZHDefaultAnimatedTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FD7250B9545009EE7A3 /* YZHDefaultAnimatedTransition.m */; };
 		1CC790B4250B9545009EE7A3 /* YZHUIBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FD8250B9545009EE7A3 /* YZHUIBarButtonItem.m */; };
-		1CC790B5250B9545009EE7A3 /* UIView+Snapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FDB250B9545009EE7A3 /* UIView+Snapshot.m */; };
 		1CC790B6250B9545009EE7A3 /* YZHUINavigationItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FDC250B9545009EE7A3 /* YZHUINavigationItemView.m */; };
 		1CC790B7250B9545009EE7A3 /* YZHUINavigationBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FDF250B9545009EE7A3 /* YZHUINavigationBarView.m */; };
 		1CC790B8250B9545009EE7A3 /* UINavigationPopScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FE2250B9545009EE7A3 /* UINavigationPopScrollView.m */; };
-		1CC790B9250B9545009EE7A3 /* UIScrollView+UIPanGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FE5250B9545009EE7A3 /* UIScrollView+UIPanGestureRecognizers.m */; };
 		1CC790BA250B9545009EE7A3 /* UITabBarController+UITabBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FE7250B9545009EE7A3 /* UITabBarController+UITabBarView.m */; };
-		1CC790BB250B9545009EE7A3 /* UIView+UIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FE8250B9545009EE7A3 /* UIView+UIViewController.m */; };
 		1CC790BC250B9545009EE7A3 /* YZHBaseUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FEB250B9545009EE7A3 /* YZHBaseUIViewController.m */; };
 		1CC790BD250B9545009EE7A3 /* YZHTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FEE250B9545009EE7A3 /* YZHTabBarController.m */; };
 		1CC790BE250B9545009EE7A3 /* UIViewController+UITabBarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78FF0250B9545009EE7A3 /* UIViewController+UITabBarButton.m */; };
@@ -129,7 +126,6 @@
 		1CC790C3250B9545009EE7A3 /* UIView+YZHAddForUIGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC79003250B9545009EE7A3 /* UIView+YZHAddForUIGestureRecognizer.m */; };
 		1CC790C4250B9545009EE7A3 /* UIImage+YZHAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC79006250B9545009EE7A3 /* UIImage+YZHAdd.m */; };
 		1CC790C5250B9545009EE7A3 /* UIImageView+YZHAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC79008250B9545009EE7A3 /* UIImageView+YZHAdd.m */; };
-		1CC790C6250B9545009EE7A3 /* UIView+YZHUIRefreshAction.zip in Resources */ = {isa = PBXBuildFile; fileRef = 1CC7900B250B9545009EE7A3 /* UIView+YZHUIRefreshAction.zip */; };
 		1CC790C7250B9545009EE7A3 /* UIResponder+YZHUIRefreshAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7900D250B9545009EE7A3 /* UIResponder+YZHUIRefreshAction.m */; };
 		1CC790C8250B9545009EE7A3 /* NSObject+YZHRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC7900E250B9545009EE7A3 /* NSObject+YZHRefreshView.m */; };
 		1CC790C9250B9545009EE7A3 /* UIView+UIColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC79012250B9545009EE7A3 /* UIView+UIColor.m */; };
@@ -358,20 +354,14 @@
 		1CC78FD7250B9545009EE7A3 /* YZHDefaultAnimatedTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHDefaultAnimatedTransition.m; sourceTree = "<group>"; };
 		1CC78FD8250B9545009EE7A3 /* YZHUIBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHUIBarButtonItem.m; sourceTree = "<group>"; };
 		1CC78FD9250B9545009EE7A3 /* YZHBaseAnimatedTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHBaseAnimatedTransition.h; sourceTree = "<group>"; };
-		1CC78FDB250B9545009EE7A3 /* UIView+Snapshot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Snapshot.m"; sourceTree = "<group>"; };
 		1CC78FDC250B9545009EE7A3 /* YZHUINavigationItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHUINavigationItemView.m; sourceTree = "<group>"; };
 		1CC78FDD250B9545009EE7A3 /* UINavigationPopScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UINavigationPopScrollView.h; sourceTree = "<group>"; };
 		1CC78FDE250B9545009EE7A3 /* UITabBarController+UITabBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBarController+UITabBarView.h"; sourceTree = "<group>"; };
 		1CC78FDF250B9545009EE7A3 /* YZHUINavigationBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHUINavigationBarView.m; sourceTree = "<group>"; };
-		1CC78FE0250B9545009EE7A3 /* UIScrollView+UIPanGestureRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+UIPanGestureRecognizers.h"; sourceTree = "<group>"; };
-		1CC78FE1250B9545009EE7A3 /* UIView+UIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+UIViewController.h"; sourceTree = "<group>"; };
 		1CC78FE2250B9545009EE7A3 /* UINavigationPopScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UINavigationPopScrollView.m; sourceTree = "<group>"; };
 		1CC78FE3250B9545009EE7A3 /* YZHUINavigationItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHUINavigationItemView.h; sourceTree = "<group>"; };
-		1CC78FE4250B9545009EE7A3 /* UIView+Snapshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Snapshot.h"; sourceTree = "<group>"; };
-		1CC78FE5250B9545009EE7A3 /* UIScrollView+UIPanGestureRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+UIPanGestureRecognizers.m"; sourceTree = "<group>"; };
 		1CC78FE6250B9545009EE7A3 /* YZHUINavigationBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHUINavigationBarView.h; sourceTree = "<group>"; };
 		1CC78FE7250B9545009EE7A3 /* UITabBarController+UITabBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarController+UITabBarView.m"; sourceTree = "<group>"; };
-		1CC78FE8250B9545009EE7A3 /* UIView+UIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+UIViewController.m"; sourceTree = "<group>"; };
 		1CC78FEA250B9545009EE7A3 /* YZHBaseUIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHBaseUIViewController.h; sourceTree = "<group>"; };
 		1CC78FEB250B9545009EE7A3 /* YZHBaseUIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHBaseUIViewController.m; sourceTree = "<group>"; };
 		1CC78FEE250B9545009EE7A3 /* YZHTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHTabBarController.m; sourceTree = "<group>"; };
@@ -398,7 +388,6 @@
 		1CC79007250B9545009EE7A3 /* UIViewController+YZHAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+YZHAdd.h"; sourceTree = "<group>"; };
 		1CC79008250B9545009EE7A3 /* UIImageView+YZHAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+YZHAdd.m"; sourceTree = "<group>"; };
 		1CC7900A250B9545009EE7A3 /* UIResponder+YZHUIRefreshAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+YZHUIRefreshAction.h"; sourceTree = "<group>"; };
-		1CC7900B250B9545009EE7A3 /* UIView+YZHUIRefreshAction.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "UIView+YZHUIRefreshAction.zip"; sourceTree = "<group>"; };
 		1CC7900C250B9545009EE7A3 /* NSObject+YZHRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YZHRefreshView.h"; sourceTree = "<group>"; };
 		1CC7900D250B9545009EE7A3 /* UIResponder+YZHUIRefreshAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+YZHUIRefreshAction.m"; sourceTree = "<group>"; };
 		1CC7900E250B9545009EE7A3 /* NSObject+YZHRefreshView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YZHRefreshView.m"; sourceTree = "<group>"; };
@@ -914,8 +903,8 @@
 			isa = PBXGroup;
 			children = (
 				1CC78F7E250B9544009EE7A3 /* NSData+YZHCoding.h */,
-				1CC78F7F250B9544009EE7A3 /* UIImage+YZHCoding.h */,
 				1CC78F80250B9544009EE7A3 /* NSData+YZHCoding.m */,
+				1CC78F7F250B9544009EE7A3 /* UIImage+YZHCoding.h */,
 				1CC78F81250B9544009EE7A3 /* UIImage+YZHCoding.m */,
 			);
 			path = YZHCoding;
@@ -944,8 +933,8 @@
 		1CC78F8C250B9544009EE7A3 /* NSObject+YZHWebCache */ = {
 			isa = PBXGroup;
 			children = (
-				1CC78F8D250B9544009EE7A3 /* NSObject+YZHWebCache.m */,
 				1CC78F8E250B9544009EE7A3 /* NSObject+YZHWebCache.h */,
+				1CC78F8D250B9544009EE7A3 /* NSObject+YZHWebCache.m */,
 			);
 			path = "NSObject+YZHWebCache";
 			sourceTree = "<group>";
@@ -1142,20 +1131,14 @@
 		1CC78FDA250B9545009EE7A3 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				1CC78FDB250B9545009EE7A3 /* UIView+Snapshot.m */,
-				1CC78FDC250B9545009EE7A3 /* YZHUINavigationItemView.m */,
 				1CC78FDD250B9545009EE7A3 /* UINavigationPopScrollView.h */,
-				1CC78FDE250B9545009EE7A3 /* UITabBarController+UITabBarView.h */,
-				1CC78FDF250B9545009EE7A3 /* YZHUINavigationBarView.m */,
-				1CC78FE0250B9545009EE7A3 /* UIScrollView+UIPanGestureRecognizers.h */,
-				1CC78FE1250B9545009EE7A3 /* UIView+UIViewController.h */,
 				1CC78FE2250B9545009EE7A3 /* UINavigationPopScrollView.m */,
-				1CC78FE3250B9545009EE7A3 /* YZHUINavigationItemView.h */,
-				1CC78FE4250B9545009EE7A3 /* UIView+Snapshot.h */,
-				1CC78FE5250B9545009EE7A3 /* UIScrollView+UIPanGestureRecognizers.m */,
-				1CC78FE6250B9545009EE7A3 /* YZHUINavigationBarView.h */,
+				1CC78FDE250B9545009EE7A3 /* UITabBarController+UITabBarView.h */,
 				1CC78FE7250B9545009EE7A3 /* UITabBarController+UITabBarView.m */,
-				1CC78FE8250B9545009EE7A3 /* UIView+UIViewController.m */,
+				1CC78FE6250B9545009EE7A3 /* YZHUINavigationBarView.h */,
+				1CC78FDF250B9545009EE7A3 /* YZHUINavigationBarView.m */,
+				1CC78FE3250B9545009EE7A3 /* YZHUINavigationItemView.h */,
+				1CC78FDC250B9545009EE7A3 /* YZHUINavigationItemView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1192,12 +1175,12 @@
 		1CC78FF2250B9545009EE7A3 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				1CC78FF3250B9545009EE7A3 /* YZHUITabBarButton.h */,
-				1CC78FF4250B9545009EE7A3 /* UITabBarView.h */,
-				1CC78FF5250B9545009EE7A3 /* UITabBarItem+UIButton.m */,
-				1CC78FF6250B9545009EE7A3 /* YZHUITabBarButton.m */,
-				1CC78FF7250B9545009EE7A3 /* UITabBarView.m */,
 				1CC78FF8250B9545009EE7A3 /* UITabBarItem+UIButton.h */,
+				1CC78FF5250B9545009EE7A3 /* UITabBarItem+UIButton.m */,
+				1CC78FF4250B9545009EE7A3 /* UITabBarView.h */,
+				1CC78FF7250B9545009EE7A3 /* UITabBarView.m */,
+				1CC78FF3250B9545009EE7A3 /* YZHUITabBarButton.h */,
+				1CC78FF6250B9545009EE7A3 /* YZHUITabBarButton.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1225,29 +1208,29 @@
 			isa = PBXGroup;
 			children = (
 				1CC79001250B9545009EE7A3 /* UIBezierPath+YZHAdd.h */,
-				1CC79002250B9545009EE7A3 /* UIDevice+YZHAdd.h */,
-				1CC79003250B9545009EE7A3 /* UIView+YZHAddForUIGestureRecognizer.m */,
-				1CC79004250B9545009EE7A3 /* UIImagePickerController+YZHAdd.h */,
-				1CC79005250B9545009EE7A3 /* UITableViewCell+YZHAdd.h */,
-				1CC79006250B9545009EE7A3 /* UIImage+YZHAdd.m */,
-				1CC79007250B9545009EE7A3 /* UIViewController+YZHAdd.h */,
-				1CC79008250B9545009EE7A3 /* UIImageView+YZHAdd.m */,
-				1CC79009250B9545009EE7A3 /* UIViewRefresh */,
-				1CC7900F250B9545009EE7A3 /* UIColor */,
-				1CC79016250B9545009EE7A3 /* UIView+YZHAdd.h */,
-				1CC79017250B9545009EE7A3 /* UIButton+YZHAdd.h */,
-				1CC79018250B9545009EE7A3 /* UIScrollView+YZHAdd.m */,
-				1CC79019250B9545009EE7A3 /* UIImageView+YZHAdd.h */,
-				1CC7901A250B9545009EE7A3 /* UITableViewCell+YZHAdd.m */,
-				1CC7901B250B9545009EE7A3 /* UIImagePickerController+YZHAdd.m */,
-				1CC7901C250B9545009EE7A3 /* UIImage+YZHAdd.h */,
-				1CC7901D250B9545009EE7A3 /* UIViewController+YZHAdd.m */,
-				1CC7901E250B9545009EE7A3 /* UIView+YZHAddForUIGestureRecognizer.h */,
-				1CC7901F250B9545009EE7A3 /* UIDevice+YZHAdd.m */,
 				1CC79020250B9545009EE7A3 /* UIBezierPath+YZHAdd.m */,
-				1CC79021250B9545009EE7A3 /* UIScrollView+YZHAdd.h */,
+				1CC79017250B9545009EE7A3 /* UIButton+YZHAdd.h */,
 				1CC79022250B9545009EE7A3 /* UIButton+YZHAdd.m */,
+				1CC7900F250B9545009EE7A3 /* UIColor */,
+				1CC79002250B9545009EE7A3 /* UIDevice+YZHAdd.h */,
+				1CC7901F250B9545009EE7A3 /* UIDevice+YZHAdd.m */,
+				1CC7901C250B9545009EE7A3 /* UIImage+YZHAdd.h */,
+				1CC79006250B9545009EE7A3 /* UIImage+YZHAdd.m */,
+				1CC79004250B9545009EE7A3 /* UIImagePickerController+YZHAdd.h */,
+				1CC7901B250B9545009EE7A3 /* UIImagePickerController+YZHAdd.m */,
+				1CC79019250B9545009EE7A3 /* UIImageView+YZHAdd.h */,
+				1CC79008250B9545009EE7A3 /* UIImageView+YZHAdd.m */,
+				1CC79021250B9545009EE7A3 /* UIScrollView+YZHAdd.h */,
+				1CC79018250B9545009EE7A3 /* UIScrollView+YZHAdd.m */,
+				1CC79005250B9545009EE7A3 /* UITableViewCell+YZHAdd.h */,
+				1CC7901A250B9545009EE7A3 /* UITableViewCell+YZHAdd.m */,
+				1CC79016250B9545009EE7A3 /* UIView+YZHAdd.h */,
 				1CC79023250B9545009EE7A3 /* UIView+YZHAdd.m */,
+				1CC7901E250B9545009EE7A3 /* UIView+YZHAddForUIGestureRecognizer.h */,
+				1CC79003250B9545009EE7A3 /* UIView+YZHAddForUIGestureRecognizer.m */,
+				1CC79007250B9545009EE7A3 /* UIViewController+YZHAdd.h */,
+				1CC7901D250B9545009EE7A3 /* UIViewController+YZHAdd.m */,
+				1CC79009250B9545009EE7A3 /* UIViewRefresh */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -1255,11 +1238,10 @@
 		1CC79009250B9545009EE7A3 /* UIViewRefresh */ = {
 			isa = PBXGroup;
 			children = (
-				1CC7900A250B9545009EE7A3 /* UIResponder+YZHUIRefreshAction.h */,
-				1CC7900B250B9545009EE7A3 /* UIView+YZHUIRefreshAction.zip */,
 				1CC7900C250B9545009EE7A3 /* NSObject+YZHRefreshView.h */,
-				1CC7900D250B9545009EE7A3 /* UIResponder+YZHUIRefreshAction.m */,
 				1CC7900E250B9545009EE7A3 /* NSObject+YZHRefreshView.m */,
+				1CC7900A250B9545009EE7A3 /* UIResponder+YZHUIRefreshAction.h */,
+				1CC7900D250B9545009EE7A3 /* UIResponder+YZHUIRefreshAction.m */,
 			);
 			path = UIViewRefresh;
 			sourceTree = "<group>";
@@ -1268,11 +1250,11 @@
 			isa = PBXGroup;
 			children = (
 				1CC79010250B9545009EE7A3 /* UITraitCollectionView.h */,
-				1CC79011250B9545009EE7A3 /* UIView+UITraitCollectionView.h */,
-				1CC79012250B9545009EE7A3 /* UIView+UIColor.m */,
-				1CC79013250B9545009EE7A3 /* UIView+UIColor.h */,
-				1CC79014250B9545009EE7A3 /* UIView+UITraitCollectionView.m */,
 				1CC79015250B9545009EE7A3 /* UITraitCollectionView.m */,
+				1CC79013250B9545009EE7A3 /* UIView+UIColor.h */,
+				1CC79012250B9545009EE7A3 /* UIView+UIColor.m */,
+				1CC79011250B9545009EE7A3 /* UIView+UITraitCollectionView.h */,
+				1CC79014250B9545009EE7A3 /* UIView+UITraitCollectionView.m */,
 			);
 			path = UIColor;
 			sourceTree = "<group>";
@@ -1280,16 +1262,16 @@
 		1CC79024250B9545009EE7A3 /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
-				1CC79025250B9545009EE7A3 /* NSObject+YZHAdd.h */,
-				1CC79026250B9545009EE7A3 /* NSMapTable+YZHAdd.h */,
-				1CC79027250B9545009EE7A3 /* NSHashTable+YZHAdd.m */,
-				1CC79028250B9545009EE7A3 /* NSObject+YZHAddForKVO.h */,
-				1CC79029250B9545009EE7A3 /* NSString+YZHAdd.m */,
-				1CC7902A250B9545009EE7A3 /* NSMapTable+YZHAdd.m */,
-				1CC7902B250B9545009EE7A3 /* NSObject+YZHAdd.m */,
 				1CC7902C250B9545009EE7A3 /* NSHashTable+YZHAdd.h */,
-				1CC7902D250B9545009EE7A3 /* NSString+YZHAdd.h */,
+				1CC79027250B9545009EE7A3 /* NSHashTable+YZHAdd.m */,
+				1CC79026250B9545009EE7A3 /* NSMapTable+YZHAdd.h */,
+				1CC7902A250B9545009EE7A3 /* NSMapTable+YZHAdd.m */,
+				1CC79025250B9545009EE7A3 /* NSObject+YZHAdd.h */,
+				1CC7902B250B9545009EE7A3 /* NSObject+YZHAdd.m */,
+				1CC79028250B9545009EE7A3 /* NSObject+YZHAddForKVO.h */,
 				1CC7902E250B9545009EE7A3 /* NSObject+YZHAddForKVO.m */,
+				1CC7902D250B9545009EE7A3 /* NSString+YZHAdd.h */,
+				1CC79029250B9545009EE7A3 /* NSString+YZHAdd.m */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -1297,8 +1279,8 @@
 		1CC7902F250B9545009EE7A3 /* Quartz */ = {
 			isa = PBXGroup;
 			children = (
-				1CC79030250B9545009EE7A3 /* CALayer+YZHAdd.m */,
 				1CC79031250B9545009EE7A3 /* CALayer+YZHAdd.h */,
+				1CC79030250B9545009EE7A3 /* CALayer+YZHAdd.m */,
 			);
 			path = Quartz;
 			sourceTree = "<group>";
@@ -1330,12 +1312,12 @@
 		1CC79036250B9545009EE7A3 /* YZHTimer */ = {
 			isa = PBXGroup;
 			children = (
-				1CC79037250B9545009EE7A3 /* YZHTimer.h */,
-				1CC79038250B9545009EE7A3 /* YZHModeTimer.h */,
-				1CC79039250B9545009EE7A3 /* NSObject+YZHTimer.m */,
-				1CC7903A250B9545009EE7A3 /* YZHModeTimer.m */,
-				1CC7903B250B9545009EE7A3 /* YZHTimer.m */,
 				1CC7903C250B9545009EE7A3 /* NSObject+YZHTimer.h */,
+				1CC79039250B9545009EE7A3 /* NSObject+YZHTimer.m */,
+				1CC79038250B9545009EE7A3 /* YZHModeTimer.h */,
+				1CC7903A250B9545009EE7A3 /* YZHModeTimer.m */,
+				1CC79037250B9545009EE7A3 /* YZHTimer.h */,
+				1CC7903B250B9545009EE7A3 /* YZHTimer.m */,
 			);
 			path = YZHTimer;
 			sourceTree = "<group>";
@@ -1494,7 +1476,6 @@
 				1CC790A6250B9545009EE7A3 /* record_too_short@3x.png in Resources */,
 				1CC7907A250B9545009EE7A3 /* info.png in Resources */,
 				1CC79080250B9545009EE7A3 /* info@2x.png in Resources */,
-				1CC790C6250B9545009EE7A3 /* UIView+YZHUIRefreshAction.zip in Resources */,
 				1CC7907C250B9545009EE7A3 /* error@2x.png in Resources */,
 				1CC79075250B9545009EE7A3 /* erase.png in Resources */,
 				1CC79077250B9545009EE7A3 /* point.vsh in Resources */,
@@ -1520,7 +1501,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CC790B5250B9545009EE7A3 /* UIView+Snapshot.m in Sources */,
 				1CC790C1250B9545009EE7A3 /* UITabBarView.m in Sources */,
 				1CC790C0250B9545009EE7A3 /* YZHUITabBarButton.m in Sources */,
 				1CC79055250B9545009EE7A3 /* YZHUIExcelContentView.m in Sources */,
@@ -1531,7 +1511,6 @@
 				1CC79088250B9545009EE7A3 /* YZHUITitleButtonItem.m in Sources */,
 				1CC79063250B9545009EE7A3 /* YZHUICalendarTitleView.m in Sources */,
 				1CC790B0250B9545009EE7A3 /* YZHUIViewController.m in Sources */,
-				1CC790B9250B9545009EE7A3 /* UIScrollView+UIPanGestureRecognizers.m in Sources */,
 				1CEB9873251DA93E0029CF9F /* UIViewController+NavigationBarAndItemView.m in Sources */,
 				1CC79060250B9545009EE7A3 /* YZHUICalendarItemCell.m in Sources */,
 				1CC790BD250B9545009EE7A3 /* YZHTabBarController.m in Sources */,
@@ -1593,7 +1572,6 @@
 				1CC79067250B9545009EE7A3 /* YZHUICollectionViewLayout.m in Sources */,
 				1CC7909C250B9545009EE7A3 /* YZHKeyboardManager.m in Sources */,
 				1CC790DB250B9545009EE7A3 /* NSObject+YZHTimer.m in Sources */,
-				1CC790BB250B9545009EE7A3 /* UIView+UIViewController.m in Sources */,
 				1CC79065250B9545009EE7A3 /* YZHUIHoverView.m in Sources */,
 				1CC790DF250B9545009EE7A3 /* YZHOrderSet.m in Sources */,
 				1CC7906E250B9545009EE7A3 /* UIPaintingView.m in Sources */,

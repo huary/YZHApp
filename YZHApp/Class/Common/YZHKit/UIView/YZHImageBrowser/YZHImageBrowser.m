@@ -260,7 +260,7 @@
             fromFrame = [fromView.superview convertRect:fromView.frame toView:showInView];
         }
     
-        UIViewContentMode contentMode = contentModeThatFits(showInView.size, image.size);
+        UIViewContentMode contentMode = contentModeThatFits(showInView.hz_size, image.size);
         
         UIImageView *fromImageView = [UIImageView new];
         fromImageView.image = image;

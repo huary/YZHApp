@@ -11,12 +11,12 @@
 
 @implementation UIImage (YZHCoding)
 
--(void)setEncodeBlock:(YZHDiskCacheEncodeBlock)encodeBlock
+-(void)setHz_encodeBlock:(YZHDiskCacheEncodeBlock)hz_encodeBlock
 {
-    objc_setAssociatedObject(self, @selector(encodeBlock), encodeBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_encodeBlock), hz_encodeBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(YZHDiskCacheEncodeBlock)encodeBlock
+-(YZHDiskCacheEncodeBlock)hz_encodeBlock
 {
     YZHDiskCacheEncodeBlock encode = objc_getAssociatedObject(self, _cmd);
     if (encode == nil) {
@@ -26,24 +26,24 @@
             }
             return nil;
         };
-        self.encodeBlock = encode;
+        self.hz_encodeBlock = encode;
     }
     return encode;
 }
 
--(void)setDecodeBlock:(YZHDiskCacheDecodeBlock)decodeBlock
+-(void)setHz_decodeBlock:(YZHDiskCacheDecodeBlock)hz_decodeBlock
 {
-    objc_setAssociatedObject(self, @selector(decodeBlock), decodeBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_decodeBlock), hz_decodeBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(YZHDiskCacheDecodeBlock)decodeBlock
+-(YZHDiskCacheDecodeBlock)hz_decodeBlock
 {
     YZHDiskCacheDecodeBlock decode = objc_getAssociatedObject(self, _cmd);
     if (!decode) {
         decode = ^id(YZHDiskCache *cache, NSData *data, NSString *path, NSString *inFileName) {
             return [UIImage imageWithData:data];
         };
-        self.decodeBlock = decode;
+        self.hz_decodeBlock = decode;
     }
     return decode;
 }

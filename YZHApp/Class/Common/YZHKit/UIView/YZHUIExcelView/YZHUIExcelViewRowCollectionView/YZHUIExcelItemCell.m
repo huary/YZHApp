@@ -62,7 +62,7 @@
     if (self.indexPath == nil) {
         return;
     }
-    if (self.indexPath.excelColumn != 0) {
+    if (self.indexPath.hz_excelColumn != 0) {
         return;
     }
     if (self.firstSeparatorLine == nil) {
@@ -84,11 +84,11 @@
 
     CGFloat x = 0;
     CGFloat cellWidth = size.width - verticalLineWidth;
-    if (self.indexPath.excelColumn == 0) {
+    if (self.indexPath.hz_excelColumn == 0) {
         self.firstSeparatorLine.hidden = NO;
-        self.firstSeparatorLine.left = 0;
-        self.firstSeparatorLine.size = CGSizeMake(verticalLineWidth, size.height);
-        self.firstSeparatorLine.bottom = self.contentView.bottom;
+        self.firstSeparatorLine.hz_left = 0;
+        self.firstSeparatorLine.hz_size = CGSizeMake(verticalLineWidth, size.height);
+        self.firstSeparatorLine.hz_bottom = self.contentView.hz_bottom;
         x = verticalLineWidth;
         cellWidth = cellWidth - verticalLineWidth;
         
@@ -99,9 +99,9 @@
     }
     
     self.excelCellView.frame = CGRectMake(x, 0, cellWidth, size.height);
-    self.separatorLine.size = CGSizeMake(verticalLineWidth, size.height);
-    self.separatorLine.bottom = self.contentView.bottom;
-    self.separatorLine.right = self.contentView.right;
+    self.separatorLine.hz_size = CGSizeMake(verticalLineWidth, size.height);
+    self.separatorLine.hz_bottom = self.contentView.hz_bottom;
+    self.separatorLine.hz_right = self.contentView.hz_right;
     self.separatorLine.backgroundColor = self.verticalLineColor.CGColor;
 }
 

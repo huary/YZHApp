@@ -65,7 +65,7 @@ static YZHWebObjectLoaderManager *shareLoaderManager_s = nil;
 
 -(void)clearAllMemoryCache
 {
-    [self.loaderMapTable enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [self.loaderMapTable hz_enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         YZHWebObjectLoader *loader = obj;
         [loader.cache.memoryCache removeAllObjects];
     }];

@@ -52,7 +52,7 @@
     self.prevBtn = [YZHUIButton buttonWithType:UIButtonTypeCustom];
     [self.prevBtn setImage:image forState:UIControlStateNormal];
     [self addSubview:self.prevBtn];
-    [self.prevBtn addControlEvent:UIControlEventTouchUpInside actionBlock:^(UIButton *button) {
+    [self.prevBtn hz_addControlEvent:UIControlEventTouchUpInside actionBlock:^(UIButton *button) {
         if ([weakSelf.delegate respondsToSelector:@selector(calendarTitleView:didClickPrevAction:)]) {
             [weakSelf.delegate calendarTitleView:weakSelf didClickPrevAction:weakSelf.titleModel];
         }
@@ -62,7 +62,7 @@
     self.nextBtn = [YZHUIButton buttonWithType:UIButtonTypeCustom];
     [self.nextBtn setImage:image forState:UIControlStateNormal];
     [self addSubview:self.nextBtn];
-    [self.nextBtn addControlEvent:UIControlEventTouchUpInside actionBlock:^(UIButton *button) {
+    [self.nextBtn hz_addControlEvent:UIControlEventTouchUpInside actionBlock:^(UIButton *button) {
         if ([weakSelf.delegate respondsToSelector:@selector(calendarTitleView:didClickNextAction:)]) {
             [weakSelf.delegate calendarTitleView:weakSelf didClickNextAction:weakSelf.titleModel];
         }
@@ -98,12 +98,12 @@
 {
     CGFloat x = 0;
     CGFloat y = 0;
-    CGFloat w = self.width;
-    CGFloat h = self.height;
+    CGFloat w = self.hz_width;
+    CGFloat h = self.hz_height;
     
     [self.titleLabel sizeToFit];
-    x = (w - self.titleLabel.width)/2;
-    w = self.titleLabel.width;
+    x = (w - self.titleLabel.hz_width)/2;
+    w = self.titleLabel.hz_width;
     self.titleLabel.frame = CGRectMake(x, y, w, h);
     
     w = 36;
@@ -114,8 +114,8 @@
     self.nextBtn.frame = CGRectMake(x, 0, w, h);
     
     [self.rightBtn sizeToFit];
-    w = self.rightBtn.width;
-    x = self.width - w - 14;
+    w = self.rightBtn.hz_width;
+    x = self.hz_width - w - 14;
     self.rightBtn.frame = CGRectMake(x, y, w, h);
 }
 

@@ -297,7 +297,7 @@ navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAn
     [self _addChildVC:nav atItemIndex:index];
     YZHUITabBarButton *button = [self.tabBarViewT addTabBarItem:childVC.tabBarItem];
     button.tabBarController = self;
-    childVC.tabBarButton = button;
+    childVC.hz_tabBarButton = button;
 }
 
 -(void)setupChildViewController:(UIViewController*)childVC
@@ -325,7 +325,7 @@ navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAn
     }
     YZHUITabBarButton *button = [self.tabBarViewT addTabBarWithCustomView:customItemView];
     button.tabBarController = self;
-    childVC.tabBarButton = button;
+    childVC.hz_tabBarButton = button;
 }
 
 -(void)clear
@@ -336,7 +336,7 @@ navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAn
         obj.tabBarItem.image = nil;
         obj.tabBarItem.selectedImage = nil;
         [obj removeFromParentViewController];
-        obj.tabBarButton = nil;
+        obj.hz_tabBarButton = nil;
     }];
     [self.tabBarViewT clear];
     self.itemChildVCInfo = nil;

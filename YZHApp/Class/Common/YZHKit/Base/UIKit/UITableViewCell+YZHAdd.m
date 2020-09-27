@@ -14,17 +14,17 @@
 
 @implementation UITableViewCell (YZHAdd)
 
--(void)setIndexPath:(NSIndexPath *)indexPath
+-(void)setHz_indexPath:(NSIndexPath *)hz_indexPath
 {
-    [self addWeakReferenceObject:indexPath forKey:TYPE_STR(indexPath)];
+    [self hz_addWeakReferenceObject:hz_indexPath forKey:TYPE_STR(hz_indexPath)];
 }
 
--(NSIndexPath*)indexPath
+-(NSIndexPath*)hz_indexPath
 {
-    return [self weakReferenceObjectForKey:TYPE_STR(indexPath)];
+    return [self hz_weakReferenceObjectForKey:TYPE_STR(hz_indexPath)];
 }
 
--(void)setSeparatorLineInsets:(UIEdgeInsets)insets
+-(void)hz_setSeparatorLineInsets:(UIEdgeInsets)insets
 {
     if ([self respondsToSelector:@selector(setSeparatorInset:)]) {
         [self setSeparatorInset:insets];

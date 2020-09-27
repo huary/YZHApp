@@ -61,21 +61,21 @@
 #define GET_VIEW_ORIGIN(VIEW)         GET_VIEW_origin(VIEW)
 #define GET_VIEW_SIZE(VIEW)           GET_VIEW_size(VIEW)
 
-#define GET_PROPERTY(TYPE,PROPERTY)             \
-    -(TYPE)PROPERTY                             \
-    {                                           \
-        return GET_VIEW_##PROPERTY(self);       \
+#define GET_PROPERTY(TYPE,PROPERTY,F_NAME)     \
+    -(TYPE)F_NAME                              \
+    {                                          \
+        return GET_VIEW_##PROPERTY(self);      \
     }
 
-#define SET_PROPERTY(TYPE,PROPERTY,NAME)        \
-    -(void)set##NAME:(TYPE)PROPERTY             \
-    {                                           \
-        SET_VIEW_##PROPERTY(self,PROPERTY);     \
+#define SET_PROPERTY(TYPE,PROPERTY,F_NAME)        \
+    -(void)set##F_NAME:(TYPE)PROPERTY             \
+    {                                             \
+        SET_VIEW_##PROPERTY(self,PROPERTY);       \
     }
 
-#define GET_SET_PROPERTY(TYPE,PROPERTY,NAME)    \
-    GET_PROPERTY(TYPE, PROPERTY)                \
-    SET_PROPERTY(TYPE,PROPERTY,NAME)            \
+#define GET_SET_PROPERTY(TYPE,PROPERTY,GF_NAME,SF_NAME)    \
+    GET_PROPERTY(TYPE, PROPERTY, GF_NAME)                  \
+    SET_PROPERTY(TYPE, PROPERTY, SF_NAME)                  \
 
 
 

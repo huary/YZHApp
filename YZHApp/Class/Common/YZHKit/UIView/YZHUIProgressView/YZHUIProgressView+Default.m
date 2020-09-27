@@ -33,13 +33,13 @@ static const CGFloat dismissTime_s = 1.0f;
 
 -(void)progressWithSuccessText:(NSString*)successText showTimeInterval:(NSTimeInterval)timeInterval
 {
-    UIImage *successImage = [[UIImage imageNamed:@"success"] tintColor:WHITE_COLOR];
+    UIImage *successImage = [[UIImage imageNamed:@"success"] hz_tintColor:WHITE_COLOR];
     [self progressShowInView:nil titleText:successText animationImages:@[successImage] showTimeInterval:timeInterval];
 }
 
 -(void)progressWithFailText:(NSString*)failText showTimeInterval:(NSTimeInterval)timeInterval
 {
-    UIImage *failImage = [[UIImage imageNamed:@"error"] tintColor:WHITE_COLOR];
+    UIImage *failImage = [[UIImage imageNamed:@"error"] hz_tintColor:WHITE_COLOR];
     [self progressShowInView:nil titleText:failText animationImages:@[failImage] showTimeInterval:timeInterval];
 }
 
@@ -55,25 +55,25 @@ static const CGFloat dismissTime_s = 1.0f;
 
 -(void)updateWithSuccessText:(NSString*)successText showTimeInterval:(NSTimeInterval)timeInterval
 {
-    UIImage *successImage = [[UIImage imageNamed:@"success"] tintColor:WHITE_COLOR];
+    UIImage *successImage = [[UIImage imageNamed:@"success"] hz_tintColor:WHITE_COLOR];
     [self updateTitleText:successText animationImages:@[successImage] showTimeInterval:timeInterval];
 }
 
 -(void)updateWithFailText:(NSString*)failText showTimeInterval:(NSTimeInterval)timeInterval
 {
-    UIImage *failImage = [[UIImage imageNamed:@"error"] tintColor:WHITE_COLOR];
+    UIImage *failImage = [[UIImage imageNamed:@"error"] hz_tintColor:WHITE_COLOR];
     [self updateTitleText:failText animationImages:@[failImage] showTimeInterval:timeInterval];
 }
 
 -(void)updateWithInfoText:(NSString*)infoText
 {
-    UIImage *InfoImage = [[UIImage imageNamed:@"info"] tintColor:WHITE_COLOR];
+    UIImage *InfoImage = [[UIImage imageNamed:@"info"] hz_tintColor:WHITE_COLOR];
     [self updateTitleText:infoText animationImages:@[InfoImage] showTimeInterval:dismissTime_s];
 }
 
 -(void)updateWithInfoText:(NSString*)infoText showTimeInterval:(NSTimeInterval)timeInterval
 {
-    UIImage *InfoImage = [[UIImage imageNamed:@"info"] tintColor:WHITE_COLOR];
+    UIImage *InfoImage = [[UIImage imageNamed:@"info"] hz_tintColor:WHITE_COLOR];
     [self updateTitleText:infoText animationImages:@[InfoImage] showTimeInterval:timeInterval];
 }
 
@@ -158,19 +158,19 @@ static YZHUIProgressView *_toastView_s = nil;
 
 + (void)toastWithSuccessText:(NSString *)successText inView:(UIView *)inView timeInterval:(NSTimeInterval)timeInterval
 {
-    UIImage *successImage = [[UIImage imageNamed:@"success"] tintColor:WHITE_COLOR];
+    UIImage *successImage = [[UIImage imageNamed:@"success"] hz_tintColor:WHITE_COLOR];
     [[self toastView] progressShowInView:inView titleText:successText animationImages:@[successImage] showTimeInterval:timeInterval];
 }
 
 + (void)toastWithInfoText:(NSString *)infoText inView:(UIView *)inView timeInterval:(NSTimeInterval)timeInterval
 {
-    UIImage *infoImage = [[UIImage imageNamed:@"info"] tintColor:WHITE_COLOR];
+    UIImage *infoImage = [[UIImage imageNamed:@"info"] hz_tintColor:WHITE_COLOR];
     [[self toastView] progressShowInView:inView titleText:infoText animationImages:@[infoImage] showTimeInterval:timeInterval];
 }
 
 + (void)toastWithFailText:(NSString *)failText inView:(UIView *)inView timeInterval:(NSTimeInterval)timeInterval
 {
-    UIImage *failImage = [[UIImage imageNamed:@"error"] tintColor:WHITE_COLOR];
+    UIImage *failImage = [[UIImage imageNamed:@"error"] hz_tintColor:WHITE_COLOR];
     [[self toastView] progressShowInView:inView titleText:failText animationImages:@[failImage] showTimeInterval:timeInterval];
 }
 

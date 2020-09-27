@@ -10,7 +10,7 @@
 
 @implementation NSMapTable (YZHAdd)
 
-- (void)enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(id key, id obj, BOOL *stop))block
+- (void)hz_enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(id key, id obj, BOOL *stop))block
 {
     if (!block) {
         return;
@@ -29,10 +29,10 @@
     }
 }
 
--(NSArray*)allValues
+-(NSArray*)hz_allValues
 {
     NSMutableArray *valueList = [NSMutableArray array];
-    [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [self hz_enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (obj) {
             [valueList addObject:obj];
         }
@@ -40,10 +40,10 @@
     return [valueList copy];
 }
 
--(NSArray*)allKeys
+-(NSArray*)hz_allKeys
 {
     NSMutableArray *keyList = [NSMutableArray array];
-    [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [self hz_enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (key) {
             [keyList addObject:key];
         }

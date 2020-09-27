@@ -53,7 +53,7 @@ static float tabBarImageRatio = 0.65;
     
     CGFloat height = self.bounds.size.height;
     CGFloat itemHeight = height * tabBarImageRatio;
-    CGRange range = self.tabBarItem.imageRange;
+    CGRange range = self.tabBarItem.hz_imageRange;
     if (!CGRangeEqualToZero(range)) {
         itemHeight = height * range.length;
     }
@@ -195,8 +195,8 @@ static float tabBarImageRatio = 0.65;
     NSString *value = badgeValue;
     NSBadgeType type = NSBadgeTypeDefault;
     
-    if (self.tabBarItem.badgeValueUpdateBlock) {
-        value = self.tabBarItem.badgeValueUpdateBlock(self.badgeButton, badgeValue, &type);
+    if (self.tabBarItem.hz_badgeValueUpdateBlock) {
+        value = self.tabBarItem.hz_badgeValueUpdateBlock(self.badgeButton, badgeValue, &type);
     }
     //    if (self.badgeValueUpdateBlock) {
     //        value = self.badgeValueUpdateBlock(self, self.badgeButton, badgeValue, &type);
@@ -211,14 +211,14 @@ static float tabBarImageRatio = 0.65;
 {
     UIColor *badgeColor = AVAILABLE_IOS_V_EXT_R(10.0, UIColor *, nil, self.tabBarItem.badgeColor);
     if (badgeColor == nil/*![self.tabBarItem respondsToSelector:@selector(badgeColor)] || self.tabBarItem.badgeColor == nil*/) {
-        if (self.tabBarItem.badgeBackgroundColor == nil) {
+        if (self.tabBarItem.hz_badgeBackgroundColor == nil) {
             UIColor *colorTmp = [[self _badgeTextAttributes] objectForKey:NSBackgroundColorAttributeName];
             if (colorTmp != nil) {
                 return colorTmp;
             }
             return RED_COLOR;
         }
-        return self.tabBarItem.badgeBackgroundColor;
+        return self.tabBarItem.hz_badgeBackgroundColor;
     }
     AVAILABLE_IOS_V_EXP(10.0, return self.tabBarItem.badgeColor;, return nil;);
 }
@@ -245,18 +245,18 @@ static float tabBarImageRatio = 0.65;
         }
     }
     else {
-        dict = [self.tabBarItem.badgeStateTextAttributes objectForKey:@(self.state)];
+        dict = [self.tabBarItem.hz_badgeStateTextAttributes objectForKey:@(self.state)];
         if (dict == nil) {
-            dict = [self.tabBarItem.badgeStateTextAttributes objectForKey:@(UIControlStateNormal)];
+            dict = [self.tabBarItem.hz_badgeStateTextAttributes objectForKey:@(UIControlStateNormal)];
         }
         if (dict == nil) {
-            dict = [self.tabBarItem.badgeStateTextAttributes objectForKey:@(UIControlStateSelected)];
+            dict = [self.tabBarItem.hz_badgeStateTextAttributes objectForKey:@(UIControlStateSelected)];
         }
         if (dict == nil) {
-            dict = [self.tabBarItem.badgeStateTextAttributes objectForKey:@(UIControlStateHighlighted)];
+            dict = [self.tabBarItem.hz_badgeStateTextAttributes objectForKey:@(UIControlStateHighlighted)];
         }
         if (dict == nil) {
-            dict = [self.tabBarItem.badgeStateTextAttributes objectForKey:@(UIControlStateSelected|UIControlStateHighlighted)];
+            dict = [self.tabBarItem.hz_badgeStateTextAttributes objectForKey:@(UIControlStateSelected|UIControlStateHighlighted)];
         }
     }
     return dict;
@@ -394,8 +394,8 @@ static float tabBarImageRatio = 0.65;
         return CLEAR_COLOR;
     }
     else {
-        if (self.tabBarItem.normalBackgroundColor) {
-            return self.tabBarItem.normalBackgroundColor;
+        if (self.tabBarItem.hz_normalBackgroundColor) {
+            return self.tabBarItem.hz_normalBackgroundColor;
         }
     }
     return CLEAR_COLOR;
@@ -416,8 +416,8 @@ static float tabBarImageRatio = 0.65;
         }
     }
     else {
-        if (self.tabBarItem.selectedBackgroundColor) {
-            return self.tabBarItem.selectedBackgroundColor;
+        if (self.tabBarItem.hz_selectedBackgroundColor) {
+            return self.tabBarItem.hz_selectedBackgroundColor;
         }
     }
     return CLEAR_COLOR;
@@ -437,8 +437,8 @@ static float tabBarImageRatio = 0.65;
         }
     }
     else {
-        if (self.tabBarItem.highlightedBackgroundColor) {
-            return self.tabBarItem.highlightedBackgroundColor;
+        if (self.tabBarItem.hz_highlightedBackgroundColor) {
+            return self.tabBarItem.hz_highlightedBackgroundColor;
         }
     }
     return CLEAR_COLOR;
@@ -501,11 +501,11 @@ static float tabBarImageRatio = 0.65;
     [_tabBarItem addObserver:self forKeyPath:@"badgeColor" options:0 context:nil];
     [_tabBarItem addObserver:self forKeyPath:@"badgeBackgroundColor" options:0 context:nil];
     
-    if (CGRangeEqualToZero(tabBarItem.imageRange) ) {
-        _tabBarItem.imageRange = self.imageRange;
+    if (CGRangeEqualToZero(tabBarItem.hz_imageRange) ) {
+        _tabBarItem.hz_imageRange = self.imageRange;
     }
-    if (CGRangeEqualToZero(tabBarItem.titleRange)) {
-        _tabBarItem.titleRange = self.titleRange;
+    if (CGRangeEqualToZero(tabBarItem.hz_titleRange)) {
+        _tabBarItem.hz_titleRange = self.titleRange;
     }
     
     [self _updateTarbarImageTitle:_tabBarItem];
@@ -540,7 +540,7 @@ static float tabBarImageRatio = 0.65;
 -(CGRect)_getImageRectForContentRect:(CGRect)contentRect
 {
     if (self.tabBarItem) {
-        return [self _getRectForContentRect:contentRect range:self.tabBarItem.imageRange buttonStyle:self.tabBarItem.buttonStyle];
+        return [self _getRectForContentRect:contentRect range:self.tabBarItem.hz_imageRange buttonStyle:self.tabBarItem.hz_buttonStyle];
     }
     else {
         return [self _getRectForContentRect:contentRect range:self.imageRange buttonStyle:self.buttonStyle];
@@ -550,7 +550,7 @@ static float tabBarImageRatio = 0.65;
 -(CGRect)_getTitleRectForContentRect:(CGRect)contentRect
 {
     if (self.tabBarItem) {
-        return [self _getRectForContentRect:contentRect range:self.tabBarItem.titleRange buttonStyle:self.tabBarItem.buttonStyle];
+        return [self _getRectForContentRect:contentRect range:self.tabBarItem.hz_titleRange buttonStyle:self.tabBarItem.hz_buttonStyle];
     }
     else {
         return [self _getRectForContentRect:contentRect range:self.titleRange buttonStyle:self.buttonStyle];

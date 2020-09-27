@@ -18,14 +18,14 @@ typedef NS_ENUM(NSInteger, NSLayerColorTag)
 
 @implementation UIView (UIColor)
 
-- (void)setupLayerBorderColor:(UIColor *)color
+- (void)hz_setupLayerBorderColor:(UIColor *)color
 {
     if (@available(iOS 13.0, *)) {
-        if (self.traitCollectionView == nil) {
-            self.traitCollectionView = [UITraitCollectionView new];
+        if (self.hz_traitCollectionView == nil) {
+            self.hz_traitCollectionView = [UITraitCollectionView new];
         }
         WEAK_SELF(weakSelf);
-        [self.traitCollectionView addTraitCollectionValueChangedBlock:^(UITraitCollectionView *view, id<NSCopying> key) {
+        [self.hz_traitCollectionView addTraitCollectionValueChangedBlock:^(UITraitCollectionView *view, id<NSCopying> key) {
             weakSelf.layer.borderColor = [color resolvedColorWithTraitCollection:weakSelf.traitCollection].CGColor;
         } forKey:@(NSLayerColorTagBorder)];
         self.layer.borderColor = [color resolvedColorWithTraitCollection:self.traitCollection].CGColor;
@@ -35,14 +35,14 @@ typedef NS_ENUM(NSInteger, NSLayerColorTag)
     }
 }
 
-- (void)setupLayerShadowColor:(UIColor *)color
+- (void)hz_setupLayerShadowColor:(UIColor *)color
 {
     if (@available(iOS 13.0, *)) {
-        if (self.traitCollectionView == nil) {
-            self.traitCollectionView = [UITraitCollectionView new];
+        if (self.hz_traitCollectionView == nil) {
+            self.hz_traitCollectionView = [UITraitCollectionView new];
         }
         WEAK_SELF(weakSelf);
-        [self.traitCollectionView addTraitCollectionValueChangedBlock:^(UITraitCollectionView *view, id<NSCopying> key) {
+        [self.hz_traitCollectionView addTraitCollectionValueChangedBlock:^(UITraitCollectionView *view, id<NSCopying> key) {
             weakSelf.layer.shadowColor = [color resolvedColorWithTraitCollection:weakSelf.traitCollection].CGColor;
         } forKey:@(NSLayerColorTagShadow)];
         self.layer.shadowColor = [color resolvedColorWithTraitCollection:self.traitCollection].CGColor;
@@ -52,14 +52,14 @@ typedef NS_ENUM(NSInteger, NSLayerColorTag)
     }
 }
 
-- (void)setupLayerBackgroundColor:(UIColor *)color
+- (void)hz_setupLayerBackgroundColor:(UIColor *)color
 {
     if (@available(iOS 13.0, *)) {
-        if (self.traitCollectionView == nil) {
-            self.traitCollectionView = [UITraitCollectionView new];
+        if (self.hz_traitCollectionView == nil) {
+            self.hz_traitCollectionView = [UITraitCollectionView new];
         }
         WEAK_SELF(weakSelf);
-        [self.traitCollectionView addTraitCollectionValueChangedBlock:^(UITraitCollectionView *view, id<NSCopying> key) {
+        [self.hz_traitCollectionView addTraitCollectionValueChangedBlock:^(UITraitCollectionView *view, id<NSCopying> key) {
             weakSelf.layer.backgroundColor = [color resolvedColorWithTraitCollection:weakSelf.traitCollection].CGColor;
         } forKey:@(NSLayerColorTagBackground)];
         self.layer.backgroundColor = [color resolvedColorWithTraitCollection:self.traitCollection].CGColor;

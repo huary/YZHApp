@@ -10,11 +10,11 @@
 
 @interface UIImageView (YZHAdd)
 
--(CGSize)contentImageSize;
+-(CGSize)hz_contentImageSize;
 
--(CGSize)contentImageSizeInSize:(CGSize)size;
+-(CGSize)hz_contentImageSizeInSize:(CGSize)size;
 
-+(CGSize)image:(UIImage*)image contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode;
++(CGSize)hz_image:(UIImage*)image contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode;
 
 
 @end

@@ -12,11 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIView (UIColor)
 
-- (void)setupLayerBorderColor:(UIColor *)color;
+- (void)hz_setupLayerBorderColor:(UIColor *)color;
 
-- (void)setupLayerShadowColor:(UIColor *)color;
+- (void)hz_setupLayerShadowColor:(UIColor *)color;
 
-- (void)setupLayerBackgroundColor:(UIColor *)color;
+- (void)hz_setupLayerBackgroundColor:(UIColor *)color;
 
 @end
 

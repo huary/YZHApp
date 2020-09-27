@@ -12,9 +12,9 @@ typedef void(^YZHUIButtonActionBlock)(UIButton *button);
 
 @interface UIButton (YZHAdd)
 
--(void)addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock;
+-(void)hz_addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock;
 
--(void)removeControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock;
+-(void)hz_removeControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock;
 
--(YZHUIButtonActionBlock)actionBlockForControlEvent:(UIControlEvents)controlEvents;
+-(YZHUIButtonActionBlock)hz_actionBlockForControlEvent:(UIControlEvents)controlEvents;
 @end

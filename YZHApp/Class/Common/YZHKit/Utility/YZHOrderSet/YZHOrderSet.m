@@ -85,7 +85,7 @@
         return;
     }
     __block id findKey = nil;
-    [self.mapTable enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    [self.mapTable hz_enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (obj == old) {
             findKey = key;
             *stop = YES;

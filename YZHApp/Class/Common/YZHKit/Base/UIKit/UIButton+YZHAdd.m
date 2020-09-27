@@ -50,12 +50,12 @@
 @implementation UIButton (YZHAdd)
 
 
--(void)addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock
+-(void)hz_addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock
 {
-    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self strongReferenceObjectForKey:@(controlEvents)];
+    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
     if (targetList == nil) {
         targetList = [NSMutableArray array];
-        [self addStrongReferenceObject:targetList forKey:@(controlEvents)];
+        [self hz_addStrongReferenceObject:targetList forKey:@(controlEvents)];
     }
     YZHUIButtonEventTarget *target = [[YZHUIButtonEventTarget alloc] initWithActionBlock:actionBlock];
     [self addTarget:target action:@selector(buttonAction:) forControlEvents:controlEvents];
@@ -63,9 +63,9 @@
     [targetList addObject:target];
 }
 
--(void)removeControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock
+-(void)hz_removeControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock
 {
-    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self strongReferenceObjectForKey:@(controlEvents)];
+    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
     NSMutableArray *removeList = [NSMutableArray array];
     [targetList enumerateObjectsUsingBlock:^(YZHUIButtonEventTarget * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [self removeTarget:obj action:@selector(buttonAction:) forControlEvents:controlEvents];
@@ -75,9 +75,9 @@
 }
 
 
--(YZHUIButtonActionBlock)actionBlockForControlEvent:(UIControlEvents)controlEvents
+-(YZHUIButtonActionBlock)hz_actionBlockForControlEvent:(UIControlEvents)controlEvents
 {
-    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self strongReferenceObjectForKey:@(controlEvents)];
+    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
     if (IS_AVAILABLE_NSSET_OBJ(targetList)) {
         return [targetList firstObject].actionBlock;
     }

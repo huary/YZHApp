@@ -195,12 +195,12 @@ typedef NS_ENUM(NSInteger, YZHDiskObjectType)
         suffix = [fileName stringByDeletingLastPathComponent];
     }
     
-    if (IS_AVAILABLE_NSSTRNG(fileName.cacheKey)) {
-        key = fileName.cacheKey;
+    if (IS_AVAILABLE_NSSTRNG(fileName.hz_cacheKey)) {
+        key = fileName.hz_cacheKey;
     }
     else {
-        if (fileName.cacheKeyBlock) {
-            key = fileName.cacheKeyBlock(fileName, self);
+        if (fileName.hz_cacheKeyBlock) {
+            key = fileName.hz_cacheKeyBlock(fileName, self);
         }
         if (!IS_AVAILABLE_NSSTRNG(key)) {
             NSString *lastFileName = [fileName lastPathComponent];
@@ -243,8 +243,8 @@ typedef NS_ENUM(NSInteger, YZHDiskObjectType)
             //encode
             if ([object conformsToProtocol:@protocol(YZHDiskCacheObjectCodingProtocol)]) {
                 id<YZHDiskCacheObjectCodingProtocol> tmp = object;
-                if (tmp.encodeBlock) {
-                    encodeData = tmp.encodeBlock(self, tmp, path, fileName);
+                if (tmp.hz_encodeBlock) {
+                    encodeData = tmp.hz_encodeBlock(self, tmp, path, fileName);
                 }
                 cacheObject.type = YZHDiskObjectTypeCustom;
             }

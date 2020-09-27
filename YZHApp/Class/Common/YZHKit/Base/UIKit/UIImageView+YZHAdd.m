@@ -11,17 +11,17 @@
 
 @implementation UIImageView (YZHAdd)
 
--(CGSize)contentImageSize
+-(CGSize)hz_contentImageSize
 {
-    return [[self class] image:self.image contentSizeInSize:self.bounds.size contentMode:self.contentMode];
+    return [[self class] hz_image:self.image contentSizeInSize:self.bounds.size contentMode:self.contentMode];
 }
 
--(CGSize)contentImageSizeInSize:(CGSize)size
+-(CGSize)hz_contentImageSizeInSize:(CGSize)size
 {
-    return [[self class] image:self.image contentSizeInSize:size contentMode:self.contentMode];
+    return [[self class] hz_image:self.image contentSizeInSize:size contentMode:self.contentMode];
 }
 
-+(CGSize)image:(UIImage*)image contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode
++(CGSize)hz_image:(UIImage*)image contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode
 {
     return rectWithContentMode(inSize, image.size, contentMode).size;
 }

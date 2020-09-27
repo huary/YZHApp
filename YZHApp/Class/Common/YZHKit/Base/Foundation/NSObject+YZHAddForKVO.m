@@ -11,21 +11,21 @@
 
 @implementation NSObject (YZHAddForKVO)
 
--(void)addKVOObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context
+-(void)hz_addKVOObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context
 {
-    if (![self _observerForObserver:observer KeyPath:keyPath]) {
+    if (![self pri_observerForObserver:observer KeyPath:keyPath]) {
         [self addObserver:observer forKeyPath:keyPath options:options context:context];
     }
 }
 
--(void)removeKVOObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context
+-(void)hz_removeKVOObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context
 {
-    if ([self _observerForObserver:observer KeyPath:keyPath]) {
+    if ([self pri_observerForObserver:observer KeyPath:keyPath]) {
         [self removeObserver:observer forKeyPath:keyPath context:context];
     }
 }
 
--(BOOL)_observerForObserver:(id)observer KeyPath:(NSString*)keyPath
+-(BOOL)pri_observerForObserver:(id)observer KeyPath:(NSString*)keyPath
 {
     id info = self.observationInfo;
     NSArray *array = [info valueForKey:@"_observances"];

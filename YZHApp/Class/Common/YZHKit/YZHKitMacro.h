@@ -7,7 +7,7 @@
 //
 
 #import <pthread.h>
-#import "UIView+UIViewController.h"
+#import "UIView+YZHAdd.h"
 
 #ifndef Macro_h
 #define Macro_h
@@ -109,7 +109,7 @@
 
 #define CONST_NAV_BAR_HEIGHT                   (44)
 
-#define NAV_BAR_FRAME                          ([self isKindOfClass:[UINavigationController class]] ? ((UINavigationController*)self).navigationBar.frame : ([self isKindOfClass:[UIViewController class]] ? ((UIViewController*)self).navigationController.navigationBar.frame : ([self isKindOfClass:[UIView class]] ? ((UIView*)self).viewController.navigationController.navigationBar.frame : CGRectMake(SAFE_X,0,SAFE_WIDTH,CONST_NAV_BAR_HEIGHT))))
+#define NAV_BAR_FRAME                          ([self isKindOfClass:[UINavigationController class]] ? ((UINavigationController*)self).navigationBar.frame : ([self isKindOfClass:[UIViewController class]] ? ((UIViewController*)self).navigationController.navigationBar.frame : ([self isKindOfClass:[UIView class]] ? ((UIView*)self).hz_viewController.navigationController.navigationBar.frame : CGRectMake(SAFE_X,0,SAFE_WIDTH,CONST_NAV_BAR_HEIGHT))))
 
 #define NAV_BAR_HEIGHT                         NAV_BAR_FRAME.size.height
 #define NAV_ITEM_HEIGH                         NAV_BAR_HEIGHT

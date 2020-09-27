@@ -28,17 +28,17 @@
     return table;
 }
 
--(void)setRegisterViewTable:(NSMapTable<id,UIResponder *> *)registerViewTable
+-(void)setHz_registerViewTable:(NSMapTable<id,UIResponder *> *)hz_registerViewTable
 {
-    objc_setAssociatedObject(self, @selector(setRegisterViewTable:), registerViewTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_registerViewTable), hz_registerViewTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSMapTable<id, UIResponder *>*)registerViewTable
+-(NSMapTable<id, UIResponder *>*)hz_registerViewTable
 {
     NSMapTable *table = objc_getAssociatedObject(self, _cmd);
     if (table == nil) {
         table = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory valueOptions:NSPointerFunctionsWeakMemory];
-        self.registerViewTable = table;
+        self.hz_registerViewTable = table;
     }
     return table;
 }
@@ -46,7 +46,7 @@
 -(YZHUIRefreshConditionBlock)_defaultConditionBlock
 {
     YZHUIRefreshConditionBlock condition = ^BOOL(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model) {
-        if (refreshView.refreshModel == nil || refreshView.refreshModel == model) {
+        if (refreshView.hz_refreshModel == nil || refreshView.hz_refreshModel == model) {
             return YES;
         }
         return NO;
@@ -112,11 +112,11 @@
     r = condition(refreshView, self);
 
     if (r) {
-        if ([refreshView respondsToSelector:@selector(refreshViewWithModel:)]) {
-            r = [refreshView refreshViewWithModel:self];
+        if ([refreshView respondsToSelector:@selector(hz_refreshViewWithModel:)]) {
+            r = [refreshView hz_refreshViewWithModel:self];
         }
-        else if (refreshView.refreshBlock) {
-            r = refreshView.refreshBlock(refreshView, self);
+        else if (refreshView.hz_refreshBlock) {
+            r = refreshView.hz_refreshBlock(refreshView, self);
         }
     }
     return r;
@@ -169,24 +169,24 @@
  */
 -(void)hz_registerView:(UIResponder*)view ForRegisterKey:(id)registerKey
 {
-    [self.registerViewTable setObject:view forKey:registerKey];
+    [self.hz_registerViewTable setObject:view forKey:registerKey];
 }
 
 //通过在View中进行registerRefreshViewForRegisterKey来注册的view时的registerKey找到对应的
 -(UIResponder*)hz_viewForRegisterKey:(id)registerKey
 {
-    return [self.registerViewTable objectForKey:registerKey];
+    return [self.hz_registerViewTable objectForKey:registerKey];
 }
 
 //清除某一个注册的key
 -(void)hz_clearRegisterViewForRegisterKey:(id)registerKey
 {
-    [self.registerViewTable removeObjectForKey:registerKey];
+    [self.hz_registerViewTable removeObjectForKey:registerKey];
 }
 
 //清除所有的注册的view
 -(void)hz_clearRegisterView
 {
-    [self.registerViewTable removeAllObjects];
+    [self.hz_registerViewTable removeAllObjects];
 }
 @end

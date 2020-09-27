@@ -55,12 +55,12 @@ IMPLEMENTATION_FOR_CLASS(YZHUIExcelViewRowCellModel)
     self.leftLockContentView.frame = CGRectMake(0, 0, leftWidth, size.height);
     self.rightScrollContentView.frame = CGRectMake(leftWidth, 0, rightWidth, size.height);
     
-    self.separatorLine.size = CGSizeMake(size.width, self.separatorLineWidth);
-    self.separatorLine.bottom = self.contentView.bottom;
+    self.separatorLine.hz_size = CGSizeMake(size.width, self.separatorLineWidth);
+    self.separatorLine.hz_bottom = self.contentView.hz_bottom;
     
     if (self.firstRowTopLine) {
-        self.firstRowTopLine.size = CGSizeMake(self.bounds.size.width, self.separatorLineWidth);
-        self.firstRowTopLine.top = 0;
+        self.firstRowTopLine.hz_size = CGSizeMake(self.bounds.size.width, self.separatorLineWidth);
+        self.firstRowTopLine.hz_top = 0;
     }
 }
 
@@ -97,8 +97,8 @@ IMPLEMENTATION_FOR_CLASS(YZHUIExcelViewRowCellModel)
         self.firstRowTopLine = [self _createSeparatorLine];
         [self.contentView.layer addSublayer:self.firstRowTopLine];
     }
-    self.firstRowTopLine.size = CGSizeMake(self.bounds.size.width, self.separatorLineWidth);
-    self.firstRowTopLine.top = 0;
+    self.firstRowTopLine.hz_size = CGSizeMake(self.bounds.size.width, self.separatorLineWidth);
+    self.firstRowTopLine.hz_top = 0;
 }
 
 -(void)_updateSeparatorLineLayer:(CALayer*)lineLayer
@@ -218,14 +218,14 @@ IMPLEMENTATION_FOR_CLASS(YZHUIExcelViewRowCellModel)
     NSInteger leftCnt = self.cellModel.cellInLeftLockViewCnt;
     NSInteger rightCnt = self.cellModel.cellInRightScrollViewCnt;
     [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.excelRow != self.cellModel.rowIndex) {
+        if (obj.hz_excelRow != self.cellModel.rowIndex) {
             return ;
         }
-        if (obj.excelColumn < leftCnt) {
-            [leftReloadIndexPaths addObject:[NSIndexPath indexPathForItem:obj.excelColumn inSection:0]];
+        if (obj.hz_excelColumn < leftCnt) {
+            [leftReloadIndexPaths addObject:[NSIndexPath indexPathForItem:obj.hz_excelColumn inSection:0]];
         }
         else {
-            NSInteger index = obj.excelColumn - leftCnt;
+            NSInteger index = obj.hz_excelColumn - leftCnt;
             if (index < rightCnt) {
                 [rightReloadIndexPaths addObject:[NSIndexPath indexPathForItem:index inSection:0]];
             }

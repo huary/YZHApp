@@ -12,9 +12,9 @@ typedef NSString*(^YZHCacheKeyBlock)(NSString *url, id target);
 
 @interface NSString (YZHCache)
 
-@property (nonatomic, strong) NSString *cacheKey;
+@property (nonatomic, strong) NSString *hz_cacheKey;
 
 /* <#注释#> */
-@property (nonatomic, copy) YZHCacheKeyBlock cacheKeyBlock;
+@property (nonatomic, copy) YZHCacheKeyBlock hz_cacheKeyBlock;
 
 @end

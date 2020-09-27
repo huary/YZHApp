@@ -11,7 +11,7 @@
 @interface UITabBarController (UITabBarView)
 
 /** 注释 */
-@property (nonatomic, strong) UIView *tabBarView;
+@property (nonatomic, strong) UIView *hz_tabBarView;
 
 
 @end

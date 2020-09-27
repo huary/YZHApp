@@ -72,7 +72,7 @@
 
 -(NSIndexPath*)_excelIndexPathForCollectionCellIndexPath:(NSIndexPath*)indexPath
 {
-    NSIndexPath *excelIndexPath = [NSIndexPath indexPathForExcelRow:self.excelRowIndex excelColumn:self.startColumnIndex + indexPath.item];
+    NSIndexPath *excelIndexPath = [NSIndexPath hz_indexPathForExcelRow:self.excelRowIndex excelColumn:self.startColumnIndex + indexPath.item];
     return excelIndexPath;
 }
 

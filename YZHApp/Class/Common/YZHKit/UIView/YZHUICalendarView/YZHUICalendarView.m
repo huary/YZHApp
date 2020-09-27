@@ -74,7 +74,7 @@
 {
     if (_flowLayout == nil) {
 //        CGFloat w = floor(self.width/7);
-        CGFloat w = self.width/7;
+        CGFloat w = self.hz_width/7;
         _flowLayout = [[UICollectionViewFlowLayout alloc] init];
         _flowLayout.itemSize = CGSizeMake(w, w);
         _flowLayout.minimumLineSpacing = 0;
@@ -94,7 +94,7 @@
     [self addSubview:self.titleView];
     
     x = 0;
-    y = self.titleView.bottom;
+    y = self.titleView.hz_bottom;
     h = SINGLE_LINE_WIDTH;
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(x, y, w, h)];
     line.backgroundColor = RGB_WITH_INT_WITH_NO_ALPHA(0xdddddd);
@@ -102,8 +102,8 @@
     self.line = line;
     
     x = 0;
-    y = line.bottom;
-    h = self.height - y;
+    y = line.hz_bottom;
+    h = self.hz_height - y;
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(x, y, w, h) collectionViewLayout:self.flowLayout];
     self.collectionView.backgroundColor = WHITE_COLOR;
     self.collectionView.delegate = self;
@@ -118,8 +118,8 @@
 {
     [super layoutSubviews];
     
-    self.titleView.width = self.width;
-    self.line.width = self.width;
+    self.titleView.hz_width = self.hz_width;
+    self.line.hz_width = self.hz_width;
     
     if (_dateComponents == nil) {
         self.dateComponents = _dateComponents;        
@@ -211,13 +211,13 @@
     NSInteger totalCnt = self.weekDays.count + self.firstDayWeekDay - 1 + monthDays.count;
     NSInteger rowCnt = (totalCnt + 6)/ 7;
     CGFloat collectionViewHeight = rowCnt * self.flowLayout.itemSize.height;
-    self.collectionView.height = collectionViewHeight;
+    self.collectionView.hz_height = collectionViewHeight;
     
-    CGFloat totalHeight = self.line.bottom + collectionViewHeight;
-    self.height = totalHeight;
+    CGFloat totalHeight = self.line.hz_bottom + collectionViewHeight;
+    self.hz_height = totalHeight;
     
     if ([self.delegate respondsToSelector:@selector(calendarView:updateToSize:)]) {
-        [self.delegate calendarView:self updateToSize:self.size];
+        [self.delegate calendarView:self updateToSize:self.hz_size];
     }
     
     YZHUICalendarTitleModel *titleModel = [[YZHUICalendarTitleModel alloc] initWithDateComponents:dateComponents];

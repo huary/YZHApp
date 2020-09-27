@@ -49,29 +49,29 @@ CGRangeEqualToZero(CGRange r)
 }
 
 
-typedef NSString*(^TabBarItemBadgeBlock)(UIButton *badgeButton, NSString *badgeValue, NSBadgeType *badgeType);
+typedef NSString*(^UITabBarItemBadgeBlock)(UIButton *badgeButton, NSString *badgeValue, NSBadgeType *badgeType);
 
 @interface UITabBarItem (UIButton)
 
-@property (nonatomic, assign) NSButtonImageTitleStyle buttonStyle;
+@property (nonatomic, assign) NSButtonImageTitleStyle hz_buttonStyle;
 
 //这个一般不用设置的。
-@property (nonatomic, assign) CGPoint buttonItemOrigin;
+@property (nonatomic, assign) CGPoint hz_buttonItemOrigin;
 
-@property (nonatomic, assign) CGSize buttonItemSize;
+@property (nonatomic, assign) CGSize hz_buttonItemSize;
 
-@property (nonatomic, assign) CGRange imageRange;
-@property (nonatomic, assign) CGRange titleRange;
+@property (nonatomic, assign) CGRange hz_imageRange;
+@property (nonatomic, assign) CGRange hz_titleRange;
 
-@property (nonatomic, strong) UIColor *normalBackgroundColor;
-@property (nonatomic, strong) UIColor *selectedBackgroundColor;
-@property (nonatomic, strong) UIColor *highlightedBackgroundColor;
+@property (nonatomic, strong) UIColor *hz_normalBackgroundColor;
+@property (nonatomic, strong) UIColor *hz_selectedBackgroundColor;
+@property (nonatomic, strong) UIColor *hz_highlightedBackgroundColor;
 
 /** 10.0以前设置badge的color */
-@property (nonatomic, strong) UIColor *badgeBackgroundColor;
+@property (nonatomic, strong) UIColor *hz_badgeBackgroundColor;
 
-@property (nonatomic, copy) NSDictionary<NSNumber *,NSDictionary<NSString *,id>*> *badgeStateTextAttributes;
+@property (nonatomic, copy) NSDictionary<NSNumber *,NSDictionary<NSString *,id>*> *hz_badgeStateTextAttributes;
 
-@property (nonatomic, copy) TabBarItemBadgeBlock badgeValueUpdateBlock;
+@property (nonatomic, copy) UITabBarItemBadgeBlock hz_badgeValueUpdateBlock;
 
 @end

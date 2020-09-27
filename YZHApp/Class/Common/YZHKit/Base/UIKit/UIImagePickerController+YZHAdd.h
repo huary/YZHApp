@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-typedef UIInterfaceOrientationMask(^SupportedInterfaceOrientationsBlock)(UIImagePickerController *imagePickerController);
+typedef UIInterfaceOrientationMask(^YZHSupportedInterfaceOrientationsBlock)(UIImagePickerController *imagePickerController);
 
 
 @interface UIImagePickerController (YZHAdd)
 
-@property (nonatomic, assign) NSUInteger tag;
+@property (nonatomic, assign) NSUInteger hz_tag;
 
-@property (nonatomic, copy) SupportedInterfaceOrientationsBlock orientationsBlock;
+@property (nonatomic, copy) YZHSupportedInterfaceOrientationsBlock hz_orientationsBlock;
 
 @end

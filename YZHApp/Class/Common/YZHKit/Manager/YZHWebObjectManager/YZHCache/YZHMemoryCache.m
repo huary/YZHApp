@@ -358,7 +358,7 @@ static YZHMemoryCache *shareMemoryCache_s = nil;
 -(void)removeAllObjects
 {
     MUTEX_LOCK(self.lock);
-    NSArray *allValues = [self.cache allValues];
+    NSArray *allValues = [self.cache hz_allValues];
     [self.cache removeAllObjects];
     MUTEX_UNLOCK(self.lock);
     [self _dispatchDeleteList:allValues];
@@ -368,7 +368,7 @@ static YZHMemoryCache *shareMemoryCache_s = nil;
 {
     MUTEX_LOCK(self.lock);
     
-    NSArray *allValues = [self.cache allValues];
+    NSArray *allValues = [self.cache hz_allValues];
 
     MUTEX_UNLOCK(self.lock);
     
@@ -379,7 +379,7 @@ static YZHMemoryCache *shareMemoryCache_s = nil;
 {
     MUTEX_LOCK(self.lock);
     
-    NSArray *allKeys = [self.cache allKeys];
+    NSArray *allKeys = [self.cache hz_allKeys];
     
     MUTEX_UNLOCK(self.lock);
     

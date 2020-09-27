@@ -68,14 +68,14 @@
 -(void)_addKVOForState:(BOOL)add
 {
     if (add) {
-        [self addKVOObserver:self forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:NULL];
-        [self addKVOObserver:self forKeyPath:@"selected" options:NSKeyValueObservingOptionNew context:NULL];
-        [self addKVOObserver:self forKeyPath:@"highlighted" options:NSKeyValueObservingOptionNew context:NULL];
+        [self hz_addKVOObserver:self forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [self hz_addKVOObserver:self forKeyPath:@"selected" options:NSKeyValueObservingOptionNew context:NULL];
+        [self hz_addKVOObserver:self forKeyPath:@"highlighted" options:NSKeyValueObservingOptionNew context:NULL];
     }
     else {
-        [self removeKVOObserver:self forKeyPath:@"enabled" context:NULL];
-        [self removeKVOObserver:self forKeyPath:@"selected" context:NULL];
-        [self removeKVOObserver:self forKeyPath:@"highlighted" context:NULL];
+        [self hz_removeKVOObserver:self forKeyPath:@"enabled" context:NULL];
+        [self hz_removeKVOObserver:self forKeyPath:@"selected" context:NULL];
+        [self hz_removeKVOObserver:self forKeyPath:@"highlighted" context:NULL];
     }
 }
 

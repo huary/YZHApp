@@ -10,10 +10,10 @@
 
 @interface NSIndexPath (YZHUIExcelView)
 
-+(instancetype)indexPathForExcelRow:(NSInteger)excelRow excelColumn:(NSInteger)excelColoumn;
++(instancetype)hz_indexPathForExcelRow:(NSInteger)excelRow excelColumn:(NSInteger)excelColoumn;
 
-@property (nonatomic, assign, readonly) NSInteger excelRow;
-@property (nonatomic, assign, readonly) NSInteger excelColumn;
+@property (nonatomic, assign, readonly) NSInteger hz_excelRow;
+@property (nonatomic, assign, readonly) NSInteger hz_excelColumn;
 
 
 @end

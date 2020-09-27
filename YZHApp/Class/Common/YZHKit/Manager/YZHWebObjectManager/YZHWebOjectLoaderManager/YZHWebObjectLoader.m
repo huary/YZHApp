@@ -132,12 +132,12 @@
 -(NSString*)_cacheKeyFor:(NSString*)url
 {
     NSString *key = nil;
-    if (IS_AVAILABLE_NSSTRNG(url.cacheKey)) {
-        key = url.cacheKey;
+    if (IS_AVAILABLE_NSSTRNG(url.hz_cacheKey)) {
+        key = url.hz_cacheKey;
     }
     else {
-        if (url.cacheKeyBlock) {
-            key = url.cacheKeyBlock(url, self);
+        if (url.hz_cacheKeyBlock) {
+            key = url.hz_cacheKeyBlock(url, self);
         }
         if (!IS_AVAILABLE_NSSTRNG(key)) {
             key = [YZHUtil MD5ForText:key lowercase:YES];

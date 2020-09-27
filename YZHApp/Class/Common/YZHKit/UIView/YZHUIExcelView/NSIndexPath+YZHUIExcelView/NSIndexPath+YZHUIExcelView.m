@@ -11,32 +11,32 @@
 
 @implementation NSIndexPath (YZHUIExcelView)
 
-+(instancetype)indexPathForExcelRow:(NSInteger)excelRow excelColumn:(NSInteger)excelColoumn
++(instancetype)hz_indexPathForExcelRow:(NSInteger)excelRow excelColumn:(NSInteger)excelColoumn
 {
     NSIndexPath *indexPath = [[NSIndexPath alloc] init];
-    indexPath.excelRow = excelRow;
-    indexPath.excelColumn = excelColoumn;
+    indexPath.hz_excelRow = excelRow;
+    indexPath.hz_excelColumn = excelColoumn;
     return indexPath;
 }
 
--(void)setExcelRow:(NSInteger)excelRow
+-(void)setHz_excelRow:(NSInteger)hz_excelRow
 {
-    excelRow = MAX(excelRow, 0);
-    objc_setAssociatedObject(self, @selector(excelRow), @(excelRow), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    hz_excelRow = MAX(hz_excelRow, 0);
+    objc_setAssociatedObject(self, @selector(hz_excelRow), @(hz_excelRow), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSInteger)excelRow
+-(NSInteger)hz_excelRow
 {
     return [objc_getAssociatedObject(self, _cmd) integerValue];
 }
 
--(void)setExcelColumn:(NSInteger)excelColumn
+-(void)setHz_excelColumn:(NSInteger)hz_excelColumn
 {
-    excelColumn = MAX(excelColumn, 0);
-    objc_setAssociatedObject(self, @selector(excelColumn), @(excelColumn), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    hz_excelColumn = MAX(hz_excelColumn, 0);
+    objc_setAssociatedObject(self, @selector(hz_excelColumn), @(hz_excelColumn), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSInteger)excelColumn
+-(NSInteger)hz_excelColumn
 {
     return [objc_getAssociatedObject(self, _cmd) integerValue];
 }

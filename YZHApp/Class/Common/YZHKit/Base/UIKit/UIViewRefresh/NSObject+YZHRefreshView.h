@@ -18,19 +18,19 @@ typedef void(^YZHUIRefreshViewDidBindBlock)(UIResponder<YZHUIRefreshViewProtocol
 
 @protocol YZHUIRefreshViewProtocol <NSObject>
 
-@property (nonatomic, strong) id refreshModel;
+@property (nonatomic, strong) id hz_refreshModel;
 
 //刷新block
-@property (nonatomic, copy) YZHUIRefreshBlock refreshBlock;
+@property (nonatomic, copy) YZHUIRefreshBlock hz_refreshBlock;
 
 //绑定完成的block
-@property (nonatomic, copy) YZHUIRefreshViewDidBindBlock didBindBlock;
+@property (nonatomic, copy) YZHUIRefreshViewDidBindBlock hz_didBindBlock;
 
 //刷新方法、同refreshBlock
--(BOOL)refreshViewWithModel:(id)model;
+-(BOOL)hz_refreshViewWithModel:(id)model;
 
 //绑定完成的方法，和上面的didBindBlock同效
--(void)refreshViewDidBindModel:(id)model withKey:(id)key;
+-(void)hz_refreshViewDidBindModel:(id)model withKey:(id)key;
 @end
 
 

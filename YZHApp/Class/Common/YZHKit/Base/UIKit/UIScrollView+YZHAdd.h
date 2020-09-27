@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-typedef BOOL(^UIGestureRecognizerShouldBeginBlock)(UIScrollView *scrollView, UIGestureRecognizer *gestureRecognizer);
+//typedef BOOL(^UIGestureRecognizerShouldBeginBlock)(UIScrollView *scrollView, UIGestureRecognizer *gestureRecognizer);
 
-typedef BOOL(^UIGestureRecognizerShouldRecognizeSimultaneouslyBlock)(UIScrollView *scrollView,UIGestureRecognizer *first, UIGestureRecognizer *second);
+//typedef BOOL(^UIGestureRecognizerShouldRecognizeSimultaneouslyBlock)(UIScrollView *scrollView,UIGestureRecognizer *first, UIGestureRecognizer *second);
 
 //typedef BOOL(^YZHTouchesShouldCancelInContentViewBlock)(UIScrollView *scrollView,UIView *contentView);
 
@@ -21,6 +21,6 @@ typedef BOOL(^UIGestureRecognizerShouldRecognizeSimultaneouslyBlock)(UIScrollVie
 
 //@property (nonatomic, copy) YZHTouchesShouldCancelInContentViewBlock touchesShouldCancelBlock;
 
--(void)setUIPanGestureRecognizersEnabled:(BOOL)enabled whitPanGestureRecognizerShouldBeginBlock:(UIGestureRecognizerShouldBeginBlock)panGestureRecognizerShouldBeginBlock panGestureRecognizerShouldSimultaneouslyBlock:(UIGestureRecognizerShouldRecognizeSimultaneouslyBlock)panGestureRecognizerShouldSimultaneouslyBlock;
+//-(void)setUIPanGestureRecognizersEnabled:(BOOL)enabled whitPanGestureRecognizerShouldBeginBlock:(UIGestureRecognizerShouldBeginBlock)panGestureRecognizerShouldBeginBlock panGestureRecognizerShouldSimultaneouslyBlock:(UIGestureRecognizerShouldRecognizeSimultaneouslyBlock)panGestureRecognizerShouldSimultaneouslyBlock;
 
 @end

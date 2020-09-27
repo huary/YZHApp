@@ -34,23 +34,22 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
  ****************************************************/
 @implementation UIGestureRecognizer (GestureRecognizerInfo)
 
--(void)setYZHState:(YZHUIGestureRecognizerState)YZHState
+- (void)setHz_state:(YZHUIGestureRecognizerState)hz_state
 {
-    objc_setAssociatedObject(self, @selector(YZHState), @(YZHState), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_state), @(hz_state), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(YZHUIGestureRecognizerState)YZHState
+-(YZHUIGestureRecognizerState)hz_state
 {
     return (YZHUIGestureRecognizerState)[objc_getAssociatedObject(self, _cmd) integerValue];
 }
 
-
--(void)setUserInfo:(NSDictionary *)userInfo
+-(void)setHz_userInfo:(NSDictionary *)hz_userInfo
 {
-    objc_setAssociatedObject(self, @selector(userInfo), userInfo, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_userInfo), hz_userInfo, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(NSDictionary*)userInfo
+-(NSDictionary*)hz_userInfo
 {
     return objc_getAssociatedObject(self, _cmd);
 }
@@ -65,12 +64,12 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
 {
     self = [super init];
     if (self) {
-        [self _setupDefault];
+        [self pri_setupDefault];
     }
     return self;
 }
 
--(void)_setupDefault
+-(void)pri_setupDefault
 {
     _minActionTimeInterval = MIN_TIME_INTERVAL;
     _maxActionTimeInterval = MAX_TIME_INTERVAL;
@@ -266,7 +265,7 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
     YZHIntervalGestureRecognizerActionOptionsInfo *actionOptionsInfo = self.actionOptionsInfo;
     
 //    NSLog(@"gesture=%@",self.gestureRecognizer);
-    self.gestureRecognizer.userInfo = actionInfo;
+    self.gestureRecognizer.hz_userInfo = actionInfo;
     
     YZHIntervalGestureRecognizerActionOptions option = actionOptionsInfo.actionOptions;
     if (self.gestureBlock && [self _shouldDoNextActionForGesture:self.gestureRecognizer])
@@ -296,25 +295,25 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
         {
             if (self.gestureRecognizer.state == UIGestureRecognizerStateBegan) {
                 self.gestureBlock(self.gestureRecognizer);
-                self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateBegan;
+                self.gestureRecognizer.hz_state = YZHUIGestureRecognizerStateBegan;
             }
             else if (self.gestureRecognizer.state == UIGestureRecognizerStateChanged) {
                 if (option == YZHIntervalGestureRecognizerActionOptionsBeginChangeEnd) {
-                    if (self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateBegan) {
+                    if (self.gestureRecognizer.hz_state == YZHUIGestureRecognizerStateBegan) {
                         self.gestureBlock(self.gestureRecognizer);
-                        self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateChanged;
+                        self.gestureRecognizer.hz_state = YZHUIGestureRecognizerStateChanged;
                     }
                     return;
                 }
                 else {
                     self.gestureBlock(self.gestureRecognizer);
-                    self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateChanged;
+                    self.gestureRecognizer.hz_state = YZHUIGestureRecognizerStateChanged;
                 }
             }
             else if (self.gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-                if (self.gestureRecognizer.YZHState == YZHUIGestureRecognizerStateChanged) {
+                if (self.gestureRecognizer.hz_state == YZHUIGestureRecognizerStateChanged) {
                     self.gestureBlock(self.gestureRecognizer);
-                    self.gestureRecognizer.YZHState = YZHUIGestureRecognizerStateEnded;
+                    self.gestureRecognizer.hz_state = YZHUIGestureRecognizerStateEnded;
                 }
                 return;
             }
@@ -357,56 +356,56 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
  ****************************************************/
 @implementation UIView (YZHAddForUIGestureRecognizer)
 
--(void)setGestureTargets:(NSMutableArray<UIGestureRecognizerBlockTarget*> *)gestureTargets
+-(void)setHz_gestureTargets:(NSMutableArray<UIGestureRecognizerBlockTarget*> *)hz_gestureTargets
 {
-    objc_setAssociatedObject(self, @selector(gestureTargets), gestureTargets, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_gestureTargets), hz_gestureTargets, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSMutableArray<UIGestureRecognizerBlockTarget*> *)gestureTargets
+-(NSMutableArray<UIGestureRecognizerBlockTarget*> *)hz_gestureTargets
 {
     NSMutableArray *targets = objc_getAssociatedObject(self, _cmd);
     if (targets == nil) {
         targets = [NSMutableArray array];
-        self.gestureTargets = targets;
+        self.hz_gestureTargets = targets;
     }
     return targets;
 }
 
--(void)beforeDo
+-(void)hz_beforeDo
 {
     self.userInteractionEnabled = YES;
 }
 
--(UITapGestureRecognizer*)addTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock
+-(UITapGestureRecognizer*)hz_addTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock
 {
-    return [self addTapGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil];
+    return [self hz_addTapGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil];
 }
 
--(UITapGestureRecognizer *)addDoubleTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock
+-(UITapGestureRecognizer *)hz_addDoubleTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock
 {
-    return [self addDoubleTapGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil];
+    return [self hz_addDoubleTapGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil];
 }
 
--(UIPanGestureRecognizer *)addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock
+-(UIPanGestureRecognizer *)hz_addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock
 {
-    return [self addPanGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil];
+    return [self hz_addPanGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil];
 }
 
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock
 {
-    return [self addLongPressGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil];
+    return [self hz_addLongPressGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil];
 }
 
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlockOnlyEnd:(YZHGestureRecognizerBlock)gestureBlock
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlockOnlyEnd:(YZHGestureRecognizerBlock)gestureBlock
 {
     YZHIntervalGestureRecognizerActionOptionsInfo *actionOptionsInfo = [[YZHIntervalGestureRecognizerActionOptionsInfo alloc] init];
     actionOptionsInfo.actionOptions = YZHIntervalGestureRecognizerActionOptionsOnlyEnd;
-    return [self addLongPressGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil actionOptionsInfo:actionOptionsInfo];
+    return [self hz_addLongPressGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil actionOptionsInfo:actionOptionsInfo];
 }
 
--(UITapGestureRecognizer *)addTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock
+-(UITapGestureRecognizer *)hz_addTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock
 {
-    [self beforeDo];
+    [self hz_beforeDo];
     
     UIGestureRecognizerBlockTarget *target = [[UIGestureRecognizerBlockTarget alloc] initWithGestureBlock:gestureBlock shouldBeginBlock:shouldBeginBlock];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:target action:@selector(gestureAction:)];
@@ -414,18 +413,18 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
     target.gestureRecognizer = tapGesture;
 
     [self addGestureRecognizer:tapGesture];
-    [self.gestureTargets addObject:target];
+    [self.hz_gestureTargets addObject:target];
     return tapGesture;
 }
 
--(UITapGestureRecognizer *)addDoubleTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock
+-(UITapGestureRecognizer *)hz_addDoubleTapGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock
 {
-    [self beforeDo];
+    [self hz_beforeDo];
     
     UIGestureRecognizerBlockTarget *target = [[UIGestureRecognizerBlockTarget alloc] initWithGestureBlock:gestureBlock shouldBeginBlock:shouldBeginBlock];
     UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:target action:@selector(gestureAction:)];
     doubleTapGesture.numberOfTapsRequired = 2;
-    for (UIGestureRecognizerBlockTarget *targetTmp in self.gestureTargets) {
+    for (UIGestureRecognizerBlockTarget *targetTmp in self.hz_gestureTargets) {
         if ([targetTmp.gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
             UITapGestureRecognizer *singleTap = (UITapGestureRecognizer*)targetTmp.gestureRecognizer;
             if (singleTap.numberOfTapsRequired == 1) {
@@ -436,36 +435,36 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
     target.gestureRecognizer = doubleTapGesture;
 
     [self addGestureRecognizer:doubleTapGesture];
-    [self.gestureTargets addObject:target];
+    [self.hz_gestureTargets addObject:target];
     
     return doubleTapGesture;
 }
 
--(UIPanGestureRecognizer *)addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock
+-(UIPanGestureRecognizer *)hz_addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock
 {
-    return [self addPanGestureRecognizerBlock:gestureBlock shouldBeginBlock:shouldBeginBlock actionOptionsInfo:nil];
+    return [self hz_addPanGestureRecognizerBlock:gestureBlock shouldBeginBlock:shouldBeginBlock actionOptionsInfo:nil];
 }
 
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock
 {
     YZHIntervalGestureRecognizerActionOptionsInfo *actionOptionsInfo = [[YZHIntervalGestureRecognizerActionOptionsInfo alloc] init];
     actionOptionsInfo.actionOptions = YZHIntervalGestureRecognizerActionOptionsOnlyOnce;
-    return [self addLongPressGestureRecognizerBlock:gestureBlock shouldBeginBlock:shouldBeginBlock actionOptionsInfo:actionOptionsInfo];
+    return [self hz_addLongPressGestureRecognizerBlock:gestureBlock shouldBeginBlock:shouldBeginBlock actionOptionsInfo:actionOptionsInfo];
 }
 
--(UIPanGestureRecognizer *)addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo *)optionsInfo
+-(UIPanGestureRecognizer *)hz_addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo *)optionsInfo
 {
-    return [self addPanGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil actionOptionsInfo:optionsInfo];
+    return [self hz_addPanGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil actionOptionsInfo:optionsInfo];
 }
 
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo *)optionsInfo
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo *)optionsInfo
 {
-    return [self addLongPressGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil actionOptionsInfo:optionsInfo];
+    return [self hz_addLongPressGestureRecognizerBlock:gestureBlock shouldBeginBlock:nil actionOptionsInfo:optionsInfo];
 }
 
--(UIPanGestureRecognizer *)addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo *)optionsInfo
+-(UIPanGestureRecognizer *)hz_addPanGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo *)optionsInfo
 {
-    [self beforeDo];
+    [self hz_beforeDo];
     
     UIGestureRecognizerBlockTarget *target = [[UIGestureRecognizerBlockTarget alloc] initWithGestureBlock:gestureBlock shouldBeginBlock:shouldBeginBlock];
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:target action:@selector(gestureAction:)];
@@ -474,13 +473,13 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
     target.gestureRecognizer = panGesture;
     
     [self addGestureRecognizer:panGesture];
-    [self.gestureTargets addObject:target];
+    [self.hz_gestureTargets addObject:target];
     return panGesture;
 }
 
--(UILongPressGestureRecognizer *)addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo *)optionsInfo
+-(UILongPressGestureRecognizer *)hz_addLongPressGestureRecognizerBlock:(YZHGestureRecognizerBlock)gestureBlock shouldBeginBlock:(YZHGestureRecognizerShouldBeginBlock)shouldBeginBlock actionOptionsInfo:(YZHIntervalGestureRecognizerActionOptionsInfo *)optionsInfo
 {
-    [self beforeDo];
+    [self hz_beforeDo];
     
     UIGestureRecognizerBlockTarget *target = [[UIGestureRecognizerBlockTarget alloc] initWithGestureBlock:gestureBlock shouldBeginBlock:shouldBeginBlock];
     
@@ -492,7 +491,7 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
     
     
     [self addGestureRecognizer:longGesture];
-    [self.gestureTargets addObject:target];
+    [self.hz_gestureTargets addObject:target];
     
     return longGesture;
 }

@@ -10,8 +10,8 @@
 
 @interface NSObject (YZHAddForKVO)
 
--(void)addKVOObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context;
+-(void)hz_addKVOObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(void *)context;
 
--(void)removeKVOObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context;
+-(void)hz_removeKVOObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath context:(void *)context;
 
 @end

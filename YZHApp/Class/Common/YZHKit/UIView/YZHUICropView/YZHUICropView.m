@@ -204,12 +204,12 @@ typedef NS_ENUM(NSInteger, YZHCropViewType)
 -(void)_addKVO:(BOOL)add
 {
     if (add) {
-        [self.cropTargetView addKVOObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
-        [self.cropTargetView addKVOObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+        [self.cropTargetView hz_addKVOObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+        [self.cropTargetView hz_addKVOObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
     }
     else {
-        [self.cropTargetView removeKVOObserver:self forKeyPath:@"frame" context:nil];
-        [self.cropTargetView removeKVOObserver:self forKeyPath:@"bounds" context:nil];
+        [self.cropTargetView hz_removeKVOObserver:self forKeyPath:@"frame" context:nil];
+        [self.cropTargetView hz_removeKVOObserver:self forKeyPath:@"bounds" context:nil];
     }
 }
 
@@ -234,7 +234,7 @@ typedef NS_ENUM(NSInteger, YZHCropViewType)
     UIPointView *point = [UIPointView new];
     point.tag = tag;
     WEAK_SELF(weakSelf);
-    [point addPanGestureRecognizerBlock:^(UIGestureRecognizer *gesture) {
+    [point hz_addPanGestureRecognizerBlock:^(UIGestureRecognizer *gesture) {
         [weakSelf _pointPanAction:(UIPanGestureRecognizer*)gesture];
     }];
     return point;

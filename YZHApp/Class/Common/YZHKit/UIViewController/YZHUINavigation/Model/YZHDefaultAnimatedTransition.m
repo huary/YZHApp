@@ -9,7 +9,7 @@
 #import "YZHDefaultAnimatedTransition.h"
 #import "UIViewController+NavigationBarAndItemView.h"
 #import "UITabBarController+UITabBarView.h"
-#import "UIView+Snapshot.h"
+#import "UIView+YZHAdd.h"
 #import <objc/runtime.h>
 #import "YZHKitType.h"
 
@@ -44,7 +44,7 @@
     BOOL hidden = self.tabBar.hidden;
     self.tabBar.hidden = NO;
     
-    UIView *transitionView = [self.tabBar snapshotImageView];
+    UIView *transitionView = [self.tabBar hz_snapshotImageView];
     CALayer *lineLayer = [[CALayer alloc] init];
     lineLayer.frame = CGRectMake(0, -SINGLE_LINE_WIDTH, transitionView.bounds.size.width, SINGLE_LINE_WIDTH);
     lineLayer.backgroundColor = RGBA_F(0, 0, 0, 0.3).CGColor;
@@ -90,11 +90,11 @@
     CGFloat toViewTransitionX = CGRectGetWidth(containerView.bounds);
     CGFloat fromViewTransitionX = toViewTransitionX/2;
     
-    UIColor *fromColor = nil;//[fromVC hz_navigationBarViewBGColor];
-    UIColor *toColor = nil;//[toVC hz_navigationBarViewBGColor];
+    UIColor *fromColor = [fromVC hz_navigationBarViewBGColor];
+    UIColor *toColor = [toVC hz_navigationBarViewBGColor];
     
-    CGFloat fromAlpha = 0;//[fromVC hz_navigationItemViewAlpha];
-    CGFloat toAlpha = 0;//[toVC hz_navigationItemViewAlpha];
+    CGFloat fromAlpha = [fromVC hz_navigationItemViewAlpha];
+    CGFloat toAlpha = [toVC hz_navigationItemViewAlpha];
     
     UIColor *shadowColor = BLACK_COLOR;
     CGSize shadowOffset = CGSizeMake(-3, 0);
@@ -144,8 +144,8 @@
                 hideBottomBar = YES;
                 UITabBar *tabBar = fromVC.tabBarController.tabBar;
                 UIView *transitionView = nil;
-                if (fromVC.tabBarController.tabBarView) {
-                    transitionView = fromVC.tabBarController.tabBarView;
+                if (fromVC.tabBarController.hz_tabBarView) {
+                    transitionView = fromVC.tabBarController.hz_tabBarView;
                     [transitionView removeFromSuperview];
                 }
                 else {
@@ -201,8 +201,8 @@
 
                                  if (hideBottomBar) {
                                      UITabBar *tabBar = fromVC.tabBarController.tabBar;
-                                     if (fromVC.tabBarController.tabBarView) {
-                                         UIView *transitionView = fromVC.tabBarController.tabBarView;
+                                     if (fromVC.tabBarController.hz_tabBarView) {
+                                         UIView *transitionView = fromVC.tabBarController.hz_tabBarView;
                                          [transitionView removeFromSuperview];
                                          
                                          CGRect frame = transitionView.frame;
@@ -266,8 +266,8 @@
                 UITabBar *tabBar = toVC.tabBarController.tabBar;
                 
                 UIView *transitionView = nil;
-                if (toVC.tabBarController.tabBarView) {
-                    transitionView = toVC.tabBarController.tabBarView;
+                if (toVC.tabBarController.hz_tabBarView) {
+                    transitionView = toVC.tabBarController.hz_tabBarView;
                     [transitionView removeFromSuperview];
                 }
                 else {
@@ -348,8 +348,8 @@
                                  
                                  if (showBottomBar) {
                                      UITabBar *tabBar = toVC.tabBarController.tabBar;
-                                     if (toVC.tabBarController.tabBarView) {
-                                         UIView *transitionView = toVC.tabBarController.tabBarView;
+                                     if (toVC.tabBarController.hz_tabBarView) {
+                                         UIView *transitionView = toVC.tabBarController.hz_tabBarView;
                                          [transitionView removeFromSuperview];
                                          
                                          CGRect frame = tabBar.bounds;

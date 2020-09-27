@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIViewController (YZHAdd)
 
 /** <#注释#> */
-@property (nonatomic, strong, readonly) NSVCInterfaceOrientationConfig *interfaceOrientationConfig;
+@property (nonatomic, strong, readonly) NSVCInterfaceOrientationConfig *hz_interfaceOrientationConfig;
 
 - (BOOL)hz_shouldAutorotate;
 

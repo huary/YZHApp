@@ -11,7 +11,7 @@
 
 @interface UIViewController (NavigationBarAndItemView)
 
-@property (nonatomic, strong, readonly) YZHUINavigationController *YZHNavigationController;
+@property (nonatomic, strong, readonly) YZHUINavigationController *hz_navigationController;
 
 -(void)setHz_NavigationBarViewBGColor:(UIColor*)color;
 -(UIColor*)hz_navigationBarViewBGColor;

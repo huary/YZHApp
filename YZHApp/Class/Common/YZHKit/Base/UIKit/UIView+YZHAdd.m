@@ -12,25 +12,25 @@
 
 @implementation UIView (YZHAdd)
 
-GET_SET_PROPERTY(CGFloat, top, Top)
+GET_SET_PROPERTY(CGFloat, top, hz_top, Hz_top)
 
-GET_SET_PROPERTY(CGFloat, left, Left)
+GET_SET_PROPERTY(CGFloat, left, hz_left, Hz_left)
 
-GET_SET_PROPERTY(CGFloat, right, Right)
+GET_SET_PROPERTY(CGFloat, right, hz_right, Hz_right)
 
-GET_SET_PROPERTY(CGFloat, bottom, Bottom)
+GET_SET_PROPERTY(CGFloat, bottom, hz_bottom, Hz_bottom)
 
-GET_SET_PROPERTY(CGFloat, width, Width)
+GET_SET_PROPERTY(CGFloat, width, hz_width, Hz_width)
 
-GET_SET_PROPERTY(CGFloat, height, Height)
+GET_SET_PROPERTY(CGFloat, height, hz_height, Hz_height)
 
-GET_SET_PROPERTY(CGFloat, centerX, CenterX)
+GET_SET_PROPERTY(CGFloat, centerX, hz_centerX, Hz_centerX)
 
-GET_SET_PROPERTY(CGFloat, centerY, CenterY)
+GET_SET_PROPERTY(CGFloat, centerY, hz_centerY, Hz_centerY)
 
-GET_SET_PROPERTY(CGPoint, origin, Origin)
+GET_SET_PROPERTY(CGPoint, origin, hz_origin, Hz_origin)
 
-GET_SET_PROPERTY(CGSize, size, Size)
+GET_SET_PROPERTY(CGSize, size, hz_size, Hz_size)
 
 
 

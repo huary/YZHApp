@@ -11,6 +11,6 @@
 
 @interface UIViewController (UITabBarButton)
 
-@property (nonatomic, strong) YZHUITabBarButton *tabBarButton;
+@property (nonatomic, strong) YZHUITabBarButton *hz_tabBarButton;
 
 @end

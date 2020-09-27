@@ -100,17 +100,17 @@ static NSBundleInterfaceOrientation *defaultInterfaceOrientation_s = nil;
 
 @implementation UIViewController (YZHAdd)
 
-- (void)setInterfaceOrientationConfig:(NSVCInterfaceOrientationConfig *)interfaceOrientationConfig
+- (void)setHz_interfaceOrientationConfig:(NSVCInterfaceOrientationConfig *)hz_interfaceOrientationConfig
 {
-    objc_setAssociatedObject(self, @selector(interfaceOrientationConfig), interfaceOrientationConfig, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_interfaceOrientationConfig), hz_interfaceOrientationConfig, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSVCInterfaceOrientationConfig *)interfaceOrientationConfig
+- (NSVCInterfaceOrientationConfig *)hz_interfaceOrientationConfig
 {
     NSVCInterfaceOrientationConfig *config = objc_getAssociatedObject(self, _cmd);
     if (!config) {
         config = [NSVCInterfaceOrientationConfig new];
-        self.interfaceOrientationConfig = config;
+        self.hz_interfaceOrientationConfig = config;
     }
     return config;
 }
@@ -123,10 +123,10 @@ static NSBundleInterfaceOrientation *defaultInterfaceOrientation_s = nil;
     else if ([self isKindOfClass:[UINavigationController class]]) {
         return [((UINavigationController*)self).topViewController shouldAutorotate];
     }
-    if (self.interfaceOrientationConfig.provider) {
-        return [self.interfaceOrientationConfig.provider(self, NSVCInterfaceOrientationConfigOptionAutoRotatable) boolValue];
+    if (self.hz_interfaceOrientationConfig.provider) {
+        return [self.hz_interfaceOrientationConfig.provider(self, NSVCInterfaceOrientationConfigOptionAutoRotatable) boolValue];
     }
-    return self.interfaceOrientationConfig.autoRotatable;
+    return self.hz_interfaceOrientationConfig.autoRotatable;
 }
 
 - (UIInterfaceOrientationMask)hz_supportedInterfaceOrientations
@@ -137,10 +137,10 @@ static NSBundleInterfaceOrientation *defaultInterfaceOrientation_s = nil;
     else if ([self isKindOfClass:[UINavigationController class]]) {
         return [((UINavigationController*)self).topViewController supportedInterfaceOrientations];
     }
-    if (self.interfaceOrientationConfig.provider) {
-        return [self.interfaceOrientationConfig.provider(self, NSVCInterfaceOrientationConfigOptionInterfaceOrientationMask) unsignedIntegerValue];
+    if (self.hz_interfaceOrientationConfig.provider) {
+        return [self.hz_interfaceOrientationConfig.provider(self, NSVCInterfaceOrientationConfigOptionInterfaceOrientationMask) unsignedIntegerValue];
     }
-    return self.interfaceOrientationConfig.interfaceOrientationMask;
+    return self.hz_interfaceOrientationConfig.interfaceOrientationMask;
 }
 
 - (UIInterfaceOrientation)hz_preferredInterfaceOrientationForPresentation
@@ -151,10 +151,10 @@ static NSBundleInterfaceOrientation *defaultInterfaceOrientation_s = nil;
     else if ([self isKindOfClass:[UINavigationController class]]) {
         return [((UINavigationController*)self).topViewController preferredInterfaceOrientationForPresentation];
     }
-    if (self.interfaceOrientationConfig.provider) {
-        return [self.interfaceOrientationConfig.provider(self, NSVCInterfaceOrientationConfigOptionPreferredInterfaceOrientation) integerValue];
+    if (self.hz_interfaceOrientationConfig.provider) {
+        return [self.hz_interfaceOrientationConfig.provider(self, NSVCInterfaceOrientationConfigOptionPreferredInterfaceOrientation) integerValue];
     }
-    return self.interfaceOrientationConfig.preferredInterfaceOrientation;
+    return self.hz_interfaceOrientationConfig.preferredInterfaceOrientation;
 }
 
 - (void)hz_updateCurrentDeviceOrientation:(UIDeviceOrientation)orientation

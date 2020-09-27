@@ -11,33 +11,33 @@
 @interface NSObject (YZHAdd)
 
 //addfor Identity
-@property (nonatomic, assign) NSInteger identity;
+@property (nonatomic, assign) NSInteger hz_identity;
 
-@property (nonatomic, strong) NSString *identityString;
+@property (nonatomic, strong) NSString *hz_identityString;
 
 //weak reference object
 //single
-@property (nonatomic, weak) id weakReferenceObject;
+@property (nonatomic, weak) id hz_weakReferenceObject;
 
 //multi,不要对外开放
-//@property (nonatomic, strong) NSMapTable *weakReferenceObjectsTable;
-//@property (nonatomic, strong) NSMapTable *strongReferenceObjectsTable;
+//@property (nonatomic, strong) NSMapTable *hz_weakReferenceObjectsTable;
+//@property (nonatomic, strong) NSMapTable *hz_strongReferenceObjectsTable;
 
 
--(id)respondsAndPerformSelector:(SEL)selector;
--(id)respondsAndPerformSelector:(SEL)selector withObject:(id)object;
+-(id)hz_respondsAndPerformSelector:(SEL)selector;
+-(id)hz_respondsAndPerformSelector:(SEL)selector withObject:(id)object;
 
-+(id)respondsToSelector:(SEL)selector forClass:(Class)cls;
-+(id)respondsToSelector:(SEL)selector forClass:(Class)cls withObject:(id)object;
++(id)hz_respondsToSelector:(SEL)selector forClass:(Class)cls;
++(id)hz_respondsToSelector:(SEL)selector forClass:(Class)cls withObject:(id)object;
 
 
--(void)addWeakReferenceObject:(id)object forKey:(id)key;
--(id)weakReferenceObjectForKey:(id)key;
+-(void)hz_addWeakReferenceObject:(id)object forKey:(id)key;
+-(id)hz_weakReferenceObjectForKey:(id)key;
 
--(void)addStrongReferenceObject:(id)object forKey:(id)key;
--(id)strongReferenceObjectForKey:(id)key;
+-(void)hz_addStrongReferenceObject:(id)object forKey:(id)key;
+-(id)hz_strongReferenceObjectForKey:(id)key;
 
--(BOOL)exchangeInstanceMethodFrom:(SEL)from to:(SEL)to;
--(BOOL)exchangeClassMethodFrom:(SEL)from to:(SEL)to;
+-(BOOL)hz_exchangeInstanceMethodFrom:(SEL)from to:(SEL)to;
+-(BOOL)hz_exchangeClassMethodFrom:(SEL)from to:(SEL)to;
 
 @end

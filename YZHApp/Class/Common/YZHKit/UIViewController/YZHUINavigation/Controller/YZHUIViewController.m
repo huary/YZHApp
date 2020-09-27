@@ -195,7 +195,7 @@
     else
     {
         if (navigationBarBottomLineColor) {
-            UIImage *image = [[UIImage new] createImageWithSize:CGSizeMake(self.navigationController.navigationBar.bounds.size.width, SINGLE_LINE_WIDTH) tintColor:navigationBarBottomLineColor];
+            UIImage *image = [[UIImage new] hz_createImageWithSize:CGSizeMake(self.navigationController.navigationBar.bounds.size.width, SINGLE_LINE_WIDTH) tintColor:navigationBarBottomLineColor];
             [self.navigationController.navigationBar setShadowImage:image];
         }
         else {
@@ -491,7 +491,7 @@
 {
     UIButton *buttonItem = [self _createButtonItemWithImage:image title:title color:color];
     WEAK_SELF(weakSelf);
-    [buttonItem addControlEvent:UIControlEventTouchUpInside actionBlock:^(UIButton *button) {
+    [buttonItem hz_addControlEvent:UIControlEventTouchUpInside actionBlock:^(UIButton *button) {
         if (actionBlock) {
             actionBlock(weakSelf, button);
         }

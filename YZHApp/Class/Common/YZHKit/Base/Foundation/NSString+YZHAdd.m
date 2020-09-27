@@ -10,7 +10,7 @@
 
 @implementation NSString (YZHAdd)
 
--(CGFloat)getWidthWithFont:(UIFont *)font
+-(CGFloat)hz_getWidthWithFont:(UIFont *)font
 {
     if (self.length == 0) {
         return 0;
@@ -19,12 +19,12 @@
     return size.width;
 }
 
--(CGFloat)getHeightByWidth:(CGFloat)width font:(UIFont *)font lineBreakMode:(NSLineBreakMode)lineBreakMode
+-(CGFloat)hz_getHeightByWidth:(CGFloat)width font:(UIFont *)font lineBreakMode:(NSLineBreakMode)lineBreakMode
 {
-    return [self sizeForFont:font size:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:lineBreakMode].height;
+    return [self hz_sizeForFont:font size:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:lineBreakMode].height;
 }
 
-- (CGSize)sizeForFont:(UIFont *)font size:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode
+- (CGSize)hz_sizeForFont:(UIFont *)font size:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode
 {
     if (self.length == 0) {
         return CGSizeZero;

@@ -93,16 +93,16 @@
     YZHUIExcelContentViewModel *viewModel = [[YZHUIExcelContentViewModel alloc] init];
     viewModel.excelRowCnt = self.rowCnt;
     viewModel.excelColumnCnt = self.columnCnt;
-    viewModel.cellInLeftLockViewCnt = self.lockIndexPath.excelColumn;
+    viewModel.cellInLeftLockViewCnt = self.lockIndexPath.hz_excelColumn;
     
     if (isTop) {
         viewModel.startRowIndex = 0;
-        viewModel.excelRowCnt = self.lockIndexPath.excelRow;
+        viewModel.excelRowCnt = self.lockIndexPath.hz_excelRow;
     }
     else
     {
-        viewModel.startRowIndex = self.lockIndexPath.excelRow;
-        viewModel.excelRowCnt = self.rowCnt - self.lockIndexPath.excelRow;
+        viewModel.startRowIndex = self.lockIndexPath.hz_excelRow;
+        viewModel.excelRowCnt = self.rowCnt - self.lockIndexPath.hz_excelRow;
     }
     viewModel.scrollInfo = [[NSExcelRowScrollInfo alloc] init];
     
@@ -160,7 +160,7 @@
     self.rowCnt = rowCnt;
     self.columnCnt = columnCnt;
     
-    NSInteger lockRow = self.lockIndexPath.excelRow;
+    NSInteger lockRow = self.lockIndexPath.hz_excelRow;
     CGFloat lockHeight = 0;
     if (lockRow > 0 && [self.delegate respondsToSelector:@selector(excelView:heightForRowAtIndex:)]) {
         for (NSInteger i = 0; i < lockRow; ++i) {
@@ -246,7 +246,7 @@
     NSMutableArray<NSIndexPath*> *bottomIndexPaths = [NSMutableArray array];
     
     for (NSIndexPath *indexPath in indexPaths) {
-        if (indexPath.excelRow < self.lockIndexPath.excelRow) {
+        if (indexPath.hz_excelRow < self.lockIndexPath.hz_excelRow) {
             [topIndexPaths addObject:indexPath];
         }
         else {
@@ -268,7 +268,7 @@
     NSMutableArray<NSIndexPath*> *bottomIndexPaths = [NSMutableArray array];
     
     for (NSIndexPath *indexPath in indexPaths) {
-        if (indexPath.excelRow < self.lockIndexPath.excelRow) {
+        if (indexPath.hz_excelRow < self.lockIndexPath.hz_excelRow) {
             [topIndexPaths addObject:indexPath];
         }
         else {

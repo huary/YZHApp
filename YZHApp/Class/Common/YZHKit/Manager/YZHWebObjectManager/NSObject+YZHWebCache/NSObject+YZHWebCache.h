@@ -18,13 +18,13 @@ typedef NS_ENUM(NSInteger, YZHLoadObjectType)
 @interface NSObject (YZHWebCache)
 
 /* <#注释#> */
-@property (nonatomic, strong) NSMapTable<NSString *, YZHWebObjectLoadOperation*> *loadOperationMapTable;
+@property (nonatomic, strong) NSMapTable<NSString *, YZHWebObjectLoadOperation*> *hz_loadOperationMapTable;
 
--(void)loadObject:(NSString*)url
-             type:(YZHLoadObjectType)type
-           decode:(YZHDiskCacheDecodeBlock)decode
-  cacheCompletion:(YZHWebObjectCacheLoadCompletionBlock)cacheCompletionBlock
-         progress:(YZHWebObjectLoadProgressBlock)progressBlock
-    webCompletion:(YZHWebObjectWebLoadCompletionBlock)webCompletionBlock;
+-(void)hz_loadObject:(NSString*)url
+                type:(YZHLoadObjectType)type
+              decode:(YZHDiskCacheDecodeBlock)decode
+     cacheCompletion:(YZHWebObjectCacheLoadCompletionBlock)cacheCompletionBlock
+            progress:(YZHWebObjectLoadProgressBlock)progressBlock
+       webCompletion:(YZHWebObjectWebLoadCompletionBlock)webCompletionBlock;
 
 @end

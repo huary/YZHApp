@@ -170,16 +170,16 @@ typedef NS_ENUM(NSInteger, NSTabBarButtonType)
                 if (self.scrollContent) {
                     maxW = CGFLOAT_MAX;
                 }
-                if (btn.tabBarItem.buttonItemSize.width > 0 && btn.tabBarItem.buttonItemSize.width <= maxW) {
-                    w = btn.tabBarItem.buttonItemSize.width;
+                if (btn.tabBarItem.hz_buttonItemSize.width > 0 && btn.tabBarItem.hz_buttonItemSize.width <= maxW) {
+                    w = btn.tabBarItem.hz_buttonItemSize.width;
                 }
-                if (btn.tabBarItem.buttonItemSize.height > 0 && btn.tabBarItem.buttonItemSize.height <= btnH) {
-                    h = btn.tabBarItem.buttonItemSize.height;
+                if (btn.tabBarItem.hz_buttonItemSize.height > 0 && btn.tabBarItem.hz_buttonItemSize.height <= btnH) {
+                    h = btn.tabBarItem.hz_buttonItemSize.height;
                 }
                 btn.frame = CGRectMake(btnX, (btnH - h)/2, w, h);
             }
             else {
-                btn.frame = CGRectMake( btn.tabBarItem.buttonItemOrigin.x,  btn.tabBarItem.buttonItemOrigin.y, btn.tabBarItem.buttonItemSize.width, btn.tabBarItem.buttonItemSize.height);
+                btn.frame = CGRectMake( btn.tabBarItem.hz_buttonItemOrigin.x,  btn.tabBarItem.hz_buttonItemOrigin.y, btn.tabBarItem.hz_buttonItemSize.width, btn.tabBarItem.hz_buttonItemSize.height);
             }
             btnX = CGRectGetMaxX(btn.frame);
             btn.tabBarItem = btn.tabBarItem;
@@ -201,16 +201,16 @@ typedef NS_ENUM(NSInteger, NSTabBarButtonType)
                 if (self.scrollContent) {
                     maxH = CGFLOAT_MAX;
                 }
-                if (btn.tabBarItem.buttonItemSize.width > 0 && btn.tabBarItem.buttonItemSize.width <= btnW) {
-                    w = btn.tabBarItem.buttonItemSize.width;
+                if (btn.tabBarItem.hz_buttonItemSize.width > 0 && btn.tabBarItem.hz_buttonItemSize.width <= btnW) {
+                    w = btn.tabBarItem.hz_buttonItemSize.width;
                 }
-                if (btn.tabBarItem.buttonItemSize.height > 0 && btn.tabBarItem.buttonItemSize.height <= maxH) {
-                    h = btn.tabBarItem.buttonItemSize.height;
+                if (btn.tabBarItem.hz_buttonItemSize.height > 0 && btn.tabBarItem.hz_buttonItemSize.height <= maxH) {
+                    h = btn.tabBarItem.hz_buttonItemSize.height;
                 }
                 btn.frame = CGRectMake((btnW - w)/2, btnY, w, h);
             }
             else {
-                btn.frame = CGRectMake( btn.tabBarItem.buttonItemOrigin.x,  btn.tabBarItem.buttonItemOrigin.y, btn.tabBarItem.buttonItemSize.width, btn.tabBarItem.buttonItemSize.height);
+                btn.frame = CGRectMake( btn.tabBarItem.hz_buttonItemOrigin.x,  btn.tabBarItem.hz_buttonItemOrigin.y, btn.tabBarItem.hz_buttonItemSize.width, btn.tabBarItem.hz_buttonItemSize.height);
             }
             btnY = CGRectGetMaxY(btn.frame);
             btn.tabBarItem = btn.tabBarItem;
@@ -263,7 +263,7 @@ typedef NS_ENUM(NSInteger, NSTabBarButtonType)
     btn.tabBarButtonType = tabBarButtonType;
 //    [btn addTarget:self action:@selector(_tabBarClick:) forControlEvents:controlEvents];
     WEAK_SELF(weakSelf);
-    [btn addControlEvent:controlEvents actionBlock:^(UIButton *button) {
+    [btn hz_addControlEvent:controlEvents actionBlock:^(UIButton *button) {
         [weakSelf _tabBarClick:(YZHUITabBarButton *)button];
     }];
     if (tabBarButtonType == NSTabBarButtonTypeDefault || tabBarButtonType == NSTabBarButtonTypeCustomLayout)
@@ -340,8 +340,8 @@ typedef NS_ENUM(NSInteger, NSTabBarButtonType)
 {
     CGSize size = customView.frame.size;
     UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
-    tabBarItem.buttonItemOrigin = customView.frame.origin;
-    tabBarItem.buttonItemSize = size;
+    tabBarItem.hz_buttonItemOrigin = customView.frame.origin;
+    tabBarItem.hz_buttonItemSize = size;
     YZHUITabBarButton *btn = [self addCustomLayoutTabBarItem:tabBarItem];
     customView.tag = customViewTag_s;
     customView.userInteractionEnabled = NO;
@@ -384,7 +384,7 @@ typedef NS_ENUM(NSInteger, NSTabBarButtonType)
         }
     }
     else {
-        YZHUIButtonActionBlock actionBlock = [selectedBtn actionBlockForControlEvent:UIControlEventTouchUpInside];
+        YZHUIButtonActionBlock actionBlock = [selectedBtn hz_actionBlockForControlEvent:UIControlEventTouchUpInside];
         if (actionBlock) {
             actionBlock(selectedBtn);
         }

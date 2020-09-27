@@ -36,8 +36,8 @@ const static CGFloat dotH_s = 5.0;
 {
     CGFloat w = 30;
     CGFloat h = w;
-    CGFloat x = (self.width - w)/2;
-    CGFloat y = (self.height - h)/2;
+    CGFloat x = (self.hz_width - w)/2;
+    CGFloat y = (self.hz_height - h)/2;
     CGFloat dotH = dotH_s;
     
     UIImage *bgImage = [YZHUIGraphicsImageContext createImageWithSize:CGSizeMake(w, h) cornerRadius:h/2 borderWidth:0 borderColor:nil backgroundColor:RGB_WITH_INT_WITH_NO_ALPHA(0x388CFF)];

@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIView (UITraitCollectionView)
 
 /** <#注释#> */
-@property (nonatomic, strong) UITraitCollectionView *traitCollectionView;
+@property (nonatomic, strong) UITraitCollectionView *hz_traitCollectionView;
 
 @end
 

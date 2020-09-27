@@ -126,7 +126,7 @@
         scrollView = (UIScrollView*)self.relatedShiftView;
     }
     CGSize size = scrollView.contentSize;
-    if (size.height >= scrollView.height && self.shiftType == YZHShiftTypeContentSizePoint) {
+    if (size.height >= scrollView.hz_height && self.shiftType == YZHShiftTypeContentSizePoint) {
         return YES;
     }
     return NO;
@@ -391,20 +391,20 @@
         return;
     }
     if (add) {
-        [self.relatedShiftView addKVOObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
+        [self.relatedShiftView hz_addKVOObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:NULL];
     }
     else {
-        [self.relatedShiftView removeKVOObserver:self forKeyPath:@"contentSize" context:NULL];
+        [self.relatedShiftView hz_removeKVOObserver:self forKeyPath:@"contentSize" context:NULL];
     }
 }
 
 -(void)_addInputViewKVO:(BOOL)add
 {
     if (add) {
-        [self.inputView addKVOObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+        [self.inputView hz_addKVOObserver:self forKeyPath:@"transform" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
     }
     else {
-        [self.inputView removeKVOObserver:self forKeyPath:@"transform" context:NULL];
+        [self.inputView hz_removeKVOObserver:self forKeyPath:@"transform" context:NULL];
     }
 }
 

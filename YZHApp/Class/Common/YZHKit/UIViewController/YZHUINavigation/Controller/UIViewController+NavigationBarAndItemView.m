@@ -11,7 +11,7 @@
 
 @implementation UIViewController (NavigationBarAndItemView)
 
--(YZHUINavigationController*)YZHNavigationController
+-(YZHUINavigationController*)hz_navigationController
 {
     UINavigationController *navgatioinController = self.navigationController;
     if ([navgatioinController isKindOfClass:[YZHUINavigationController class]]) {

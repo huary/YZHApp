@@ -352,7 +352,7 @@
         
         CGFloat minWH = MIN(width, height);
         if (borderWidth > 0 && borderColor && borderWidth < minWH) {
-            UIBezierPath *borderPath = [UIBezierPath borderBezierPathWithRoundedRect:rect byRoundingCorners:UIRectCornerAllCorners cornerRadius:cornerRadius borderWidth:borderWidth];
+            UIBezierPath *borderPath = [UIBezierPath hz_borderBezierPathWithRoundedRect:rect byRoundingCorners:UIRectCornerAllCorners cornerRadius:cornerRadius borderWidth:borderWidth];
             [borderPath closePath];
             CGContextAddPath(context.ctx, borderPath.CGPath);
 //            CGContextDrawPath(context.ctx, kCGPathStroke);
@@ -380,7 +380,7 @@
             CGContextSetFillColorWithColor(context.ctx, backgroundColor.CGColor);
             CGContextFillRect(context.ctx, rect);
         }
-        UIBezierPath *path = [UIBezierPath borderBezierPathWithRoundedRect:rect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth];
+        UIBezierPath *path = [UIBezierPath hz_borderBezierPathWithRoundedRect:rect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth];
         [path closePath];
 //        [borderColor setStroke];
         CGContextAddPath(context.ctx, path.CGPath);
@@ -457,7 +457,7 @@
         
 //        CGContextScaleCTM(context.ctx, 1, -1);
 //        CGContextTranslateCTM(context.ctx, 0, -height);
-        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:roundedRect byRoundingCorners:corners cornerRadius:cornerRadius];
+        UIBezierPath *path = [UIBezierPath hz_bezierPathWithRoundedRect:roundedRect byRoundingCorners:corners cornerRadius:cornerRadius];
         [path closePath];
         [path addClip];
         [image drawInRect:drawInRect];
@@ -469,7 +469,7 @@
         
         CGFloat minWH = MIN(width, height);
         if (borderWidth > 0 && borderColor && borderWidth < minWH) {
-            UIBezierPath *borderPath = [UIBezierPath borderBezierPathWithRoundedRect:roundedRect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth];
+            UIBezierPath *borderPath = [UIBezierPath hz_borderBezierPathWithRoundedRect:roundedRect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth];
             [borderPath closePath];
             CGContextAddPath(context.ctx, borderPath.CGPath);
         }

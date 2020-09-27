@@ -11,10 +11,10 @@
 
 @interface NSString (YZHAdd)
 
--(CGFloat)getWidthWithFont:(UIFont *)font;
+-(CGFloat)hz_getWidthWithFont:(UIFont *)font;
 
--(CGFloat)getHeightByWidth:(CGFloat)width font:(UIFont *)font lineBreakMode:(NSLineBreakMode)lineBreakMode;
+-(CGFloat)hz_getHeightByWidth:(CGFloat)width font:(UIFont *)font lineBreakMode:(NSLineBreakMode)lineBreakMode;
 
-- (CGSize)sizeForFont:(UIFont *)font size:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode;
+- (CGSize)hz_sizeForFont:(UIFont *)font size:(CGSize)size lineBreakMode:(NSLineBreakMode)lineBreakMode;
 
 @end

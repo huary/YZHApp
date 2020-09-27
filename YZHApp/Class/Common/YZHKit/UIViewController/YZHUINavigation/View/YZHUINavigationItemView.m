@@ -7,7 +7,7 @@
 //
 
 #import "YZHUINavigationItemView.h"
-#import "UIView+UIViewController.h"
+#import "UIView+YZHAdd.h"
 #import "YZHKitType.h"
 
 NSAttributedStringKey const NSTitleAttributesTextName = TYPE_STR(NSTitleAttributesTextName);

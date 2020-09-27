@@ -30,10 +30,10 @@ typedef void(^YZHDiskCacheEnumerateFilesCompletionBlock)(YZHDiskCache *cache);
 @protocol YZHDiskCacheObjectCodingProtocol <NSObject>
 
 /* <#注释#> */
-@property (nonatomic, copy) YZHDiskCacheEncodeBlock encodeBlock;
+@property (nonatomic, copy) YZHDiskCacheEncodeBlock hz_encodeBlock;
 
 /* <#注释#> */
-@property (nonatomic, copy) YZHDiskCacheDecodeBlock decodeBlock;
+@property (nonatomic, copy) YZHDiskCacheDecodeBlock hz_decodeBlock;
 
 @end
 

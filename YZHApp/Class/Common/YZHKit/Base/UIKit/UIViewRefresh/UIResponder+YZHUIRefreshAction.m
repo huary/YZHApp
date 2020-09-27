@@ -11,77 +11,78 @@
 
 @implementation UIResponder (YZHUIRefreshAction)
 
--(void)setRefreshModel:(id)refreshModel
+-(void)setHz_refreshModel:(id)hz_refreshModel
 {
-    objc_setAssociatedObject(self, @selector(refreshModel), refreshModel, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_refreshModel), hz_refreshModel, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(id)refreshModel
-{
-    return objc_getAssociatedObject(self, _cmd);
-}
-
--(void)setRefreshBlock:(YZHUIRefreshBlock)refreshBlock
-{
-    objc_setAssociatedObject(self, @selector(refreshBlock), refreshBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
--(YZHUIRefreshBlock)refreshBlock
+-(id)hz_refreshModel
 {
     return objc_getAssociatedObject(self, _cmd);
 }
 
--(void)setDidBindBlock:(YZHUIRefreshViewDidBindBlock)didBindBlock
+-(void)setHz_refreshBlock:(YZHUIRefreshBlock)hz_refreshBlock
 {
-    objc_setAssociatedObject(self, @selector(didBindBlock), didBindBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_refreshBlock), hz_refreshBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(YZHUIRefreshViewDidBindBlock)didBindBlock
+-(YZHUIRefreshBlock)hz_refreshBlock
 {
     return objc_getAssociatedObject(self, _cmd);
 }
 
--(void)bindRefreshModel:(id)refreshModel
+-(void)setHz_didBindBlock:(YZHUIRefreshViewDidBindBlock)hz_didBindBlock
 {
-    [self bindRefreshModel:refreshModel forKey:nil];
+    objc_setAssociatedObject(self, @selector(hz_didBindBlock), hz_didBindBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(void)bindRefreshModel:(id)refreshModel forKey:(id)key
+-(YZHUIRefreshViewDidBindBlock)hz_didBindBlock
+{
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+-(void)hz_bindRefreshModel:(id)refreshModel
+{
+    [self hz_bindRefreshModel:refreshModel forKey:nil];
+}
+
+-(void)hz_bindRefreshModel:(id)refreshModel forKey:(id)key
 {
     if (key == nil) {
-        key = @([self hash]);//[NSValue valueWithPointer:(__bridge void*)self];
+//        key = @([self hash]);//[NSValue valueWithPointer:(__bridge void*)self];
+        key = [NSString stringWithFormat:@"hz_%p",self];
     }
     BOOL r = YES;
     UIResponder<YZHUIRefreshViewProtocol> *responder = (UIResponder<YZHUIRefreshViewProtocol> *)self;
     //refresh
-    if ([self respondsToSelector:@selector(refreshViewWithModel:)]) {
+    if ([self respondsToSelector:@selector(hz_refreshViewWithModel:)]) {
         UIResponder<YZHUIRefreshViewProtocol> *target = nil;
         if ([self conformsToProtocol:@protocol(YZHUIRefreshViewProtocol)]) {
             target = (UIResponder<YZHUIRefreshViewProtocol>*)self;
         }
-        r = [target refreshViewWithModel:refreshModel];
+        r = [target hz_refreshViewWithModel:refreshModel];
     }
-    else if (self.refreshBlock) {
-        r = self.refreshBlock(responder, refreshModel);
+    else if (self.hz_refreshBlock) {
+        r = self.hz_refreshBlock(responder, refreshModel);
     }
     
     //bind
-    self.refreshModel = refreshModel;
+    self.hz_refreshModel = refreshModel;
     if (r) {
         NSObject *obj = refreshModel;
         [obj hz_addRefreshView:responder forKey:key];
     }
     
     //did bind
-    if ([self respondsToSelector:@selector(refreshViewDidBindModel:withKey:)]) {
+    if ([self respondsToSelector:@selector(hz_refreshViewDidBindModel:withKey:)]) {
         UIResponder<YZHUIRefreshViewProtocol> *target = nil;
         if ([self conformsToProtocol:@protocol(YZHUIRefreshViewProtocol)]) {
             target = (UIResponder<YZHUIRefreshViewProtocol>*)self;
         }
-        [target refreshViewDidBindModel:refreshModel withKey:key];
+        [target hz_refreshViewDidBindModel:refreshModel withKey:key];
     }
-    else if (self.didBindBlock) {
-        self.didBindBlock(responder, refreshModel, key);
+    else if (self.hz_didBindBlock) {
+        self.hz_didBindBlock(responder, refreshModel, key);
     }
     
 }

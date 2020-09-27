@@ -11,7 +11,7 @@
 
 @implementation UIBezierPath (YZHAdd)
 
-+(instancetype)bezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius
++(instancetype)hz_bezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius
 {
     CGFloat X = rect.origin.x;
     CGFloat Y = rect.origin.y;
@@ -100,15 +100,15 @@
 }
 
 
-+(instancetype)borderBezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth
++(instancetype)hz_borderBezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth
 {
     CGFloat halfBorderWidth = borderWidth/2;
     CGRect newRect = CGRectInset(rect, halfBorderWidth, halfBorderWidth);
     CGFloat radius = cornerRadius - halfBorderWidth;
-    return [UIBezierPath bezierPathWithRoundedRect:newRect byRoundingCorners:corners cornerRadius:radius];
+    return [UIBezierPath hz_bezierPathWithRoundedRect:newRect byRoundingCorners:corners cornerRadius:radius];
 }
 
-+(CGRect)borderRectForRoundedRect:(CGRect)rect borderWidth:(CGFloat)borderWidth
++(CGRect)hz_borderRectForRoundedRect:(CGRect)rect borderWidth:(CGFloat)borderWidth
 {
     CGFloat halfBorderWidth = borderWidth/2;
     return CGRectInset(rect, halfBorderWidth, halfBorderWidth);

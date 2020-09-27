@@ -11,12 +11,12 @@
 
 @implementation UITabBarController (UITabBarView)
 
--(void)setTabBarView:(UIView *)tabBarView
+-(void)setHz_tabBarView:(UIView *)hz_tabBarView
 {
-    objc_setAssociatedObject(self, @selector(tabBarView), tabBarView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_tabBarView), hz_tabBarView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(UIView*)tabBarView
+-(UIView*)hz_tabBarView
 {
     return objc_getAssociatedObject(self, _cmd);
 }

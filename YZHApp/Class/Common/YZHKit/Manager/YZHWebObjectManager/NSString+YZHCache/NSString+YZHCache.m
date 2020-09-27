@@ -11,22 +11,22 @@
 
 @implementation NSString (YZHCache)
 
--(void)setCacheKey:(NSString *)cacheKey
+-(void)setHz_cacheKey:(NSString *)hz_cacheKey
 {
-    objc_setAssociatedObject(self, @selector(cacheKey), cacheKey, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_cacheKey), hz_cacheKey, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSString*)cacheKey
+-(NSString*)hz_cacheKey
 {
     return objc_getAssociatedObject(self, _cmd);
 }
 
--(void)setCacheKeyBlock:(YZHCacheKeyBlock)cacheKeyBlock
+-(void)setHz_cacheKeyBlock:(YZHCacheKeyBlock)hz_cacheKeyBlock
 {
-    objc_setAssociatedObject(self, @selector(cacheKeyBlock), cacheKeyBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hz_cacheKeyBlock), hz_cacheKeyBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
--(YZHCacheKeyBlock)cacheKeyBlock
+-(YZHCacheKeyBlock)hz_cacheKeyBlock
 {
     return objc_getAssociatedObject(self, _cmd);
 }
