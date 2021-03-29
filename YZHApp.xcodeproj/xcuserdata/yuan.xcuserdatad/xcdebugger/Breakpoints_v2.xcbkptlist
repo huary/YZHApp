@@ -19,38 +19,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "94047B54-1A47-4AEF-801C-DC1666711ACE"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/Class/Common/YZHKit/UIView/YZHUITextView/YZHUITextView.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "382"
-            endingLineNumber = "382"
-            landmarkName = "-setContentSize:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4C933213-900C-48F2-8A73-F26F0CE6E166"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/Class/Common/YZHKit/UIView/YZHUITextView/YZHUITextView.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "386"
-            endingLineNumber = "386"
-            landmarkName = "-setContentOffset:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "01FAC185-A23B-478B-82A5-EF6F08EBA6F7"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -58,8 +26,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIView/YZHUITextView/YZHUITextView.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "252"
-            endingLineNumber = "252"
+            startingLineNumber = "264"
+            endingLineNumber = "264"
             landmarkName = "-pri_updatePlaceholder"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,8 +42,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/Utility/YZHTransaction/YZHTransaction.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
             landmarkName = "pri_setupTransaction()"
             landmarkType = "9">
          </BreakpointContent>
@@ -90,8 +58,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/Utility/YZHTransaction/YZHTransaction.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
             landmarkName = "-commit"
             landmarkType = "7">
          </BreakpointContent>
@@ -110,6 +78,54 @@
             endingLineNumber = "444"
             landmarkName = "-hz_addPanGestureRecognizerBlock:shouldBeginBlock:"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6CF14B64-2D5F-4CE9-8973-43501570D03A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/Base/UIKit/UIBezierPath+YZHAdd.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "22"
+            endingLineNumber = "22"
+            landmarkName = "+hz_bezierPathWithRoundedRect:byRoundingCorners:cornerRadius:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "6CF14B64-2D5F-4CE9-8973-43501570D03A - d5fb8dcde42b44d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "+[UIBezierPath(YZHAdd) hz_bezierPathWithRoundedRect:byRoundingCorners:cornerRadius:]"
+                  moduleName = "YZHApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yuan/Documents/yuanzh/github/YZHApp/YZHApp/Class/Common/YZHKit/Base/UIKit/UIBezierPath+YZHAdd.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "266">
+               </Location>
+               <Location
+                  uuid = "6CF14B64-2D5F-4CE9-8973-43501570D03A - d5fb8dcde42b44d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "+[UIBezierPath(YZHAdd) hz_bezierPathWithRoundedRect:byRoundingCorners:cornerRadius:]"
+                  moduleName = "YZHApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yuan/Documents/yuanzh/github/YZHApp/YZHApp/Class/Common/YZHKit/Base/UIKit/UIBezierPath+YZHAdd.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "355">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -15,6 +15,7 @@
 //foundation
 #import "NSObject+YZHAdd.h"
 #import "NSObject+YZHAddForKVO.h"
+#import "NSObject+YZHAddForDealloc.h"
 #import "NSString+YZHAdd.h"
 #import "NSMapTable+YZHAdd.h"
 #import "NSHashTable+YZHAdd.h"
@@ -44,6 +45,7 @@
 #import "YZHTimer.h"
 #import "NSObject+YZHTimer.h"
 #import "YZHUIGraphicsImage.h"
+#import "YZHTransaction.h"
 
 //UIViewController
 #import "UISideSlipViewController.h"

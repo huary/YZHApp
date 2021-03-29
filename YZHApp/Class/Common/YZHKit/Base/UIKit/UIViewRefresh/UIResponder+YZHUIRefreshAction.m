@@ -66,12 +66,13 @@
         r = self.hz_refreshBlock(responder, refreshModel);
     }
     
+    //清除view上旧的model对view的弱应用
+    [self.hz_refreshModel hz_clearRefreshView:self];
     //bind
     self.hz_refreshModel = refreshModel;
-    if (r) {
-        NSObject *obj = refreshModel;
-        [obj hz_addRefreshView:responder forKey:key];
-    }
+//    if (r) {
+        [refreshModel hz_addRefreshView:responder forKey:key];
+//    }
     
     //did bind
     if ([self respondsToSelector:@selector(hz_refreshViewDidBindModel:withKey:)]) {

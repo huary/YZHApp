@@ -19,12 +19,12 @@
 {
     self = [super init];
     if (self) {
-        [self _setupDefault];
+        [self pri_setupDefault];
     }
     return self;
 }
 
-- (void)_setupDefault
+- (void)pri_setupDefault
 {
     self.animateTimeInterval = 0.25;
 }

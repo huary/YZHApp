@@ -18,6 +18,8 @@ typedef void(^YZHUIRefreshViewDidBindBlock)(UIResponder<YZHUIRefreshViewProtocol
 
 @protocol YZHUIRefreshViewProtocol <NSObject>
 
+@optional
+
 @property (nonatomic, strong) id hz_refreshModel;
 
 //刷新block
@@ -69,7 +71,7 @@ typedef void(^YZHUIRefreshViewDidBindBlock)(UIResponder<YZHUIRefreshViewProtocol
 -(NSArray<UIResponder<YZHUIRefreshViewProtocol>*>*)hz_allRefreshView;
 
 //清空绑定的view
--(void)hz_clearRefreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView;
+-(void)hz_clearRefreshView:(UIResponder*)refreshView;
 
 //清空绑定的view
 -(void)hz_clearRefreshViewForKey:(id)key;

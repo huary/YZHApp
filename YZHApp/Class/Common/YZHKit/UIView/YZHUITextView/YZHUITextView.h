@@ -26,9 +26,6 @@ typedef void(^YZHUITextViewTextSizeDidChangeBlock)(YZHUITextView *textView, CGSi
 typedef void(^YZHUITextViewContentSizeDidChangeBlock)(YZHUITextView *textView, CGSize lastContentSize);
 typedef void(^YZHUITextViewDidChangeFrameBlock)(YZHUITextView *textView, CGRect oldFrame, CGRect newFrame);
 
-typedef BOOL(^YZHUITextViewCanPerformActionBlock)(YZHUITextView *textView, SEL selector, id sender);
-
-
 /****************************************************
  *YZHUITextViewLimit
  ****************************************************/
@@ -49,19 +46,22 @@ typedef BOOL(^YZHUITextViewCanPerformActionBlock)(YZHUITextView *textView, SEL s
  *YZHUITextView
  ****************************************************/
 @interface YZHUITextView : UITextView
-/* <#注释#> */
+/* placeholder */
 @property (nonatomic, strong) NSString *placeholder;
 
-/** <#注释#> */
+/** placeholderFont */
 @property (nonatomic, strong) UIFont *placeholderFont;
 
-/** <#注释#> */
+/** placeholderColor */
 @property (nonatomic, strong) UIColor *placeholderColor;
 
-/* <#注释#> */
+/** 行间距，默认为2 */
+@property (nonatomic, assign) CGFloat lineSpacing;
+
+/* attributedPlaceholder */
 @property (nonatomic, strong) NSAttributedString *attributedPlaceholder;
 
-/* <#注释#> */
+/* textView最大允许展示的高度 */
 @property (nonatomic, strong) YZHUITextViewLimit *maxLimit;
 
 /* <#注释#> */
@@ -81,13 +81,6 @@ typedef BOOL(^YZHUITextViewCanPerformActionBlock)(YZHUITextView *textView, SEL s
 
 /* <#注释#> */
 @property (nonatomic, copy) YZHUITextViewDidChangeFrameBlock changeFrameBlock;
-
-
-@property (nonatomic, copy) YZHUITextViewCanPerformActionBlock canPerformActionBlock;
-
-//默认为YES
-@property (nonatomic, assign) BOOL enablePerformAction;
-
 
 -(CGFloat)normalHeight;
 

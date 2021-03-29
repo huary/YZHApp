@@ -18,7 +18,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self _setupLoopCellChildView];
+        [self pri_setupLoopCellChildView];
     }
     return self;
 }
@@ -37,7 +37,7 @@
     return _contentView;
 }
 
--(void)_setupLoopCellChildView
+-(void)pri_setupLoopCellChildView
 {
     [self addSubview:self.contentView];    
     self.contentView.frame = CGRectInset(self.bounds, self.contentInsets.x, self.contentInsets.y);

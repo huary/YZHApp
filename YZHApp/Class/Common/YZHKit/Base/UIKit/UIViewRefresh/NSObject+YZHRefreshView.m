@@ -138,7 +138,7 @@
     return [refreshViewList copy];
 }
 
--(void)hz_clearRefreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView
+-(void)hz_clearRefreshView:(UIResponder*)refreshView
 {
     NSEnumerator *keyEnumerator = self.hz_bindRefreshViewTable.keyEnumerator;
     id key = nil;

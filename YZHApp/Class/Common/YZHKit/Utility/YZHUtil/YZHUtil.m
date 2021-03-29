@@ -581,7 +581,7 @@
         }
     }
     integer = integer + changeValue;
-    NSString *newNumberText = [[NSString alloc] initWithFormat:@"%ld",integer];
+    NSString *newNumberText = [[NSString alloc] initWithFormat:@"%@",@(integer)];
     NSInteger startLocation = 0;
     if (skipString) {
         startLocation = skipString.length;

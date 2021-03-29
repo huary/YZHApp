@@ -15,10 +15,20 @@ static void pri_setupTransaction(void);
 
 @interface YZHTransaction ()
 
+/** <#注释#> */
+@property (nonatomic, strong) id curData;
+
+/** preData */
+@property (nonatomic, strong) id preData;
+
+//transactionId
 @property (nonatomic, copy) NSString *transactionId;
 
 /** 执行的任务 */
 @property (nonatomic, copy) YZHTransactionActionBlock actionBlock;
+
+/** 处理数据的block */
+@property (nonatomic, copy) YZHTransactionHandleDataBlock handleDataBlock;
 
 @end
 
@@ -35,12 +45,48 @@ static void pri_setupTransaction(void);
     return transaction;
 }
 
++ (YZHTransaction *)transactionWithTransactionId:(NSString *)transactionId
+                                     currentData:(id)currentData
+                                      handleData:(YZHTransactionHandleDataBlock)handleDataBlock
+                                          action:(YZHTransactionActionBlock)actionBlock;
+{
+    if (transactionId.length == 0 || actionBlock == nil) {
+        return nil;
+    }
+    YZHTransaction *transaction = [YZHTransaction new];
+    transaction.curData = currentData;
+    transaction.transactionId = transactionId;
+    transaction.actionBlock = actionBlock;
+    transaction.handleDataBlock = handleDataBlock;
+    return transaction;
+}
+
+//当前的数据
+- (id)curData {
+    return _curData;
+}
+
+//前面累计的数据
+- (id)preData {
+    return _preData;
+}
+
 - (void)commit
 {
     if (self.transactionId.length == 0 || self.actionBlock == nil) {
         return;
     }
     pri_setupTransaction();
+    
+    if (self.handleDataBlock) {
+        YZHTransaction *transaction = [transactionSet_s objectForKey:self.transactionId];
+        if (!transaction) {
+            transaction = self;
+        }
+        transaction.curData = self.curData;
+        self.preData = transaction.preData;
+        transaction.preData = self.handleDataBlock(self);
+    }
     [transactionSet_s addObject:self forKey:self.transactionId];
 }
 

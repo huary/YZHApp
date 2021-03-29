@@ -35,8 +35,8 @@ typedef void(^YZHKeyboardInputViewCompletionBlock)(YZHKeyboardInputView *inputVi
  ****************************************************/
 @protocol YZHKeyboardInputViewProtocol <NSObject>
 
-/* <#注释#> */
-@property (nonatomic, strong) YZHUITextView *inputTextView;
+/* 能够响应becomeFirstResponder或者resignFirstResponder的view */
+@property (nonatomic, strong) UIResponder *inputTextView;
 
 /*
  *firstResponderView其实就是keyboard上方需要显示的输入框

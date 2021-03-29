@@ -45,6 +45,8 @@
 #define IS_ODD_INTEGER(V)                      TYPE_AND(V,1)
 
 #define TYPE_STR(NAME)                          @#NAME
+#define _CONCAT(A,B)                            A ## B
+#define CONCAT(A,B)                             _CONCAT(A,B)
 
 //屏幕尺寸大小和导航栏的一些宏定义
 #define SCREEN_BOUNDS                          [UIScreen mainScreen].bounds
@@ -248,6 +250,8 @@
 //弱引用
 #define WEAK_NSOBJ(NSOBJ,WEAK_NAME)             __weak __typeof(&*NSOBJ) WEAK_NAME = NSOBJ
 #define WEAK_SELF(WEAK_NAME)                    __weak __typeof(&*self) WEAK_NAME = self
+#define STRONG_SELF(STRONG_NAME)                __strong __typeof(&*weakSelf) STRONG_NAME = weakSelf
+#define STRONG_SELF_NIL_RETURN(STRONG_NAME,R)   STRONG_SELF(STRONG_NAME); if (!STRONG_NAME) return R;
 
 //本地化的操作
 #define NSLOCAL_STRING(TEXT)                    NSLocalizedString(TEXT, nil)
@@ -410,6 +414,38 @@
 
 #define PROJ_MAIN_COLOR
 
+
+//
+//#define _CONCAT_(A,B)                           CONCAT(A,B)
+#define _ATTR_CLEANUP(CF)                       __attribute__((cleanup(CF), unused))
+#define _TYPE_ATTR_CLEANUP_DEC(T, IV, F, V)     T IV _ATTR_CLEANUP(F) = V
+#define ON_RETURN                               _TYPE_ATTR_CLEANUP_DEC(YZH_cleanupBlock_t, CONCAT(imf_returnBlock_,__LINE__), YZH_executeCleanupBlock, ^)
+
+#define defer                                   ON_RETURN
+#define onExit(...)                             ON_RETURN{__VA_ARGS__};
+
+#define _M_CHECK_(a, b, ...)                    b
+#define M_CHECK(...)                            _M_CHECK_(__VA_ARGS__)
+
+#define _M_IS_PAREN_(...)                       1, 1
+#define M_IS_PAREN(x)                           M_CHECK(_M_IS_PAREN_ x, 0)
+
+#define _M_IS_PAREN_C(c,...)                    1, c
+#define M_IS_PAREN_C(x)                         M_CHECK(_M_IS_PAREN_C x, 0)
+
+
+#define DEF_IF_0(...)
+#define DEF_IF_1(...)                           __VA_ARGS__
+#define DEF(x)                                  M_IS_PAREN(x)
+#define DEF_C(x)                                M_IS_PAREN_C(x)
+
+//YZH
+#if __has_include("YZHKit.h")
+#define YZH_KIT                                 (1)
+#endif
+
+//#define YZH_KIT_FUNC(...)                       CONCAT(DEF_IF_,DEF(YZH_KIT))(__VA_ARGS__)
+#define YZH_KIT_FUNC(...)                       CONCAT(DEF_IF_,DEF_C(YZH_KIT))(__VA_ARGS__)
 
 #endif /* Macro_h */
 

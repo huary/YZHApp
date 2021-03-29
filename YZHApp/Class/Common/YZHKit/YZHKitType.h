@@ -107,4 +107,7 @@ static inline void sync_lock(dispatch_semaphore_t lock, void (^block)(void)) {
     dispatch_semaphore_signal(lock);
 }
 
-
+typedef void(^YZH_cleanupBlock_t)(void);
+static inline void YZH_executeCleanupBlock (YZH_cleanupBlock_t *block) {
+    (*block)();
+}

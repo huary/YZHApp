@@ -66,7 +66,7 @@
     self.lastContentSize = self.contentSize;
     self.normalHeight = -1;
     self.maxLimit = nil;
-    self.enablePerformAction = YES;
+    self.lineSpacing = 2;
     [self pri_initNormalHeight];
     [self addSubview:self.placeholderView];
 }
@@ -84,9 +84,6 @@
 
     [self pri_initNormalHeight];
     
-    CGFloat w = self.contentSize.width;
-    CGFloat h = MAX(self.contentSize.height, self.bounds.size.height);
-    [self pri_textContainerView].frame = CGRectMake(0, 0, w, h);
     [self pri_hiddenPlaceholderView];
 }
 
@@ -101,20 +98,6 @@
     }
     
     return textContainerView;
-}
-
--(UIView*)pri_textSelectRangeView
-{
-    UIView *textContainerView = [self pri_textContainerView];
-    UIView *textSelectionView = nil;
-    for (UIView *subView in textContainerView.subviews) {
-        if ([subView isKindOfClass:NSClassFromString(@"UITextSelectionView")]) {
-            textSelectionView = subView;
-            break;
-        }
-    }
-    
-    return [textSelectionView.subviews firstObject];
 }
 
 - (UIFont *)pri_defaultFont
@@ -134,23 +117,32 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pri_didChangeTextAction:) name:UITextViewTextDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pri_didEndEditingAction:) name:UITextViewTextDidEndEditingNotification object:nil];
         
-        [self hz_addKVOObserver:self forKeyPath:@"selectedRange" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+//        [self hz_addKVOObserver:self forKeyPath:@"selectedRange" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+//
+//        //selectedTextRange
+//        [self hz_addKVOObserver:self forKeyPath:@"selectedTextRange" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
     }
     else {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidBeginEditingNotification object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidEndEditingNotification object:nil];
         
-        [self hz_removeKVOObserver:self forKeyPath:@"selectedRange" context:nil];
+//        [self hz_removeKVOObserver:self forKeyPath:@"selectedRange" context:nil];
+//
+//        [self hz_removeKVOObserver:self forKeyPath:@"selectedTextRange" context:nil];
     }
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:@"selectedRange"]) {
-        self.contentOffset = self.contentOffset;
-    }
-}
+//-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+//{
+//    if ([keyPath isEqualToString:@"selectedRange"]) {
+////        self.contentOffset = self.contentOffset;
+//    }
+//    else if ([keyPath isEqualToString:@"selectedTextRange"]) {
+////        NSLog(@"====change=%@",change);
+////        [self pri_updateContentOffsetAction];
+//    }
+//}
 
 - (UIImageView *)placeholderView
 {
@@ -199,7 +191,19 @@
 
 -(void)setAttributedText:(NSAttributedString *)attributedText
 {
-    [super setAttributedText:attributedText];
+    NSMutableAttributedString *tmp = [attributedText mutableCopy];
+
+    if (tmp.length > 0) {
+        NSMutableParagraphStyle *style = [[attributedText attribute:NSParagraphStyleAttributeName atIndex:0 effectiveRange:NULL] mutableCopy];
+        if (!style) {
+            style = [NSMutableParagraphStyle new];
+        }
+        style.lineSpacing = self.lineSpacing;
+        [tmp addAttribute:NSParagraphStyleAttributeName value:style range:NSMakeRange(0, attributedText.length)];
+    }
+    
+    [super setAttributedText:tmp];
+    
     [self pri_updateTextAction];
 }
 
@@ -242,6 +246,14 @@
     if (![_attributedPlaceholder isEqual:attributedPlaceholder]) {
         _attributedPlaceholder = attributedPlaceholder;
         [self pri_updatePlaceholder];
+    }
+}
+
+-(void)setLineSpacing:(CGFloat)lineSpacing {
+    CGFloat oldLineSpacing = lineSpacing;
+    _lineSpacing = lineSpacing;
+    if (oldLineSpacing != lineSpacing) {
+        [self setAttributedPlaceholder:self.attributedText];
     }
 }
 
@@ -306,60 +318,68 @@
 -(void)pri_didChangeTextAction:(NSNotification*)notification
 {
     if (notification.object == self) {
-        [self pri_updateTextAction];
+        NSString *markText = [self textInRange:self.markedTextRange];
+//        NSLog(@"noti.userInfo=%@,markText=%@,attrText=%@",notification.userInfo,markText,self.attributedText.string);
+        if (markText.length > 0) {
+            return;
+        }
+        [self setAttributedText:self.attributedText];
+//        [self pri_updateTextAction];
     }
 }
 
 -(void)pri_updateTextAction
 {
-    [self pri_hiddenPlaceholderView];
-
-    CGSize textSize = [self sizeThatFits:self.contentSize];
-    if (self.textChangeBlock) {
-        self.textChangeBlock(self, textSize);
-        textSize = [self sizeThatFits:self.contentSize];
+    [[YZHTransaction transactionWithTransactionId:@"YZHUITextView.updateText" action:^(YZHTransaction * _Nonnull transaction) {
         [self pri_hiddenPlaceholderView];
-    }
-    if (!CGSizeEqualToSize(self.textSize, textSize)) {
-        if (self.textSizeChangeBlock) {
-            self.textSizeChangeBlock(self, textSize);
+        
+        CGSize textSize = [self sizeThatFits:self.contentSize];
+        if (self.textChangeBlock) {
+            self.textChangeBlock(self, textSize);
+            textSize = [self sizeThatFits:self.contentSize];
+            [self pri_hiddenPlaceholderView];
         }
-    }
-    self.textSize = textSize;
-
-    if (self.maxLimit) {
-        CGRect frame = self.frame;
-        CGRect oldFrame = frame;
-        if (self.maxLimit.limitType == NSTextViewLimitTypeHeight) {
-            CGFloat limitHeight = [self.maxLimit.limitValue floatValue];
-            CGFloat height = MAX(self.normalHeight, textSize.height);
-            CGFloat maxHeight = MAX(self.normalHeight, limitHeight);
-            height = MIN(maxHeight, height);
-            if (height > 0) {
-                frame.size.height = height;
+        if (!CGSizeEqualToSize(self.textSize, textSize)) {
+            if (self.textSizeChangeBlock) {
+                self.textSizeChangeBlock(self, textSize);
             }
         }
-        else if (self.maxLimit.limitType == NSTextViewLimitTypeLines) {
-            NSInteger limitCnt = [self.maxLimit.limitValue integerValue];
-            NSInteger lineCnt = [self textLines];
-            if (lineCnt > 0 && limitCnt > 0) {
-                CGFloat height = frame.size.height;
-                if (lineCnt <= limitCnt) {
-                    height = textSize.height;
+        self.textSize = textSize;
+        
+        if (self.maxLimit) {
+            CGRect frame = self.frame;
+            CGRect oldFrame = frame;
+            if (self.maxLimit.limitType == NSTextViewLimitTypeHeight) {
+                CGFloat limitHeight = [self.maxLimit.limitValue floatValue];
+                CGFloat height = MAX(self.normalHeight, textSize.height);
+                CGFloat maxHeight = MAX(self.normalHeight, limitHeight);
+                height = MIN(maxHeight, height);
+                if (height > 0) {
+                    frame.size.height = height;
                 }
-                else {
-                    height = limitCnt * [self textLineHeight] + self.textContainerInset.top + self.textContainerInset.bottom;
+            }
+            else if (self.maxLimit.limitType == NSTextViewLimitTypeLines) {
+                NSInteger limitCnt = [self.maxLimit.limitValue integerValue];
+                NSInteger lineCnt = [self textLines];
+                if (lineCnt > 0 && limitCnt > 0) {
+                    CGFloat height = frame.size.height;
+                    if (lineCnt <= limitCnt) {
+                        height = textSize.height;
+                    }
+                    else {
+                        height = limitCnt * [self textLineHeight] + self.textContainerInset.top + self.textContainerInset.bottom;
+                    }
+                    frame.size.height = MAX(self.normalHeight, height);
                 }
-                frame.size.height = MAX(self.normalHeight, height);
+            }
+            if (!CGRectEqualToRect(frame, oldFrame)) {
+                self.frame = frame;
+                if (self.changeFrameBlock) {
+                    self.changeFrameBlock(self, oldFrame, frame);
+                }
             }
         }
-        if (!CGRectEqualToRect(frame, oldFrame)) {
-            self.frame = frame;
-            if (self.changeFrameBlock) {
-                self.changeFrameBlock(self, oldFrame, frame);
-            }
-        }
-    }
+    }] commit];
 }
 
 -(void)pri_didEndEditingAction:(NSNotification*)notification
@@ -383,15 +403,6 @@
     self.lastContentSize = contentSize;
 }
 
--(void)setContentOffset:(CGPoint)contentOffset
-{
-    if (!self.decelerating && !self.tracking && !self.dragging && (self.selectedRange.location >= self.text.length || self.selectedRange.location >= self.attributedText.length)) {
-        CGFloat y = self.contentSize.height - self.frame.size.height;
-        contentOffset.y = MAX(0, y);
-    }
-    [super setContentOffset:contentOffset];
-}
-
 -(CGFloat)normalHeight
 {
     return _normalHeight;
@@ -413,95 +424,6 @@
     }
     return lineCnt;
 }
-
-//- (BOOL)pri_isPasteboardContainsValidValue {
-//    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-////    NSLog(@"pastedboard=%@",pasteboard);
-////    NSLog(@"string=%@,strings=%@",pasteboard.string,pasteboard.strings);
-//    if (SYSTEMVERSION_NUMBER >= 10.0) {
-//        if ([pasteboard hasStrings] ||
-//            [pasteboard hasURLs] ||
-//            [pasteboard hasImages] ||
-//            [pasteboard hasColors]) {
-//            return YES;
-//        }
-//        return NO;
-//    }
-//    else {
-//        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-//        if (pasteboard.string.length > 0) {
-//            return YES;
-//        }
-////        if (pasteboard.attributedString.length > 0) {
-////            return YES;
-////        }
-//        return NO;
-//    }
-//}
-
-//- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-//    /*
-//     ------------------------------------------------------
-//     Default menu actions list:
-//     cut:                                   Cut
-//     copy:                                  Copy
-//     select:                                Select
-//     selectAll:                             Select All
-//     paste:                                 Paste
-//     delete:                                Delete
-//     _promptForReplace:                     Replace...
-//     _transliterateChinese:                 简⇄繁
-//     _showTextStyleOptions:                 BIU
-//     _define:                               Define
-//     _addShortcut:                          Add...
-//     _accessibilitySpeak:                   Speak
-//     _accessibilitySpeakLanguageSelection:  Speak...
-//     _accessibilityPauseSpeaking:           Pause Speak
-//     makeTextWritingDirectionRightToLeft:   ⇋
-//     makeTextWritingDirectionLeftToRight:   ⇌
-//     
-//     ------------------------------------------------------
-//     Default attribute modifier list:
-//     toggleBoldface:
-//     toggleItalics:
-//     toggleUnderline:
-//     increaseSize:
-//     decreaseSize:
-//     */
-//    BOOL OK = YES;
-//    if (self.canPerformActionBlock) {
-//        OK = self.canPerformActionBlock(self, action, sender);
-//    }
-//    else {
-//        if (self.enablePerformAction) {
-//            NSRange selectedRange = self.selectedRange;
-//            if (selectedRange.length == 0) {
-//                if (action == @selector(select:) ||
-//                    action == @selector(selectAll:)) {
-//                    OK = self.text.length > 0;
-//                }
-//                if (action == @selector(paste:)) {
-//                    OK = [self pri_isPasteboardContainsValidValue];
-//                }
-//            } else {
-//                if (action == @selector(cut:)) {
-//                    OK = (self.isFirstResponder && self.editable);
-//                }
-//                if (action == @selector(copy:)) {
-//                    OK = YES;
-//                }
-//                if (action == @selector(selectAll:)) {
-//                    OK = (selectedRange.length < self.text.length);
-//                }
-//                if (action == @selector(paste:)) {
-//                    OK = (self.isFirstResponder && self.editable && [self pri_isPasteboardContainsValidValue]);
-//                }
-//            }
-//        }
-//    }
-////    NSLog(@"action=%@,OK=%@",NSStringFromSelector(action),OK ? @"YES" : @"NO");
-//    return OK;
-//}
 
 -(void)dealloc
 {
