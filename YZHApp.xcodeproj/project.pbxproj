@@ -17,6 +17,9 @@
 		1C2BB0DC2604C5EB001F9F0E /* YZHImageCellModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C2BB0D52604C5EA001F9F0E /* YZHImageCellModel.m */; };
 		1C378F977CA9E3B38EB776D6 /* libPods-YZHApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B309B0CE3A121FD757469CBA /* libPods-YZHApp.a */; };
 		1C78C88325515EF700A3C3A1 /* IMG_1974.HEIC in Resources */ = {isa = PBXBuildFile; fileRef = 1C78C88225515EF700A3C3A1 /* IMG_1974.HEIC */; };
+		1C8377FC26185C28003A0D2A /* TestMemoryGraphViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C8377FB26185C28003A0D2A /* TestMemoryGraphViewController.mm */; };
+		1C83780026185EB0003A0D2A /* MMGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C8377FF26185EB0003A0D2A /* MMGraph.mm */; };
+		1C8378072618AEDC003A0D2A /* libproc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C8378032618AD4D003A0D2A /* libproc.tbd */; };
 		1CB31CDD258A0AA600C5DA78 /* TestDeallocProxyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB31CDC258A0AA600C5DA78 /* TestDeallocProxyViewController.m */; };
 		1CB31CE5258A1FB400C5DA78 /* NSObject+YZHAddForDealloc.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB31CE4258A1FB400C5DA78 /* NSObject+YZHAddForDealloc.m */; };
 		1CB8249121D4C0020003057C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB8249021D4C0020003057C /* AppDelegate.m */; };
@@ -190,6 +193,11 @@
 		1C2BB0D52604C5EA001F9F0E /* YZHImageCellModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHImageCellModel.m; sourceTree = "<group>"; };
 		1C2BB0D62604C5EA001F9F0E /* YZHImageBrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHImageBrowserController.h; sourceTree = "<group>"; };
 		1C78C88225515EF700A3C3A1 /* IMG_1974.HEIC */ = {isa = PBXFileReference; lastKnownFileType = file; path = IMG_1974.HEIC; sourceTree = "<group>"; };
+		1C8377FA26185C28003A0D2A /* TestMemoryGraphViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestMemoryGraphViewController.h; sourceTree = "<group>"; };
+		1C8377FB26185C28003A0D2A /* TestMemoryGraphViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TestMemoryGraphViewController.mm; sourceTree = "<group>"; };
+		1C8377FE26185EB0003A0D2A /* MMGraph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMGraph.h; sourceTree = "<group>"; };
+		1C8377FF26185EB0003A0D2A /* MMGraph.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MMGraph.mm; sourceTree = "<group>"; };
+		1C8378032618AD4D003A0D2A /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		1CB31CDB258A0AA600C5DA78 /* TestDeallocProxyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestDeallocProxyViewController.h; sourceTree = "<group>"; };
 		1CB31CDC258A0AA600C5DA78 /* TestDeallocProxyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestDeallocProxyViewController.m; sourceTree = "<group>"; };
 		1CB31CE3258A1FB400C5DA78 /* NSObject+YZHAddForDealloc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+YZHAddForDealloc.h"; sourceTree = "<group>"; };
@@ -487,6 +495,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C8378072618AEDC003A0D2A /* libproc.tbd in Frameworks */,
 				1C378F977CA9E3B38EB776D6 /* libPods-YZHApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -554,24 +563,28 @@
 		1CB8248E21D4C0020003057C /* YZHApp */ = {
 			isa = PBXGroup;
 			children = (
-				1C78C88225515EF700A3C3A1 /* IMG_1974.HEIC */,
-				1CA9938721D650F7000BA06E /* Class */,
 				1CB8248F21D4C0020003057C /* AppDelegate.h */,
 				1CB8249021D4C0020003057C /* AppDelegate.m */,
-				1CB8249221D4C0020003057C /* ViewController.h */,
-				1CB8249321D4C0020003057C /* ViewController.m */,
-				1CB8249521D4C0020003057C /* Main.storyboard */,
-				1CB8249821D4C0020003057C /* Assets.xcassets */,
-				1CB8249A21D4C0020003057C /* LaunchScreen.storyboard */,
-				1CB8249D21D4C0020003057C /* Info.plist */,
-				1CB8249E21D4C0020003057C /* main.m */,
 				1CD5760A22B8E93F00A125DD /* AppPrefixHeader.pch */,
-				1C0AA93A257AADAE0052D9F1 /* TestHZRefreshViewController.h */,
-				1C0AA93B257AADAE0052D9F1 /* TestHZRefreshViewController.m */,
-				1C0634B32580725800DC3017 /* TestMessageForwardViewController.h */,
-				1C0634B42580725800DC3017 /* TestMessageForwardViewController.m */,
+				1CB8249821D4C0020003057C /* Assets.xcassets */,
+				1CA9938721D650F7000BA06E /* Class */,
+				1C78C88225515EF700A3C3A1 /* IMG_1974.HEIC */,
+				1CB8249D21D4C0020003057C /* Info.plist */,
+				1CB8249A21D4C0020003057C /* LaunchScreen.storyboard */,
+				1CB8249E21D4C0020003057C /* main.m */,
+				1CB8249521D4C0020003057C /* Main.storyboard */,
 				1CB31CDB258A0AA600C5DA78 /* TestDeallocProxyViewController.h */,
 				1CB31CDC258A0AA600C5DA78 /* TestDeallocProxyViewController.m */,
+				1C0AA93A257AADAE0052D9F1 /* TestHZRefreshViewController.h */,
+				1C0AA93B257AADAE0052D9F1 /* TestHZRefreshViewController.m */,
+				1C8377FA26185C28003A0D2A /* TestMemoryGraphViewController.h */,
+				1C8377FB26185C28003A0D2A /* TestMemoryGraphViewController.mm */,
+				1C0634B32580725800DC3017 /* TestMessageForwardViewController.h */,
+				1C0634B42580725800DC3017 /* TestMessageForwardViewController.m */,
+				1CB8249221D4C0020003057C /* ViewController.h */,
+				1CB8249321D4C0020003057C /* ViewController.m */,
+				1C8377FE26185EB0003A0D2A /* MMGraph.h */,
+				1C8377FF26185EB0003A0D2A /* MMGraph.mm */,
 			);
 			path = YZHApp;
 			sourceTree = "<group>";
@@ -1458,6 +1471,7 @@
 		7F0CFCBADAC53D75CCCF56FF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1C8378032618AD4D003A0D2A /* libproc.tbd */,
 				B309B0CE3A121FD757469CBA /* libPods-YZHApp.a */,
 			);
 			name = Frameworks;
@@ -1617,6 +1631,7 @@
 				1CC7909A250B9545009EE7A3 /* YZHTaskManager.m in Sources */,
 				1CC790D4250B9545009EE7A3 /* NSHashTable+YZHAdd.m in Sources */,
 				1CC79094250B9545009EE7A3 /* NSObject+YZHWebCache.m in Sources */,
+				1C8377FC26185C28003A0D2A /* TestMemoryGraphViewController.mm in Sources */,
 				1CC79051250B9545009EE7A3 /* YZHUIExcelView.m in Sources */,
 				1CC79066250B9545009EE7A3 /* YZHUICropView.m in Sources */,
 				1CC790A8250B9545009EE7A3 /* YZHAudioManager.m in Sources */,
@@ -1680,6 +1695,7 @@
 				1CC790C2250B9545009EE7A3 /* YZHBaseModalUIViewController.m in Sources */,
 				1CC7906A250B9545009EE7A3 /* YZHUIPopTableViewCell.m in Sources */,
 				1CC79053250B9545009EE7A3 /* YZHUIExcelItemCell.m in Sources */,
+				1C83780026185EB0003A0D2A /* MMGraph.mm in Sources */,
 				1CC7908F250B9545009EE7A3 /* UIImage+YZHCoding.m in Sources */,
 				1CB31CE5258A1FB400C5DA78 /* NSObject+YZHAddForDealloc.m in Sources */,
 				1CC79091250B9545009EE7A3 /* YZHURLSessionnDownloader.m in Sources */,
@@ -1873,7 +1889,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = YZHApp/AppPrefixHeader.pch;
 				INFOPLIST_FILE = YZHApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fm.lizhi.YZHApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1892,7 +1908,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = YZHApp/AppPrefixHeader.pch;
 				INFOPLIST_FILE = YZHApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fm.lizhi.YZHApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";

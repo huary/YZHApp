@@ -14,6 +14,7 @@
 #import "TestHZRefreshViewController.h"
 #import "TestMessageForwardViewController.h"
 #import "TestDeallocProxyViewController.h"
+#import "TestMemoryGraphViewController.h"
 
 #import <SDWebImage/SDWebImage.h>
 
@@ -608,7 +609,7 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
 //    [self pri_testABC];
-    [self pri_testTransaction];
+//    [self pri_testTransaction];
     
 //    [self pri_testMessageForward];
     
@@ -632,6 +633,13 @@
 //    [self pri_testDeallocProxy];
     
 //    [self pri_testGCDTimer];
+    
+    [self pri_testMMGraph];
+}
+
+- (void)pri_testMMGraph {
+    TestMemoryGraphViewController *testMMGrapVC = [TestMemoryGraphViewController new];
+    [self presentViewController:testMMGrapVC animated:YES completion:nil];
 }
 
 
