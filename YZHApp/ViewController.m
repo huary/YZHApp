@@ -634,7 +634,32 @@
     
 //    [self pri_testGCDTimer];
     
+    
+    [self pri_getIvar];
+    
     [self pri_testMMGraph];
+}
+
+- (void)pri_getIvar {
+    unsigned int cnt;
+    Ivar *ivars = class_copyIvarList([self class], &cnt);
+    for (unsigned int i = 0; i < cnt; ++i) {
+        Ivar ivar = ivars[i];
+        const char *name = ivar_getName(ivar);
+        const char *type = ivar_getTypeEncoding(ivar);
+        id obj = object_getIvar(self, ivar);
+        
+        NSLog(@"name=%s,type=%s,obj=%@",name,type,obj);
+        if (type[0] == '@') {
+            
+        }
+        else if (type[0]=='#') {
+            
+        }
+        else {
+            
+        }
+    }
 }
 
 - (void)pri_testMMGraph {

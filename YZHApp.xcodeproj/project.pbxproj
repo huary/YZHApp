@@ -18,7 +18,6 @@
 		1C378F977CA9E3B38EB776D6 /* libPods-YZHApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B309B0CE3A121FD757469CBA /* libPods-YZHApp.a */; };
 		1C78C88325515EF700A3C3A1 /* IMG_1974.HEIC in Resources */ = {isa = PBXBuildFile; fileRef = 1C78C88225515EF700A3C3A1 /* IMG_1974.HEIC */; };
 		1C8377FC26185C28003A0D2A /* TestMemoryGraphViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C8377FB26185C28003A0D2A /* TestMemoryGraphViewController.mm */; };
-		1C83780026185EB0003A0D2A /* MMGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C8377FF26185EB0003A0D2A /* MMGraph.mm */; };
 		1C8378072618AEDC003A0D2A /* libproc.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C8378032618AD4D003A0D2A /* libproc.tbd */; };
 		1CB31CDD258A0AA600C5DA78 /* TestDeallocProxyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB31CDC258A0AA600C5DA78 /* TestDeallocProxyViewController.m */; };
 		1CB31CE5258A1FB400C5DA78 /* NSObject+YZHAddForDealloc.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB31CE4258A1FB400C5DA78 /* NSObject+YZHAddForDealloc.m */; };
@@ -170,6 +169,8 @@
 		1CD5760022B8E4D100A125DD /* AppDBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD575FF22B8E4D100A125DD /* AppDBManager.m */; };
 		1CD5760922B8E62300A125DD /* AppBSUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD5760822B8E62300A125DD /* AppBSUser.m */; };
 		1CD5760D22B8ECF000A125DD /* AppNTRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD5760C22B8ECF000A125DD /* AppNTRequestManager.m */; };
+		1CDF3699261DE251004208D0 /* MMGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF3697261DE251004208D0 /* MMGraph.mm */; };
+		1CDF369D261DE287004208D0 /* MMContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF369C261DE287004208D0 /* MMContext.mm */; };
 		1CEB9870251D8F900029CF9F /* YZHCGUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB986E251D8F900029CF9F /* YZHCGUtil.m */; };
 		1CEB9873251DA93E0029CF9F /* UIViewController+NavigationBarAndItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB9871251DA93E0029CF9F /* UIViewController+NavigationBarAndItemView.m */; };
 /* End PBXBuildFile section */
@@ -195,8 +196,6 @@
 		1C78C88225515EF700A3C3A1 /* IMG_1974.HEIC */ = {isa = PBXFileReference; lastKnownFileType = file; path = IMG_1974.HEIC; sourceTree = "<group>"; };
 		1C8377FA26185C28003A0D2A /* TestMemoryGraphViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestMemoryGraphViewController.h; sourceTree = "<group>"; };
 		1C8377FB26185C28003A0D2A /* TestMemoryGraphViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TestMemoryGraphViewController.mm; sourceTree = "<group>"; };
-		1C8377FE26185EB0003A0D2A /* MMGraph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMGraph.h; sourceTree = "<group>"; };
-		1C8377FF26185EB0003A0D2A /* MMGraph.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MMGraph.mm; sourceTree = "<group>"; };
 		1C8378032618AD4D003A0D2A /* libproc.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libproc.tbd; path = usr/lib/libproc.tbd; sourceTree = SDKROOT; };
 		1CB31CDB258A0AA600C5DA78 /* TestDeallocProxyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestDeallocProxyViewController.h; sourceTree = "<group>"; };
 		1CB31CDC258A0AA600C5DA78 /* TestDeallocProxyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestDeallocProxyViewController.m; sourceTree = "<group>"; };
@@ -481,6 +480,10 @@
 		1CD5760A22B8E93F00A125DD /* AppPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppPrefixHeader.pch; sourceTree = "<group>"; };
 		1CD5760B22B8ECF000A125DD /* AppNTRequestManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppNTRequestManager.h; sourceTree = "<group>"; };
 		1CD5760C22B8ECF000A125DD /* AppNTRequestManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppNTRequestManager.m; sourceTree = "<group>"; };
+		1CDF3697261DE251004208D0 /* MMGraph.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMGraph.mm; sourceTree = "<group>"; };
+		1CDF3698261DE251004208D0 /* MMGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMGraph.h; sourceTree = "<group>"; };
+		1CDF369B261DE287004208D0 /* MMContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMContext.h; sourceTree = "<group>"; };
+		1CDF369C261DE287004208D0 /* MMContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MMContext.mm; sourceTree = "<group>"; };
 		1CEB986E251D8F900029CF9F /* YZHCGUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHCGUtil.m; sourceTree = "<group>"; };
 		1CEB986F251D8F900029CF9F /* YZHCGUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHCGUtil.h; sourceTree = "<group>"; };
 		1CEB9871251DA93E0029CF9F /* UIViewController+NavigationBarAndItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+NavigationBarAndItemView.m"; sourceTree = "<group>"; };
@@ -563,6 +566,7 @@
 		1CB8248E21D4C0020003057C /* YZHApp */ = {
 			isa = PBXGroup;
 			children = (
+				1CDF3696261DE251004208D0 /* MMGraph */,
 				1CB8248F21D4C0020003057C /* AppDelegate.h */,
 				1CB8249021D4C0020003057C /* AppDelegate.m */,
 				1CD5760A22B8E93F00A125DD /* AppPrefixHeader.pch */,
@@ -583,8 +587,6 @@
 				1C0634B42580725800DC3017 /* TestMessageForwardViewController.m */,
 				1CB8249221D4C0020003057C /* ViewController.h */,
 				1CB8249321D4C0020003057C /* ViewController.m */,
-				1C8377FE26185EB0003A0D2A /* MMGraph.h */,
-				1C8377FF26185EB0003A0D2A /* MMGraph.mm */,
 			);
 			path = YZHApp;
 			sourceTree = "<group>";
@@ -1468,6 +1470,17 @@
 			path = "Network(网络)";
 			sourceTree = "<group>";
 		};
+		1CDF3696261DE251004208D0 /* MMGraph */ = {
+			isa = PBXGroup;
+			children = (
+				1CDF3698261DE251004208D0 /* MMGraph.h */,
+				1CDF3697261DE251004208D0 /* MMGraph.mm */,
+				1CDF369B261DE287004208D0 /* MMContext.h */,
+				1CDF369C261DE287004208D0 /* MMContext.mm */,
+			);
+			path = MMGraph;
+			sourceTree = "<group>";
+		};
 		7F0CFCBADAC53D75CCCF56FF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1643,6 +1656,7 @@
 				1CC790BC250B9545009EE7A3 /* YZHBaseUIViewController.m in Sources */,
 				1CC790DD250B9545009EE7A3 /* YZHTimer.m in Sources */,
 				1C0634B52580725800DC3017 /* TestMessageForwardViewController.m in Sources */,
+				1CDF3699261DE251004208D0 /* MMGraph.mm in Sources */,
 				1CC790C5250B9545009EE7A3 /* UIImageView+YZHAdd.m in Sources */,
 				1CC790DA250B9545009EE7A3 /* YZHUIGraphicsImage.m in Sources */,
 				1CC79056250B9545009EE7A3 /* YZHUIExcelViewRowCell.m in Sources */,
@@ -1695,7 +1709,6 @@
 				1CC790C2250B9545009EE7A3 /* YZHBaseModalUIViewController.m in Sources */,
 				1CC7906A250B9545009EE7A3 /* YZHUIPopTableViewCell.m in Sources */,
 				1CC79053250B9545009EE7A3 /* YZHUIExcelItemCell.m in Sources */,
-				1C83780026185EB0003A0D2A /* MMGraph.mm in Sources */,
 				1CC7908F250B9545009EE7A3 /* UIImage+YZHCoding.m in Sources */,
 				1CB31CE5258A1FB400C5DA78 /* NSObject+YZHAddForDealloc.m in Sources */,
 				1CC79091250B9545009EE7A3 /* YZHURLSessionnDownloader.m in Sources */,
@@ -1706,6 +1719,7 @@
 				1CC790B4250B9545009EE7A3 /* YZHUIBarButtonItem.m in Sources */,
 				1CC790B2250B9545009EE7A3 /* YZHBaseAnimatedTransition.m in Sources */,
 				1CC7906D250B9545009EE7A3 /* YZHLoopTransitionView.m in Sources */,
+				1CDF369D261DE287004208D0 /* MMContext.mm in Sources */,
 				1CC790E3250B9545009EE7A3 /* YZHJSONDict.m in Sources */,
 				1C2BB0DB2604C5EB001F9F0E /* YZHImageBrowserController.m in Sources */,
 				1CC790D2250B9545009EE7A3 /* UIButton+YZHAdd.m in Sources */,

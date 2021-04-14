@@ -13,10 +13,10 @@
 #import <malloc/malloc.h>
 #import <mach-o/dyld.h>
 #import <objc/runtime.h>
+#import "MMContext.h"
+#import <objc/runtime.h>
 
 #include <iostream>
-
-//using namespace std;
 
 #ifdef __LP64__
 typedef struct mach_header_64 mach_header_t;
@@ -34,43 +34,40 @@ typedef struct nlist nlist_t;
 
 extern "C" int proc_regionfilename(int pid, uint64_t address, void * buffer, uint32_t buffersize);
 
+//typedef struct {
+//    Class isa;
+//}MMObjc_t;
 
-typedef struct {
-    Class isa;
-}MMObjc_t;
-
-static CFMutableSetRef cxxClassesAddress_s = NULL;
-static NSRange machODataConstRange_s = NSMakeRange(0, 0);
+//static CFMutableSetRef cxxClassesAddress_s = NULL;
+//static NSRange machODataConstRange_s = NSMakeRange(0, 0);
 
 static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slide);
 static void vm_range_recorder(task_t task, void *ctx, unsigned type, vm_range_t *ranges, unsigned cnt);
 
-static CFMutableSetRef registeredClasses(){
-    static dispatch_once_t onceToken;
-    static CFMutableSetRef registeredClasses = NULL;
-    dispatch_once(&onceToken, ^{
-        registeredClasses = CFSetCreateMutable(NULL, 8, NULL);
-        
-        unsigned int cnt = 0;
-        Class *classes = objc_copyClassList(&cnt);
-        for (unsigned int i = 0; i < cnt; ++i) {
-            CFSetAddValue(registeredClasses, (__bridge const void *)classes[i]);
-        }
-        
-        free(classes);
-    });
-    
-    return registeredClasses;
-}
+//static CFMutableSetRef registeredClasses(){
+//    static dispatch_once_t onceToken;
+//    static CFMutableSetRef registeredClasses = NULL;
+//    dispatch_once(&onceToken, ^{
+//        registeredClasses = CFSetCreateMutable(NULL, 8, NULL);
+//
+//        unsigned int cnt = 0;
+//        Class *classes = objc_copyClassList(&cnt);
+//        for (unsigned int i = 0; i < cnt; ++i) {
+//            CFSetAddValue(registeredClasses, (__bridge const void *)classes[i]);
+//        }
+//
+//        free(classes);
+//    });
+//    return registeredClasses;
+//}
 
 static void register_dyld_add_callback() {
-    cxxClassesAddress_s = CFSetCreateMutable(NULL, 0, NULL);
+//    cxxClassesAddress_s = CFSetCreateMutable(NULL, 0, NULL);
     _dyld_register_func_for_add_image(_dyld_add_image_callback);
 }
 
 static uint64_t read_uleb128(const uint8_t *&p, const uint8_t* end)
 {
-//    const uint8_t *p = *start;
     uint64_t result = 0;
     int         bit = 0;
     do {
@@ -93,7 +90,6 @@ static uint64_t read_uleb128(const uint8_t *&p, const uint8_t* end)
 
 static int64_t read_sleb128(const uint8_t*&p, const uint8_t* end)
 {
-//    const uint8_t *p = *start;
     int64_t  result = 0;
     int      bit = 0;
     uint8_t  byte = 0;
@@ -105,7 +101,6 @@ static int64_t read_sleb128(const uint8_t*&p, const uint8_t* end)
         result |= (((int64_t)(byte & 0x7f)) << bit);
         bit += 7;
     } while (byte & 0x80);
-    // sign extend negative numbers
     if ( ((byte & 0x40) != 0) && (bit < 64) )
         result |= (~0ULL) << bit;
     return result;
@@ -122,8 +117,8 @@ static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slid
     size_t headerSize = sizeof(mach_header_t);
     uintptr_t cmdPtr = (intptr_t)mh + headerSize;
     
-    uint64_t dataConstMinAddress = 0;
-    uint64_t dataConstMaxAddress = 0;
+    uint64_t dataConstOff = 0;
+    uint64_t dataConstSize = 0;
     
     uint64_t segmentOffset = 0;
     const uint32_t  ptrSize = mh->magic == MH_MAGIC_64 ? 8 : 4;
@@ -139,10 +134,9 @@ static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slid
             if (strcmp(cur_cmd->segname, SEG_DATA) == 0) {
                 section_t *sec = (section_t*)(cur_cmd + 1);
                 for (uint32_t j = 0; j < cur_cmd->nsects; ++j) {
-//                    NSLog(@"j=%d,secname=%s",j,sec[j].sectname);
                     if (strcmp(sec[j].sectname, "__const") == 0) {
-                        dataConstMinAddress = (uintptr_t)mh + sec[j].offset;
-                        dataConstMaxAddress = dataConstMinAddress + sec[j].size;
+                        dataConstOff = (uintptr_t)mh + sec[j].offset;
+                        dataConstSize = sec[j].size;
                     }
                 }
             }
@@ -199,12 +193,12 @@ static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slid
                         segmentOffset += read_uleb128(p, end);
                         break;
                     case BIND_OPCODE_DO_BIND: {
-//                        NSLog(@"symbolName=%s",symbolName);
                         if (strlen(symbolName) > cxxSymbolNamePrefixLen && strncmp(symbolName, cxxSymbolNamePrefix, cxxSymbolNamePrefixLen) == 0)
                         {
                             std::type_info *typeInfo = (std::type_info*)((uintptr_t)mh + (uintptr_t)segmentOffset);
                             NSLog(@"typeInfo.name=%s,typeInfo:%p",typeInfo->name(), typeInfo);
-                            CFSetAddValue(cxxClassesAddress_s, (const void *)typeInfo);
+//                            CFSetAddValue(cxxClassesAddress_s, (const void *)typeInfo);
+                            MMContext::shareContext()->addCxxTypeInfo((uintptr_t)typeInfo);
                         }
                         segmentOffset += ptrSize;
                     }
@@ -217,14 +211,14 @@ static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slid
                         {
                             std::type_info *typeInfo = (std::type_info*)((uintptr_t)mh + (uintptr_t)segmentOffset);
                             NSLog(@"typeInfo.name=%s,typeInfo:%p",typeInfo->name(), typeInfo);
-                            CFSetAddValue(cxxClassesAddress_s, (const void *)typeInfo);
+//                            CFSetAddValue(cxxClassesAddress_s, (const void *)typeInfo);
+                            MMContext::shareContext()->addCxxTypeInfo((uintptr_t)typeInfo);
                         }
                         segmentOffset += immediate * ptrSize + ptrSize;
                     }
                         break;
                     case BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB: {
                         uint64_t cnt = read_uleb128(p, end);
-                        NSLog(@"cnt=%u,%lld",(uint32_t)cnt,cnt);
                         uint64_t skip = read_uleb128(p, end);
                         for (uint64_t k= 0; k < cnt; ++k) {
                             segmentOffset += skip + ptrSize;
@@ -238,22 +232,24 @@ static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slid
         }
         cmdPtr += cur_cmd->cmdsize;
     }
-    machODataConstRange_s = NSMakeRange(dataConstMinAddress, dataConstMaxAddress - dataConstMinAddress);
+    MMContext::shareContext()->machODataConstOff = dataConstOff;
+    MMContext::shareContext()->machODataConstSize = dataConstSize;
+//    machODataConstRange_s = NSMakeRange(dataConstOff, dataConstSize);
 }
 
-static const char* cxxTypeInoName(void *ptr) {
-    uint64_t ptrValue = (*((uintptr_t*)ptr) - 8);
-    uint64_t end = machODataConstRange_s.location + machODataConstRange_s.length;
-    if (ptrValue >= machODataConstRange_s.location && ptrValue < end) {
-        //取ptrValue作为指针里面的值就是type_info的地址
-        void *typeInfoPtr = (void*)(*((uintptr_t*)ptrValue));
-        if (CFSetGetValue(cxxClassesAddress_s, (const void *)typeInfoPtr)) {
-            std::type_info *typeInfo = (std::type_info *)typeInfoPtr;
-            return typeInfo->name();
-        }
-    }
-    return NULL;
-}
+//static const char* cxxTypeInoName(void *ptr) {
+//    uint64_t ptrValue = (*((uintptr_t*)ptr) - 8);
+//    uint64_t end = machODataConstRange_s.location + machODataConstRange_s.length;
+//    if (ptrValue >= machODataConstRange_s.location && ptrValue < end) {
+//        //取ptrValue作为指针里面的值就是type_info的地址
+//        void *typeInfoPtr = (void*)(*((uintptr_t*)ptrValue));
+//        if (CFSetGetValue(cxxClassesAddress_s, (const void *)typeInfoPtr)) {
+//            std::type_info *typeInfo = (std::type_info *)typeInfoPtr;
+//            return typeInfo->name();
+//        }
+//    }
+//    return NULL;
+//}
 
 void readVMRegin() {
     kern_return_t kret = KERN_SUCCESS;
@@ -302,12 +298,17 @@ void readHeapZone(void) {
         return;
     }
     
+    MMContext::shareContext()->allRegisteredObjCClassList();
     for (unsigned int i = 0; i < cnt; ++i) {
         malloc_zone_t *zone = (malloc_zone_t*)zoneList[i];
-        NSLog(@"zone.name=%s\n",zone->zone_name);
+        
+        if (zone == MMContextZone()) {
+            continue;
+        }
+        
         if (zone && zone->introspect && zone->introspect->enumerator) {
             zone->introspect->enumerator(mach_task_self(),
-                                         NULL,
+                                         zone,
                                          MALLOC_PTR_IN_USE_RANGE_TYPE,
                                          (vm_address_t)zone,
                                          memory_reader,
@@ -317,52 +318,49 @@ void readHeapZone(void) {
 }
 
 static void vm_range_recorder(task_t task, void *ctx, unsigned type, vm_range_t *ranges, unsigned cnt) {
-    for (unsigned int i = 0; i < cnt; ++i) {
-        vm_range_t range = ranges[i];
-        
-        MMObjc_t *objc = (MMObjc_t*)range.address;
-        
-        Class objcClass = NULL;
-#ifdef __arm64__
-        extern const uintptr_t objc_debug_isa_class_mask;
-        objcClass = (__bridge Class)((void*)((uintptr_t)objc->isa & objc_debug_isa_class_mask));
-#else
-        objcClass = objc->isa;
-#endif
-        if (CFSetContainsValue(registeredClasses(), (__bridge const void *)objcClass)) {
-            NSString *clsName = NSStringFromClass(objcClass);
-            if ([clsName isEqualToString:@"__NSCFType"]) {
-                CFTypeID typeId = CFGetTypeID((CFTypeRef)objc);
-                CFStringRef name = CFCopyTypeIDDescription(typeId);
-                clsName = [NSString stringWithString:(__bridge NSString*)name];
-                CFRelease(name);
-            }
-//            NSLog(@"objc.Class=%@",clsName);
-        }
-        else if (cxxTypeInoName((void *)range.address)) {
-            NSLog(@"cxx object:%s", cxxTypeInoName((void *)range.address));
-        }
-        else {
-//            NSLog(@"raw buffer or struct or class");
-        }
+    malloc_zone_t *zone = (malloc_zone_t*)ctx;
+    MMContext *shareCtx = MMContext::shareContext();
+    MMCtxZone *ctxzone = shareCtx->addCtxZone(zone, type, cnt);
+    for (uint32_t i = 0; i < cnt; ++i) {
+        shareCtx->addRangeIntoCtxZone(ctxzone, ranges[i]);
     }
+    
+    
+//    for (unsigned int i = 0; i < cnt; ++i) {
+//        vm_range_t range = ranges[i];
+//
+//        MMObjc_t *objc = (MMObjc_t*)range.address;
+//
+//        Class objcClass = NULL;
+//#ifdef __arm64__
+//        extern const uintptr_t objc_debug_isa_class_mask;
+//        objcClass = (__bridge Class)((void*)((uintptr_t)objc->isa & objc_debug_isa_class_mask));
+//#else
+//        objcClass = objc->isa;
+//#endif
+////        CFArrayRef list = MMContext::shareContext()->getObjcClassList();
+////        CFArrayContainsValue(list, CFRangeMake(0, CFArrayGetCount(list)), (__bridge const void *)objcClass)
+//        if (CFSetContainsValue(registeredClasses(), (__bridge const void *)objcClass))
+////        if (CFArrayContainsValue(list, CFRangeMake(0, CFArrayGetCount(list)), (__bridge const void *)objcClass))
+//        {
+//            NSString *clsName = NSStringFromClass(objcClass);
+//            if ([clsName isEqualToString:@"__NSCFType"]) {
+//                CFTypeID typeId = CFGetTypeID((CFTypeRef)objc);
+//                CFStringRef name = CFCopyTypeIDDescription(typeId);
+//                clsName = [NSString stringWithString:(__bridge NSString*)name];
+//                CFRelease(name);
+//            }
+////            NSLog(@"zone.name=%s,objc.Class=%@",zone->zone_name,clsName);
+//        }
+////        else if (const char *cxxClsName = MMContext::shareContext()->getCxxTypeInfoNameForAddress((void *)range.address)) {
+////            NSLog(@"zone.name=%s,cxx object:%s", zone->zone_name, cxxClsName);
+////        }
+////        else {
+////            NSLog(@"zone.name=%s raw buffer or struct or class:0x%0lx",zone->zone_name, range.address);
+////        }
+//    }
 }
 
-
-
-
-
-@interface MMGraphTestObjc : NSObject
-
-@end
-
-@implementation MMGraphTestObjc
-
-- (void)test {
-    NSLog(@"MMGraphTestObjc test");
-}
-
-@end
 
 class Person {
 private:
@@ -407,6 +405,26 @@ public:
 };
 
 
+@interface MMGraphTestObjc : NSObject
+
+@end
+
+@implementation MMGraphTestObjc
+
+- (void)test {
+    NSLog(@"MMGraphTestObjc test");
+}
+
+@end
+
+
+//typedef struct {
+//    CFIndex version;
+//    const char *className;
+//}MMCFRunTimeClass;
+//extern "C" const MMCFRunTimeClass * _CFRuntimeGetClassWithTypeID(CFTypeID typeID);
+
+
 
 void MMGraphTest(void)
 {
@@ -425,16 +443,56 @@ void MMGraphTest(void)
     
     Man *man = new Man(20);
     man->print();
+//
+    Person *p = new Person(50);
+    
+//    malloc_zone_t *zone = malloc_create_zone(1024,0);
+//    malloc_set_zone_name(zone, "MMCtxZone");
+//
+//
+//    CFMutableDictionaryRef dict = CFDictionaryCreateMutable((CFAllocatorRef)zone, 7, nullptr, nullptr);
+//
+//    CFTypeID typeId = CFGetTypeID(dict);
+//    _CFRuntimeGetClassWithTypeID(typeId);
+//    const MMCFRunTimeClass *runtimeClass = _CFRuntimeGetClassWithTypeID(typeId);
+//    NSLog(@"runtimeClass.name=%s",runtimeClass->className);
+    
+//    CFStringRef name = CFCopyTypeIDDescription(typeId);
+//    const char *clsName = CFStringGetCStringPtr(name,kCFStringEncodingASCII);
+//    NSLog(@"clsName=%s",clsName);
+    
+//    NSLog(@"clsName2=%@",NSStringFromClass(objc_getClass("NSDictionary")));
+//    CFRelease(name);
+    
+//    Class cls = object_getClass((__bridge id)man);
+    
+//    Class pcls = object_getClass((__bridge id)p);
+    
+//    NSLog(@"cls=%s",class_getName(cls));
+//    NSLog(@"p.cls=%s",class_getName(pcls));
+    
+//    CFDictionarySetValue(dict, (const void *)1, (const void *)2);
+//    
+//    const void *ptr = CFDictionaryGetValue(dict, (const void *)1);
+//    NSLog(@"1.val=%p,dict=%p",ptr,dict);
+//    NSLog(@"typeId.name=%s",typeid(Man).name());
+    
+    
     
 
-    
-    Base *b = new Base(100);
-    uint64_t ptrValue = (*((uint64_t*)man) - 8);
-    std::type_info *typeInfo = (std::type_info*)(*((uintptr_t*)ptrValue));
-    NSLog(@"type.name=%s",typeInfo->name());
-    
-    
-    NSLog(@"man=%p",man);
+//    NSBundle *bv = [NSBundle bundleForClass:[UIViewController class]];
+//    NSBundle *bt = [NSBundle bundleForClass:[MMGraphTestObjc class]];
+//    //==[NSBundle mainBundle]属于自定义的类
+//    NSLog(@"bundle.class=%@,system.class=%@",bv,@(bv == [NSBundle mainBundle]));
+//    NSLog(@"bundle.test.class=%@,system.class=%@",bt,@(bt == [NSBundle mainBundle]));
+
+//    Base *b = new Base(100);
+//    uint64_t ptrValue = (*((uint64_t*)man) - 8);
+//    std::type_info *typeInfo = (std::type_info*)(*((uintptr_t*)ptrValue));
+//    NSLog(@"type.name=%s",typeInfo->name());
+//
+//
+//    NSLog(@"man=%p",man);
     
     prepareReadHeapZone();
     
