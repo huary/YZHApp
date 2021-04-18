@@ -21,6 +21,7 @@ typedef void(^MMCtxDictEnumeratorBlock)(uintptr_t key, uintptr_t value, BOOL *st
 
 typedef void(^MMCtxArrayEnumeratorBlock)(uintptr_t value, CFIndex idx, BOOL *stop);
 
+typedef void(^MMCtxSetEnumeratorBlock)(uintptr_t value, BOOL *stop);
 
 malloc_zone_t *MMContextZone(void);
 
@@ -39,13 +40,13 @@ CFMutableDictionaryRef createMMCtxDictionary(CFIndex capacity);
 void MMCtxDictionarySetValueForKey(CFMutableDictionaryRef dict, uintptr_t key, uintptr_t value);
 void MMCtxDictionaryRemoveKey(CFMutableDictionaryRef dict, uintptr_t key);
 void MMCtxDictionaryRemoveAllValues(CFMutableDictionaryRef dict);
-void enumeratorMMCtxDictionry(CFMutableDictionaryRef dict, MMCtxDictEnumeratorBlock block);
+void enumerateMMCtxDictionry(CFDictionaryRef dict, MMCtxDictEnumeratorBlock block);
 
 CFMutableArrayRef createMMCtxArray(CFIndex capacity);
 void MMCtxArrayAppendValue(CFMutableArrayRef array, uintptr_t value);
 void MMCtxArrayInsertValueAtIndex(CFMutableArrayRef array, CFIndex idx, uintptr_t value);
 void MMCtxArrayRemoveValueAtIndex(CFMutableArrayRef array, uintptr_t value);
-void enumeratorMMCtxArray(CFMutableArrayRef array, CFRange range, MMCtxArrayEnumeratorBlock block);
+void enumerateMMCtxArray(CFArrayRef array, CFRange range, MMCtxArrayEnumeratorBlock block);
 
 void *MMCtxMalloc(size_t size);
 
@@ -105,11 +106,13 @@ private:
     CFMutableArrayRef objcInstanceList;
     CFMutableArrayRef zoneList;
     CFMutableDictionaryRef rangeInfo;
+    thread_act_array_t suspendThreadList;
+    mach_msg_type_number_t suspendThreadCnt;
 public:
     int64_t machODataConstOff;
     int64_t machODataConstSize;
     
-    static uint8_t pointerSize;
+    static const uint8_t pointerSize = sizeof(void*);
     static MMContext *shareContext();
     MMContext() {}
     ~MMContext() {}
@@ -131,6 +134,15 @@ public:
     MMCtxZone_T *addCtxZone(malloc_zone_t *zone, uint32_t type, uint32_t range_cnt);
     
     MMCtxRange_T *addRangeIntoCtxZone(MMCtxZone_T *zone, vm_range_t range);
+    
+    //stack,休眠当前进程中所有的线程
+    void suspendTaskThread();
+    
+    //stack,读取休眠的线程栈
+    void readTaskThreadStack();
+    
+    //stack,恢复当前进程中所有的线程(前面休眠的)
+    void resumeTaskThread();
     
     NSDictionary *parase();
 };

@@ -27,6 +27,8 @@
 		1CB8249921D4C0020003057C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CB8249821D4C0020003057C /* Assets.xcassets */; };
 		1CB8249C21D4C0020003057C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CB8249A21D4C0020003057C /* LaunchScreen.storyboard */; };
 		1CB8249F21D4C0020003057C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB8249E21D4C0020003057C /* main.m */; };
+		1CC4799426270E54004C49C0 /* MMStack.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CC4799326270E54004C49C0 /* MMStack.mm */; };
+		1CC4799D26271254004C49C0 /* MMTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC4799C26271254004C49C0 /* MMTypes.m */; };
 		1CC7904F250B9545009EE7A3 /* YZHKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78EED250B9544009EE7A3 /* YZHKit.m */; };
 		1CC79050250B9545009EE7A3 /* YZHUICircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78EF1250B9544009EE7A3 /* YZHUICircleProgressView.m */; };
 		1CC79051250B9545009EE7A3 /* YZHUIExcelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CC78EF3250B9544009EE7A3 /* YZHUIExcelView.m */; };
@@ -211,6 +213,10 @@
 		1CB8249B21D4C0020003057C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CB8249D21D4C0020003057C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CB8249E21D4C0020003057C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1CC4799226270E54004C49C0 /* MMStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMStack.h; sourceTree = "<group>"; };
+		1CC4799326270E54004C49C0 /* MMStack.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MMStack.mm; sourceTree = "<group>"; };
+		1CC4799B26271254004C49C0 /* MMTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMTypes.h; sourceTree = "<group>"; };
+		1CC4799C26271254004C49C0 /* MMTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMTypes.m; sourceTree = "<group>"; };
 		1CC78EED250B9544009EE7A3 /* YZHKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHKit.m; sourceTree = "<group>"; };
 		1CC78EF0250B9544009EE7A3 /* YZHUICircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHUICircleProgressView.h; sourceTree = "<group>"; };
 		1CC78EF1250B9544009EE7A3 /* YZHUICircleProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHUICircleProgressView.m; sourceTree = "<group>"; };
@@ -1477,6 +1483,10 @@
 				1CDF3697261DE251004208D0 /* MMGraph.mm */,
 				1CDF369B261DE287004208D0 /* MMContext.h */,
 				1CDF369C261DE287004208D0 /* MMContext.mm */,
+				1CC4799226270E54004C49C0 /* MMStack.h */,
+				1CC4799326270E54004C49C0 /* MMStack.mm */,
+				1CC4799B26271254004C49C0 /* MMTypes.h */,
+				1CC4799C26271254004C49C0 /* MMTypes.m */,
 			);
 			path = MMGraph;
 			sourceTree = "<group>";
@@ -1621,6 +1631,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CC790C1250B9545009EE7A3 /* UITabBarView.m in Sources */,
+				1CC4799D26271254004C49C0 /* MMTypes.m in Sources */,
 				1CC790C0250B9545009EE7A3 /* YZHUITabBarButton.m in Sources */,
 				1CC79055250B9545009EE7A3 /* YZHUIExcelContentView.m in Sources */,
 				1CC790C9250B9545009EE7A3 /* UIView+UIColor.m in Sources */,
@@ -1720,6 +1731,7 @@
 				1CC790B2250B9545009EE7A3 /* YZHBaseAnimatedTransition.m in Sources */,
 				1CC7906D250B9545009EE7A3 /* YZHLoopTransitionView.m in Sources */,
 				1CDF369D261DE287004208D0 /* MMContext.mm in Sources */,
+				1CC4799426270E54004C49C0 /* MMStack.mm in Sources */,
 				1CC790E3250B9545009EE7A3 /* YZHJSONDict.m in Sources */,
 				1C2BB0DB2604C5EB001F9F0E /* YZHImageBrowserController.m in Sources */,
 				1CC790D2250B9545009EE7A3 /* UIButton+YZHAdd.m in Sources */,
@@ -1899,7 +1911,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = P53688J6G7;
+				DEVELOPMENT_TEAM = 65T84QCPPQ;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = YZHApp/AppPrefixHeader.pch;
 				INFOPLIST_FILE = YZHApp/Info.plist;
@@ -1918,7 +1930,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = P53688J6G7;
+				DEVELOPMENT_TEAM = 65T84QCPPQ;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = YZHApp/AppPrefixHeader.pch;
 				INFOPLIST_FILE = YZHApp/Info.plist;

@@ -1303,54 +1303,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7A6ECA69-6BEE-4726-B5E9-13F10026223A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/MMGraph/MMGraph.mm"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "329"
-            endingLineNumber = "329"
-            landmarkName = "vm_range_recorder(task, ctx, type, ranges, cnt)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F7E4A120-2A8D-4CE8-BDB4-27D0407CB873"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/MMGraph/MMGraph.mm"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "337"
-            endingLineNumber = "337"
-            landmarkName = "vm_range_recorder(task, ctx, type, ranges, cnt)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9B180D24-A8BF-4744-B7B6-C9309B3EE29F"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/MMGraph/MMGraph.mm"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "332"
-            endingLineNumber = "332"
-            landmarkName = "vm_range_recorder(task, ctx, type, ranges, cnt)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "D88E3A59-12EF-4495-94B5-FA8614A5D283"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1358,8 +1310,8 @@
             filePath = "YZHApp/MMGraph/MMContext.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "225"
-            endingLineNumber = "225"
+            startingLineNumber = "297"
+            endingLineNumber = "297"
             landmarkName = "MMContext::shareContext()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1374,8 +1326,8 @@
             filePath = "YZHApp/MMGraph/MMContext.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "234"
-            endingLineNumber = "234"
+            startingLineNumber = "305"
+            endingLineNumber = "305"
             landmarkName = "MMContext::shareContext()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1390,8 +1342,8 @@
             filePath = "YZHApp/MMGraph/MMContext.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "231"
-            endingLineNumber = "231"
+            startingLineNumber = "303"
+            endingLineNumber = "303"
             landmarkName = "MMContext::shareContext()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1406,8 +1358,8 @@
             filePath = "YZHApp/MMGraph/MMContext.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "247"
-            endingLineNumber = "247"
+            startingLineNumber = "318"
+            endingLineNumber = "318"
             landmarkName = "MMContext::allRegisteredObjCClassList()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1422,8 +1374,8 @@
             filePath = "YZHApp/MMGraph/MMContext.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "255"
-            endingLineNumber = "255"
+            startingLineNumber = "326"
+            endingLineNumber = "326"
             landmarkName = "MMContext::allRegisteredObjCClassList()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1438,8 +1390,8 @@
             filePath = "YZHApp/MMGraph/MMContext.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
+            startingLineNumber = "321"
+            endingLineNumber = "321"
             landmarkName = "MMContext::allRegisteredObjCClassList()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1454,8 +1406,8 @@
             filePath = "YZHApp/MMGraph/MMContext.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
             landmarkName = "MMContextZone()"
             landmarkType = "9">
          </BreakpointContent>
@@ -1470,8 +1422,8 @@
             filePath = "YZHApp/MMGraph/MMContext.mm"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
             landmarkName = "MMCtxFree(ptr)"
             landmarkType = "9">
          </BreakpointContent>
@@ -1490,6 +1442,38 @@
             endingLineNumber = "640"
             landmarkName = "-touchesBegan:withEvent:"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EBCD3F05-1E8D-4190-A08D-9FE1A2828FB0"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/TestMemoryGraphViewController.mm"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "-touchesBegan:withEvent:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "727EB8B8-358B-47C8-8AE2-268DBCF1553F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/MMGraph/MMStack.mm"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "thread_stack_sp(thread, sp)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

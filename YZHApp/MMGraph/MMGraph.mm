@@ -14,55 +14,18 @@
 #import <mach-o/dyld.h>
 #import <objc/runtime.h>
 #import "MMContext.h"
-#import <objc/runtime.h>
+#import "MMTypes.h"
 
 #include <iostream>
 
-#ifdef __LP64__
-typedef struct mach_header_64 mach_header_t;
-typedef struct segment_command_64 segment_command_t;
-typedef struct section_64 section_t;
-typedef struct nlist_64 nlist_t;
-#define LC_SEGMENT_ARCH LC_SEGMENT_64
-#else
-typedef struct mach_header mach_header_t;
-typedef struct segment_command segment_command_t;
-typedef struct section section_t;
-typedef struct nlist nlist_t;
-#define LC_SEGMENT_ARCH LC_SEGMENT
-#endif
+
 
 extern "C" int proc_regionfilename(int pid, uint64_t address, void * buffer, uint32_t buffersize);
-
-//typedef struct {
-//    Class isa;
-//}MMObjc_t;
-
-//static CFMutableSetRef cxxClassesAddress_s = NULL;
-//static NSRange machODataConstRange_s = NSMakeRange(0, 0);
 
 static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slide);
 static void vm_range_recorder(task_t task, void *ctx, unsigned type, vm_range_t *ranges, unsigned cnt);
 
-//static CFMutableSetRef registeredClasses(){
-//    static dispatch_once_t onceToken;
-//    static CFMutableSetRef registeredClasses = NULL;
-//    dispatch_once(&onceToken, ^{
-//        registeredClasses = CFSetCreateMutable(NULL, 8, NULL);
-//
-//        unsigned int cnt = 0;
-//        Class *classes = objc_copyClassList(&cnt);
-//        for (unsigned int i = 0; i < cnt; ++i) {
-//            CFSetAddValue(registeredClasses, (__bridge const void *)classes[i]);
-//        }
-//
-//        free(classes);
-//    });
-//    return registeredClasses;
-//}
-
 static void register_dyld_add_callback() {
-//    cxxClassesAddress_s = CFSetCreateMutable(NULL, 0, NULL);
     _dyld_register_func_for_add_image(_dyld_add_image_callback);
 }
 
@@ -105,7 +68,6 @@ static int64_t read_sleb128(const uint8_t*&p, const uint8_t* end)
         result |= (~0ULL) << bit;
     return result;
 }
-
 
 static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slide) {
     if (mh->filetype != MH_EXECUTE) {
@@ -196,8 +158,7 @@ static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slid
                         if (strlen(symbolName) > cxxSymbolNamePrefixLen && strncmp(symbolName, cxxSymbolNamePrefix, cxxSymbolNamePrefixLen) == 0)
                         {
                             std::type_info *typeInfo = (std::type_info*)((uintptr_t)mh + (uintptr_t)segmentOffset);
-                            NSLog(@"typeInfo.name=%s,typeInfo:%p",typeInfo->name(), typeInfo);
-//                            CFSetAddValue(cxxClassesAddress_s, (const void *)typeInfo);
+//                            NSLog(@"typeInfo.name=%s,typeInfo:%p",typeInfo->name(), typeInfo);
                             MMContext::shareContext()->addCxxTypeInfo((uintptr_t)typeInfo);
                         }
                         segmentOffset += ptrSize;
@@ -210,8 +171,7 @@ static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slid
                         if (strlen(symbolName) > cxxSymbolNamePrefixLen && strncmp(symbolName, cxxSymbolNamePrefix, cxxSymbolNamePrefixLen) == 0)
                         {
                             std::type_info *typeInfo = (std::type_info*)((uintptr_t)mh + (uintptr_t)segmentOffset);
-                            NSLog(@"typeInfo.name=%s,typeInfo:%p",typeInfo->name(), typeInfo);
-//                            CFSetAddValue(cxxClassesAddress_s, (const void *)typeInfo);
+//                            NSLog(@"typeInfo.name=%s,typeInfo:%p",typeInfo->name(), typeInfo);
                             MMContext::shareContext()->addCxxTypeInfo((uintptr_t)typeInfo);
                         }
                         segmentOffset += immediate * ptrSize + ptrSize;
@@ -234,22 +194,7 @@ static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slid
     }
     MMContext::shareContext()->machODataConstOff = dataConstOff;
     MMContext::shareContext()->machODataConstSize = dataConstSize;
-//    machODataConstRange_s = NSMakeRange(dataConstOff, dataConstSize);
 }
-
-//static const char* cxxTypeInoName(void *ptr) {
-//    uint64_t ptrValue = (*((uintptr_t*)ptr) - 8);
-//    uint64_t end = machODataConstRange_s.location + machODataConstRange_s.length;
-//    if (ptrValue >= machODataConstRange_s.location && ptrValue < end) {
-//        //取ptrValue作为指针里面的值就是type_info的地址
-//        void *typeInfoPtr = (void*)(*((uintptr_t*)ptrValue));
-//        if (CFSetGetValue(cxxClassesAddress_s, (const void *)typeInfoPtr)) {
-//            std::type_info *typeInfo = (std::type_info *)typeInfoPtr;
-//            return typeInfo->name();
-//        }
-//    }
-//    return NULL;
-//}
 
 void readVMRegin() {
     kern_return_t kret = KERN_SUCCESS;
@@ -324,41 +269,6 @@ static void vm_range_recorder(task_t task, void *ctx, unsigned type, vm_range_t 
     for (uint32_t i = 0; i < cnt; ++i) {
         shareCtx->addRangeIntoCtxZone(ctxzone, ranges[i]);
     }
-    
-    
-//    for (unsigned int i = 0; i < cnt; ++i) {
-//        vm_range_t range = ranges[i];
-//
-//        MMObjc_t *objc = (MMObjc_t*)range.address;
-//
-//        Class objcClass = NULL;
-//#ifdef __arm64__
-//        extern const uintptr_t objc_debug_isa_class_mask;
-//        objcClass = (__bridge Class)((void*)((uintptr_t)objc->isa & objc_debug_isa_class_mask));
-//#else
-//        objcClass = objc->isa;
-//#endif
-////        CFArrayRef list = MMContext::shareContext()->getObjcClassList();
-////        CFArrayContainsValue(list, CFRangeMake(0, CFArrayGetCount(list)), (__bridge const void *)objcClass)
-//        if (CFSetContainsValue(registeredClasses(), (__bridge const void *)objcClass))
-////        if (CFArrayContainsValue(list, CFRangeMake(0, CFArrayGetCount(list)), (__bridge const void *)objcClass))
-//        {
-//            NSString *clsName = NSStringFromClass(objcClass);
-//            if ([clsName isEqualToString:@"__NSCFType"]) {
-//                CFTypeID typeId = CFGetTypeID((CFTypeRef)objc);
-//                CFStringRef name = CFCopyTypeIDDescription(typeId);
-//                clsName = [NSString stringWithString:(__bridge NSString*)name];
-//                CFRelease(name);
-//            }
-////            NSLog(@"zone.name=%s,objc.Class=%@",zone->zone_name,clsName);
-//        }
-////        else if (const char *cxxClsName = MMContext::shareContext()->getCxxTypeInfoNameForAddress((void *)range.address)) {
-////            NSLog(@"zone.name=%s,cxx object:%s", zone->zone_name, cxxClsName);
-////        }
-////        else {
-////            NSLog(@"zone.name=%s raw buffer or struct or class:0x%0lx",zone->zone_name, range.address);
-////        }
-//    }
 }
 
 
@@ -418,13 +328,6 @@ public:
 @end
 
 
-//typedef struct {
-//    CFIndex version;
-//    const char *className;
-//}MMCFRunTimeClass;
-//extern "C" const MMCFRunTimeClass * _CFRuntimeGetClassWithTypeID(CFTypeID typeID);
-
-
 
 void MMGraphTest(void)
 {
@@ -441,10 +344,10 @@ void MMGraphTest(void)
 //
 //    [testObjc test];
     
-    Man *man = new Man(20);
-    man->print();
+//    Man *man = new Man(20);
+//    man->print();
 //
-    Person *p = new Person(50);
+//    Person *p = new Person(50);
     
 //    malloc_zone_t *zone = malloc_create_zone(1024,0);
 //    malloc_set_zone_name(zone, "MMCtxZone");

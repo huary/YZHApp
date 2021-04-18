@@ -8,6 +8,7 @@
 
 #import "TestMemoryGraphViewController.h"
 #import "MMGraph.h"
+#import "MMStack.h"
 
 typedef struct Test {
     int i;
@@ -86,22 +87,45 @@ protected:
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
 //    readVMRegin();
     
-    self.bptr = new B();
+//    mach_port_t thread = mach_thread_self();
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+//        vm_address_t sp = 0;
+//        thread_stack_sp(thread, &sp);
+//    });
     
-    self.ptr_t = (TT*)calloc(1, sizeof(TT));
+//    while (1) {
+//
+//    };
+    vm_address_t sp = 0;
+    thread_stack_sp(mach_thread_self(), &sp);
+//
+//    NSLog(@"sp=%lu",sp);
     
-    self.ptr = (uint8_t*)malloc(100);
-    memset(self.ptr, 0, 100);
-    
-    self.cptr = (char *)calloc(100, sizeof(char));
-    
-    self.sptr = (uint16_t*)calloc(100, sizeof(uint16_t));
-    
-    self.iptr = (uint32_t*)calloc(100, sizeof(uint32_t));
-    
-    NSLog(@"self.bptr=%p",self.bptr);
+//    vm_address_t fp = 0;
 
-    [self pri_getIvar];
+//    thread_stack_fp(mach_thread_self(), &fp, 0);
+//
+//    NSLog(@"fp=%@",@(fp));
+////
+//    NSLog(@"fp=%@,sp=%@",@(fp),@(sp));
+    
+    
+//    self.bptr = new B();
+//
+//    self.ptr_t = (TT*)calloc(1, sizeof(TT));
+//
+//    self.ptr = (uint8_t*)malloc(100);
+//    memset(self.ptr, 0, 100);
+//
+//    self.cptr = (char *)calloc(100, sizeof(char));
+//
+//    self.sptr = (uint16_t*)calloc(100, sizeof(uint16_t));
+//
+//    self.iptr = (uint32_t*)calloc(100, sizeof(uint32_t));
+//
+//    NSLog(@"self.bptr=%p",self.bptr);
+//
+//    [self pri_getIvar];
 
     
 //    MMGraphTest();
