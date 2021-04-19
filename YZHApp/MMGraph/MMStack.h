@@ -13,6 +13,19 @@
 #import <mach/task.h>
 #import <mach/mach_port.h>
 
+typedef struct MMStackFrame {
+    //栈上的栈帧
+    struct MMStackFrame *prev;
+    //这个是在fp寄存器上的连接寄存器
+    uintptr_t lr;
+}MMStackFrame_S;
+
+typedef struct MMStackCtx {
+    MMStackFrame frame;
+    //读取到线程栈数据、寄存器数据
+    _STRUCT_MCONTEXT ctx;
+}MMStackCtx_S;
+
 //返回true/false表示是否继续往下执行（进行遍历）
 typedef bool(^MM_foreach_task_thread_before_block)(thread_act_array_t thread_array, mach_msg_type_number_t cnt);
 
@@ -25,14 +38,19 @@ typedef bool(^MM_foreach_task_thread_after_block)(thread_act_array_t thread_arra
 /// 获取线程的栈帧
 /// @param thread 线程端口
 /// @param fp 返回的栈帧(栈底)的基地址
-/// @param backtrace_cnt 回溯的栈帧数
-bool thread_stack_fp(thread_t thread, vm_address_t *fp, int32_t backtrace_cnt);
+bool thread_stack_fp(thread_t thread, vm_address_t *fp);
 
 
 /// 获取线程的栈帧
 /// @param thread 线程端口
 /// @param sp 返回栈帧（栈顶）
 bool thread_stack_sp(thread_t thread, vm_address_t *sp);
+
+
+/// 获取线程的栈上下文
+/// @param thread 线程端口
+/// @param ctx 返回的栈帧、寄存器数据
+bool thread_stack_ctx(thread_t thread, struct MMStackCtx *ctx);
 
 bool suspend_task_threads(void);
 

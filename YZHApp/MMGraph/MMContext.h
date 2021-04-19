@@ -108,6 +108,9 @@ private:
     CFMutableDictionaryRef rangeInfo;
     thread_act_array_t suspendThreadList;
     mach_msg_type_number_t suspendThreadCnt;
+    
+    NSArray *heapList;
+    NSArray *stackList;
 public:
     int64_t machODataConstOff;
     int64_t machODataConstSize;
@@ -135,16 +138,18 @@ public:
     
     MMCtxRange_T *addRangeIntoCtxZone(MMCtxZone_T *zone, vm_range_t range);
     
+    //读取对重的数据
+    void readHeap();
+    
     //stack,休眠当前进程中所有的线程
     void suspendTaskThread();
     
     //stack,读取休眠的线程栈
-    void readTaskThreadStack();
+    void readStack();
     
     //stack,恢复当前进程中所有的线程(前面休眠的)
     void resumeTaskThread();
-    
-    NSDictionary *parase();
+
 };
 
 NS_ASSUME_NONNULL_END

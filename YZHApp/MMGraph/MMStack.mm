@@ -16,31 +16,23 @@
 #import "YZHKitMacro.h"
 #import <dlfcn.h>
 
-typedef struct MMStackFrame {
-    struct MMStackFrame *prev;
-    uintptr_t lr;
-}MMStackFrame_S;
-
 /// 获取线程的栈帧
 /// @param thread 线程端口
 /// @param fp 返回的栈帧(栈底)的基地址
-/// @param backtrace_cnt 回溯的栈帧数
-bool thread_stack_fp(thread_t thread, vm_address_t *fp, int32_t backtrace_cnt) {
+bool thread_stack_fp(thread_t thread, vm_address_t *fp) {
     _STRUCT_MCONTEXT ctx;
 
     THREAD_GET_STATE(thread, MM_THREAD_STATE, ctx.MM_SS, false);
     
     THREAD_GET_STATE(thread, MM_EXCEPTION_STATE, ctx.MM_ES, false);
     
-    vm_size_t len = sizeof(fp);
-    
     if (ctx.MM_ES.MM_EXCEPTION != 0) {
         return false;
     }
-    VM_READ_OVERWRITE(mach_task_self(), ctx.MM_SS.MM_FP, len, fp, len, false);
     
-    
-    VM_READ_OVERWRITE(mach_task_self(), *fp, len, fp, len, false);
+    if (fp) {
+        *fp = ctx.MM_SS.MM_FP;
+    }
     
     return true;
 }
@@ -69,6 +61,31 @@ bool thread_stack_sp(thread_t thread, vm_address_t *sp) {
 //    vm_address_t osize = 0;
 //    VM_READ_OVERWRITE(mach_task_self(), ctx.MM_SS.MM_FP, size, &frame, osize, false);
 //    NSLog(@"frame=%lu",frame.prev);
+    return true;
+}
+
+/// 获取线程的栈上下文
+/// @param thread 线程端口
+/// @param ctx 返回的栈帧、寄存器数据
+bool thread_stack_ctx(thread_t thread, struct MMStackCtx *ctx) {
+    if (!ctx) {
+        return false;
+    }
+    
+    memset(ctx, 0, sizeof(struct MMStackCtx));
+    
+    THREAD_GET_STATE(thread, MM_THREAD_STATE, ctx->ctx.MM_SS, false);
+    
+    THREAD_GET_STATE(thread, MM_EXCEPTION_STATE, ctx->ctx.MM_ES, false);
+    
+    if (ctx->ctx.MM_ES.MM_EXCEPTION != 0) {
+        return false;
+    }
+    
+    vm_address_t size = sizeof(ctx->frame);
+    vm_address_t osize = 0;
+    VM_READ_OVERWRITE(mach_task_self(), ctx->ctx.MM_SS.MM_FP, size, &ctx->frame, osize, false);
+    
     return true;
 }
 

@@ -12,6 +12,8 @@
 #import <assert.h>
 #import <iostream>
 #import "MMStack.h"
+#import "MMTypes.h"
+#import <dlfcn.h>
 
 struct MMDictEnumeratorCtx {
     BOOL stop;
@@ -40,6 +42,18 @@ typedef struct {
 
 #define MM_DictKey      @"key"
 #define MM_DictValue    @"value"
+
+#define MM_THRD_IdKey            @"thrdid"
+#define MM_THRD_NameKey          @"thrdname"
+#define MM_THRD_SizeKey          @"stksize"
+#define MM_THRD_AddrKey          @"stkaddr"
+#define MM_THRD_DepthKey         @"stkdepth"
+#define MM_THRD_FramesKey        @"frames"
+#define MM_THRD_FrameSNameKey    @"sname"
+#define MM_THRD_FrameFNameKey    @"fname"
+#define MM_THRD_FrameFPKey       @"fp"
+#define MM_THRD_FrameSPKey       @"sp"
+#define MM_THRD_FrameHeapKey     @"heap"
 
 #define MM_OBJC_STR(cstr) [NSString stringWithUTF8String:cstr]
 #define MM_VALUE_PTR(ptr) @((uintptr_t)ptr)//[NSValue valueWithPointer:(void *)ptr]
@@ -73,6 +87,21 @@ typedef struct {
     [sub setObject:MM_VALUE_OBJ(obj) forKey:MM_AddrKey]; \
     [subs addObject:sub];\
 }
+
+#define MM_ADDR_FOREACH_READ(ADDR, SIZE, ...) \
+if (SIZE > MMContext::pointerSize) { \
+    uint8_t *ptr = (uint8_t*)ADDR; \
+    uint8_t *endPtr = ptr + SIZE; \
+    while (ptr + MMContext::pointerSize < endPtr) { \
+        vm_address_t *addrPtr = (vm_address_t*)ptr; \
+        ptr += MMContext::pointerSize; \
+        vm_address_t addrVal = *addrPtr; \
+        __VA_ARGS__;\
+    }\
+}
+
+#define LR_TRIP_MASK            0x0000000fffffffff
+#define MM_NORMALISE_LR(LR)     (LR & LR_TRIP_MASK)
 
 
 #define USE_CF_RUNTIME_CLASS    1
@@ -286,6 +315,34 @@ const char *getCxxTypeInfoNameForAddress(vm_range_t range) {
 //    return YES;
 //}
 
+NSDictionary *pri_frameInfoFrom(vm_address_t fp, vm_address_t sp, vm_address_t lr) {
+    Dl_info info = {NULL,NULL};
+    NSMutableDictionary *frameInfo = [NSMutableDictionary dictionary];
+    dladdr((const void *)MM_NORMALISE_LR(lr), &info);
+    if (info.dli_sname) {
+        [frameInfo setObject:MM_OBJC_STR(info.dli_sname) forKey:MM_THRD_FrameSNameKey];
+    }
+    if (info.dli_fname) {
+        [frameInfo setObject:MM_OBJC_STR(info.dli_fname) forKey:MM_THRD_FrameFNameKey];
+    }
+    [frameInfo setObject:@(fp) forKey:MM_THRD_FrameFPKey];
+    [frameInfo setObject:@(sp) forKey:MM_THRD_FrameSPKey];
+    
+    vm_size_t size = fp - sp;
+    NSMutableArray *heapAddrList = [NSMutableArray array];
+    MM_ADDR_FOREACH_READ(sp, size, {
+        //这里是否需要判断addrValue是否在堆上？？？
+        if (addrVal) {
+            [heapAddrList addObject:@(addrVal)];
+        }
+    });
+    if (heapAddrList.count > 0) {
+        [frameInfo setObject:heapAddrList forKey:MM_THRD_FrameHeapKey];
+    }
+    
+    return frameInfo;
+}
+
 #define CHECK_MMCTX  assert(this == MMContext::shareContext())
 
 MMContext* MMContext::shareContext() {
@@ -300,6 +357,11 @@ MMContext* MMContext::shareContext() {
         shareContext.rangeInfo = createMMCtxDictionary(32);
         shareContext.machODataConstOff = 0;
         shareContext.machODataConstSize = 0;
+        
+        shareContext.suspendThreadList = NULL;
+        shareContext.suspendThreadCnt = 0;
+        shareContext.heapList = nil;
+        shareContext.stackList = nil;
         shareInstancePtr = &shareContext;
     });
     return shareInstancePtr;
@@ -376,9 +438,7 @@ MMCtxRange_T *MMContext::addRangeIntoCtxZone(MMCtxZone_T *zone, vm_range_t range
 }
 
 
-NSDictionary *MMContext::parase() {
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:8];
-    
+void MMContext::readHeap() {
     CFIndex cnt = CFArrayGetCount(zoneList);
     CFRange r = CFRangeMake(0, cnt);
     
@@ -512,28 +572,20 @@ NSDictionary *MMContext::parase() {
                 //MMContext::以pointerSize为步长遍历
                 NSMutableArray *subs = [NSMutableArray array];
                 vm_range_t r = ctxRange->range;
-                if (r.size > MMContext::pointerSize) {
-                    uint8_t *ptr = (uint8_t*)r.address;
-                    uint8_t *endPtr = ptr + r.size;
-                    while (ptr + MMContext::pointerSize < endPtr) {
-                        vm_address_t *addrPtr = (vm_address_t*)ptr;
-                        ptr += MMContext::pointerSize;
-                        
-                        vm_address_t addrVal = *addrPtr;
-                        if (addrVal) {
-                            NSMutableDictionary *sub = [NSMutableDictionary dictionary];
-                            [sub setObject:@(addrVal) forKey:MM_AddrKey];
-                            [subs addObject:sub];
-                        }
+                MM_ADDR_FOREACH_READ(r.address, r.size, {
+                    if (addrVal) {
+                        NSMutableDictionary *sub = [NSMutableDictionary dictionary];
+                        [sub setObject:@(addrVal) forKey:MM_AddrKey];
+                        [subs addObject:sub];
                     }
-                }
+                });
                 [rangeDict setObject:subs forKey:MM_SubsKey];
             }
             [rangeArray addObject:rangeDict];
         });
         [zoneArray addObject:rangeArray];
     });
-    return [dict copy];
+    this->heapList = [zoneArray copy];
 }
 
 
@@ -568,13 +620,60 @@ void MMContext::suspendTaskThread() {
 }
 
 //stack,读取休眠的线程栈
-void MMContext::readTaskThreadStack() {
-    
+void MMContext::readStack() {
+    struct MMStackCtx ctx;
+    char thread_name[512] = {0};
+    size_t size = sizeof(thread_name)/sizeof(char);
+    NSMutableArray *threadList = [NSMutableArray array];
+    for (mach_msg_type_number_t i = 0; i < this->suspendThreadCnt; ++i) {
+        thread_t thread = this->suspendThreadList[i];
+        pthread_t pthread = pthread_from_mach_thread_np(thread);
+        vm_size_t stackSize = pthread_get_stacksize_np(pthread);
+        //栈的起始地址，在高位
+        void *stackaddr = pthread_get_stackaddr_np(pthread);
+        if (stackaddr && stackSize >= MMContext::pointerSize) {
+            thread_stack_ctx(thread, &ctx);
+            NSMutableDictionary *threadInfo = [NSMutableDictionary dictionary];
+            uint64_t tid = 0;
+            pthread_threadid_np(pthread, &tid);
+            [threadInfo setObject:@(tid) forKey:MM_THRD_IdKey];
+            
+            thread_name[0] = 0;
+            if (pthread_getname_np(pthread, thread_name, size) == 0 && thread_name[0]!=0) {
+                [threadInfo setObject:MM_OBJC_STR(thread_name) forKey:MM_THRD_NameKey];
+            }
+            
+            [threadInfo setObject:@(stackSize) forKey:MM_THRD_SizeKey];
+            [threadInfo setObject:@((uintptr_t)stackaddr) forKey:MM_THRD_AddrKey];
+            
+            vm_size_t depth = (vm_address_t)stackaddr - (vm_address_t)ctx.ctx.MM_SS.MM_SP;
+            [threadInfo setObject:@(depth) forKey:MM_THRD_DepthKey];
+            
+            NSMutableArray *frameList = [NSMutableArray array];
+            
+            vm_address_t fp = ctx.ctx.MM_SS.MM_FP;
+            vm_address_t sp = ctx.ctx.MM_SS.MM_SP;
+            vm_address_t pc = ctx.ctx.MM_SS.MM_PC;
+            NSDictionary *frameInfo = pri_frameInfoFrom(fp, sp, pc);
+            [frameList addObject:frameInfo];
+            
+            sp = ctx.ctx.MM_SS.MM_FP;
+            struct MMStackFrame *frame = &ctx.frame;
+            while (frame && frame->prev && frame->lr) {
+                fp = (vm_address_t)frame->prev;
+                NSDictionary *frameInfo = pri_frameInfoFrom(fp, sp, frame->lr);
+                [frameList addObject:frameInfo];
+                sp = fp;
+            }
+            [threadInfo setObject:frameList forKey:MM_THRD_FramesKey];
+            [threadList addObject:threadInfo];
+        }
+    }
+    this->stackList = [threadList copy];
 }
 
 //stack,恢复当前进程中所有的线程
 void MMContext::resumeTaskThread() {
-
     for (mach_msg_type_number_t i = 0; i < suspendThreadCnt; ++i) {
         thread_t thread = suspendThreadList[i];
         if (KERN_SUCCESS != thread_resume(thread)) {

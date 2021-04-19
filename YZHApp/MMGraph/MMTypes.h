@@ -32,8 +32,10 @@ typedef struct nlist nlist_t;
 #define MM_SS                   __ss
 #define MM_ES                   __es
 
+#define MM_LR                   __lr
 #define MM_FP                   __r[7]
 #define MM_SP                   __sp
+#define MM_PC                   __pc
 #define MM_EXCEPTION            __exception
 
 #elif defined(__arm64__)
@@ -45,8 +47,10 @@ typedef struct nlist nlist_t;
 #define MM_SS                   __ss
 #define MM_ES                   __es
 
+#define MM_LR                   __lr
 #define MM_FP                   __fp
 #define MM_SP                   __sp
+#define MM_PC                   __pc
 #define MM_EXCEPTION            __exception
 
 
@@ -59,6 +63,9 @@ typedef struct nlist nlist_t;
 #define MM_SS                   __ss
 #define MM_ES                   __es
 
+//i386没有lr寄存器，就用eip表示同样的效果
+#define MM_LR                   __eip
+#define MM_PC                   MM_LR
 #define MM_FP                   __ebp
 #define MM_SP                   __esp
 #define MM_EXCEPTION            __err
@@ -73,6 +80,9 @@ typedef struct nlist nlist_t;
 #define MM_SS                   __ss
 #define MM_ES                   __es
 
+//i386没有lr寄存器，就用rip表示同样的效果
+#define MM_LR                   __rip
+#define MM_PC                   MM_LR
 #define MM_FP                   __rbp
 #define MM_SP                   __rsp
 #define MM_EXCEPTION            __err
