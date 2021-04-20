@@ -11,6 +11,7 @@
 #import <mach/thread_act.h>
 #import <assert.h>
 #import <iostream>
+#import "MMHeap.h"
 #import "MMStack.h"
 #import "MMTypes.h"
 #import <dlfcn.h>
@@ -112,6 +113,17 @@ typedef struct {
 }MM_CFRunTimeClass;
 extern "C" const MM_CFRunTimeClass * _CFRuntimeGetClassWithTypeID(CFTypeID typeID);
 #endif
+
+
+dispatch_queue_t workQueue() {
+    static dispatch_once_t onceToken;
+    static dispatch_queue_t MMCtxWorkQueue_s = nil;
+    dispatch_once(&onceToken, ^{
+        MMCtxWorkQueue_s = dispatch_queue_create("MMCtxWorkQueue.queue", DISPATCH_QUEUE_SERIAL);
+    });
+    return MMCtxWorkQueue_s;
+}
+
 
 malloc_zone_t *MMContextZone() {
     static malloc_zone_t *MMCtxZone = NULL;
@@ -585,12 +597,12 @@ void MMContext::readHeap() {
         });
         [zoneArray addObject:rangeArray];
     });
+    NSLog(@"zoneArray=%@",zoneArray);
     this->heapList = [zoneArray copy];
 }
 
-
 //stack,休眠当前进程中所有的线程
-void MMContext::suspendTaskThread() {
+bool MMContext::suspendTaskThread() {
     __block bool OK = true;
     foreach_task_threads(^bool(thread_act_array_t thread_array, mach_msg_type_number_t cnt) {
         this->suspendThreadCnt = cnt;
@@ -617,6 +629,7 @@ void MMContext::suspendTaskThread() {
         }
         return false;
     });
+    return OK;
 }
 
 //stack,读取休眠的线程栈
@@ -685,5 +698,29 @@ void MMContext::resumeTaskThread() {
         mach_port_deallocate(mach_task_self(), suspendThreadList[i]);
     }
     vm_deallocate(mach_task_self(), (vm_address_t)&suspendThreadList, suspendThreadCnt * sizeof(thread_t));
+}
+
+
+
+void MMContext::start() {
+    
+    dispatch_async(workQueue(), ^{
+        bool result = suspendTaskThread();
+        if (!result) {
+            return;
+        }
+        
+        prepareReadHeapZone();
+        
+        readHeapZone();
+        
+        readStack();
+        
+        //writeData
+        
+        resumeTaskThread();
+    });
+    
+    
     
 }

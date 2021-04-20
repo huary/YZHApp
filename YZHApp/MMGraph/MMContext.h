@@ -142,7 +142,7 @@ public:
     void readHeap();
     
     //stack,休眠当前进程中所有的线程
-    void suspendTaskThread();
+    bool suspendTaskThread();
     
     //stack,读取休眠的线程栈
     void readStack();
@@ -150,6 +150,8 @@ public:
     //stack,恢复当前进程中所有的线程(前面休眠的)
     void resumeTaskThread();
 
+    //开始进行内存快照
+    void start();
 };
 
 NS_ASSUME_NONNULL_END

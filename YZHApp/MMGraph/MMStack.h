@@ -26,7 +26,7 @@ typedef struct MMStackCtx {
     _STRUCT_MCONTEXT ctx;
 }MMStackCtx_S;
 
-//返回true/false表示是否继续往下执行（进行遍历）
+//返回true/false表示是否继续往下执行（进行遍历，为false不会会释放资源）
 typedef bool(^MM_foreach_task_thread_before_block)(thread_act_array_t thread_array, mach_msg_type_number_t cnt);
 
 //进行遍历
@@ -56,7 +56,7 @@ bool suspend_task_threads(void);
 
 void resume_task_threads(void);
 
-void foreach_task_threads(MM_foreach_task_thread_before_block before_block,
+bool foreach_task_threads(MM_foreach_task_thread_before_block before_block,
                           MM_foreach_task_thread_block block,
                           MM_foreach_task_thread_after_block after_block);
 

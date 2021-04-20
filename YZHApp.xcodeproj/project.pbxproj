@@ -171,7 +171,7 @@
 		1CD5760022B8E4D100A125DD /* AppDBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD575FF22B8E4D100A125DD /* AppDBManager.m */; };
 		1CD5760922B8E62300A125DD /* AppBSUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD5760822B8E62300A125DD /* AppBSUser.m */; };
 		1CD5760D22B8ECF000A125DD /* AppNTRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD5760C22B8ECF000A125DD /* AppNTRequestManager.m */; };
-		1CDF3699261DE251004208D0 /* MMGraph.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF3697261DE251004208D0 /* MMGraph.mm */; };
+		1CDF3699261DE251004208D0 /* MMHeap.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF3697261DE251004208D0 /* MMHeap.mm */; };
 		1CDF369D261DE287004208D0 /* MMContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF369C261DE287004208D0 /* MMContext.mm */; };
 		1CEB9870251D8F900029CF9F /* YZHCGUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB986E251D8F900029CF9F /* YZHCGUtil.m */; };
 		1CEB9873251DA93E0029CF9F /* UIViewController+NavigationBarAndItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB9871251DA93E0029CF9F /* UIViewController+NavigationBarAndItemView.m */; };
@@ -486,8 +486,8 @@
 		1CD5760A22B8E93F00A125DD /* AppPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppPrefixHeader.pch; sourceTree = "<group>"; };
 		1CD5760B22B8ECF000A125DD /* AppNTRequestManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppNTRequestManager.h; sourceTree = "<group>"; };
 		1CD5760C22B8ECF000A125DD /* AppNTRequestManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppNTRequestManager.m; sourceTree = "<group>"; };
-		1CDF3697261DE251004208D0 /* MMGraph.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMGraph.mm; sourceTree = "<group>"; };
-		1CDF3698261DE251004208D0 /* MMGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMGraph.h; sourceTree = "<group>"; };
+		1CDF3697261DE251004208D0 /* MMHeap.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMHeap.mm; sourceTree = "<group>"; };
+		1CDF3698261DE251004208D0 /* MMHeap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMHeap.h; sourceTree = "<group>"; };
 		1CDF369B261DE287004208D0 /* MMContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMContext.h; sourceTree = "<group>"; };
 		1CDF369C261DE287004208D0 /* MMContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MMContext.mm; sourceTree = "<group>"; };
 		1CEB986E251D8F900029CF9F /* YZHCGUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHCGUtil.m; sourceTree = "<group>"; };
@@ -1479,8 +1479,8 @@
 		1CDF3696261DE251004208D0 /* MMGraph */ = {
 			isa = PBXGroup;
 			children = (
-				1CDF3698261DE251004208D0 /* MMGraph.h */,
-				1CDF3697261DE251004208D0 /* MMGraph.mm */,
+				1CDF3698261DE251004208D0 /* MMHeap.h */,
+				1CDF3697261DE251004208D0 /* MMHeap.mm */,
 				1CDF369B261DE287004208D0 /* MMContext.h */,
 				1CDF369C261DE287004208D0 /* MMContext.mm */,
 				1CC4799226270E54004C49C0 /* MMStack.h */,
@@ -1667,7 +1667,7 @@
 				1CC790BC250B9545009EE7A3 /* YZHBaseUIViewController.m in Sources */,
 				1CC790DD250B9545009EE7A3 /* YZHTimer.m in Sources */,
 				1C0634B52580725800DC3017 /* TestMessageForwardViewController.m in Sources */,
-				1CDF3699261DE251004208D0 /* MMGraph.mm in Sources */,
+				1CDF3699261DE251004208D0 /* MMHeap.mm in Sources */,
 				1CC790C5250B9545009EE7A3 /* UIImageView+YZHAdd.m in Sources */,
 				1CC790DA250B9545009EE7A3 /* YZHUIGraphicsImage.m in Sources */,
 				1CC79056250B9545009EE7A3 /* YZHUIExcelViewRowCell.m in Sources */,

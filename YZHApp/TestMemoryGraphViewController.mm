@@ -7,7 +7,7 @@
 //
 
 #import "TestMemoryGraphViewController.h"
-#import "MMGraph.h"
+#import "MMHeap.h"
 #import "MMStack.h"
 
 typedef struct Test {
@@ -74,17 +74,36 @@ protected:
 
 
 @property (nonatomic, assign) B b;
+
+
+@property (nonatomic, strong) dispatch_queue_t graphQueue;
 @end
 
 @implementation TestMemoryGraphViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    
+}
+
+- (dispatch_queue_t)graphQueue {
+    if (!_graphQueue) {
+        _graphQueue = dispatch_queue_create("graphQueu", DISPATCH_QUEUE_SERIAL);
+    }
+    return _graphQueue;
+}
+
+- (void)pri_test {
+    dispatch_async(self.graphQueue, ^{
+        
+    });
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self pri_test];
+    
 //    readVMRegin();
     
 //    mach_port_t thread = mach_thread_self();
@@ -96,8 +115,8 @@ protected:
 //    while (1) {
 //
 //    };
-    vm_address_t sp = 0;
-    thread_stack_sp(mach_thread_self(), &sp);
+//    vm_address_t sp = 0;
+//    thread_stack_sp(mach_thread_self(), &sp);
 //
 //    NSLog(@"sp=%lu",sp);
     

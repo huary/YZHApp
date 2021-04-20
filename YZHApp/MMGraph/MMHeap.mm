@@ -6,7 +6,7 @@
 //  Copyright © 2021 yuan. All rights reserved.
 //
 
-#import "MMGraph.h"
+#import "MMHeap.h"
 #import <mach/mach.h>
 //有user_tag的标识
 #import <mach/vm_statistics.h>
@@ -15,18 +15,16 @@
 #import <objc/runtime.h>
 #import "MMContext.h"
 #import "MMTypes.h"
-
 #include <iostream>
-
 
 
 extern "C" int proc_regionfilename(int pid, uint64_t address, void * buffer, uint32_t buffersize);
 
-static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slide);
+static void dyld_add_image_callback(const struct mach_header *mh, intptr_t slide);
 static void vm_range_recorder(task_t task, void *ctx, unsigned type, vm_range_t *ranges, unsigned cnt);
 
 static void register_dyld_add_callback() {
-    _dyld_register_func_for_add_image(_dyld_add_image_callback);
+    _dyld_register_func_for_add_image(dyld_add_image_callback);
 }
 
 static uint64_t read_uleb128(const uint8_t *&p, const uint8_t* end)
@@ -69,7 +67,7 @@ static int64_t read_sleb128(const uint8_t*&p, const uint8_t* end)
     return result;
 }
 
-static void _dyld_add_image_callback(const struct mach_header *mh, intptr_t slide) {
+static void dyld_add_image_callback(const struct mach_header *mh, intptr_t slide) {
     if (mh->filetype != MH_EXECUTE) {
         return;
     }
@@ -219,7 +217,6 @@ void readVMRegin() {
             if (len > 0) {
                 buf[len] = 0;
             }
-
             NSLog(@"vmRegion:%@ size:%@, depth:%@,userTag:%@, name=%s", @(addr),@(size),@(depth), @(info.user_tag), buf);
             addr += size;
         }
@@ -272,60 +269,60 @@ static void vm_range_recorder(task_t task, void *ctx, unsigned type, vm_range_t 
 }
 
 
-class Person {
-private:
-    int age;
-    
-public:
-    Person(int age):age(age){
-        
-    }
-    
-    int getAge() {
-        return age;
-    }
-    
-    virtual ~Person() {
-        
-    }
-    
-    virtual void print() {
-        printf("Person:%d\n",age);
-    }
-};
-
-class Man : public Person {
-public:
-    Man(int age) : Person(age){
-        
-    }
-};
-
-class Base {
-private:
-    int i;
-public:
-    Base(int i):i(i){
-        
-    }
-    
-    int getI() {
-        return i;
-    }
-};
-
-
-@interface MMGraphTestObjc : NSObject
-
-@end
-
-@implementation MMGraphTestObjc
-
-- (void)test {
-    NSLog(@"MMGraphTestObjc test");
-}
-
-@end
+//class Person {
+//private:
+//    int age;
+//
+//public:
+//    Person(int age):age(age){
+//
+//    }
+//
+//    int getAge() {
+//        return age;
+//    }
+//
+//    virtual ~Person() {
+//
+//    }
+//
+//    virtual void print() {
+//        printf("Person:%d\n",age);
+//    }
+//};
+//
+//class Man : public Person {
+//public:
+//    Man(int age) : Person(age){
+//
+//    }
+//};
+//
+//class Base {
+//private:
+//    int i;
+//public:
+//    Base(int i):i(i){
+//
+//    }
+//
+//    int getI() {
+//        return i;
+//    }
+//};
+//
+//
+//@interface MMGraphTestObjc : NSObject
+//
+//@end
+//
+//@implementation MMGraphTestObjc
+//
+//- (void)test {
+//    NSLog(@"MMGraphTestObjc test");
+//}
+//
+//@end
 
 
 

@@ -8,10 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+//读取VM的regin
 void readVMRegin(void);
 
+//开始准备读取HeapZone
 void prepareReadHeapZone(void);
-void readHeapZone(void);
 
+//开始读取HeapZone
+void readHeapZone(void);
 
 void MMGraphTest(void);
