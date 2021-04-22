@@ -86,7 +86,7 @@ typedef struct {
     NSMutableDictionary *sub = [NSMutableDictionary dictionary]; \
     [sub setObject:NSStringFromClass(object_getClass(obj)) forKey:MM_TypeKey]; \
     [sub setObject:MM_VALUE_OBJ(obj) forKey:MM_AddrKey]; \
-    [subs addObject:sub];\
+    [IN addObject:sub];\
 }
 
 #define MM_ADDR_FOREACH_READ(ADDR, SIZE, ...) \
@@ -99,6 +99,15 @@ if (SIZE > MMContext::pointerSize) { \
         vm_address_t addrVal = *addrPtr; \
         __VA_ARGS__;\
     }\
+}
+
+#define MM_RANGE_INTO_DICT(RP,DICT,IN)  \
+{\
+    [DICT setObject:@((RP)->range.address) forKey:MM_AddrKey]; \
+    [DICT setObject:@((RP)->range.size) forKey:MM_SizeKey]; \
+    [DICT setObject:@((RP)->type) forKey:MM_TypeKey]; \
+    if ((RP)->name) [DICT setObject:MM_OBJC_STR((RP)->name) forKey:MM_NameKey]; \
+    [IN addObject:DICT];\
 }
 
 #define LR_TRIP_MASK            0x0000000fffffffff
@@ -138,7 +147,7 @@ malloc_zone_t *MMContextZone() {
 }
 
 CFMutableDictionaryRef createMMCtxDictionary(CFIndex capacity) {
-    return CFDictionaryCreateMutableCopy(MMContextAllocator(), capacity, NULL);
+    return CFDictionaryCreateMutable(MMContextAllocator(), capacity, NULL, NULL);
 }
 
 void MMCtxDictionarySetValueForKey(CFMutableDictionaryRef dict, uintptr_t key, uintptr_t value) {
@@ -355,6 +364,123 @@ NSDictionary *pri_frameInfoFrom(vm_address_t fp, vm_address_t sp, vm_address_t l
     return frameInfo;
 }
 
+NSArray *pri_foreachCFObject(void *ptr, CFDictionaryRef rangeDictRef) {
+    CFTypeRef obj = CFDictionaryGetValue(rangeDictRef, ptr);
+    if (!ptr) {
+        return nil;
+    }
+    
+    NSMutableArray *subs = [NSMutableArray array];
+    CFTypeID typeId = CFGetTypeID(obj);
+    if (typeId == CFDictionaryGetTypeID()) {
+        CFDictionaryRef dict = (CFDictionaryRef)obj;
+        enumerateMMCtxDictionry(dict, ^(uintptr_t pKey, uintptr_t pValue, BOOL * _Nonnull stop) {
+            MMCtxRange_T *range = (MMCtxRange_T*)CFDictionaryGetValue(rangeDictRef, (void*)pKey);
+            if (range) {
+                MM_RANGE_INTO_DICT(range, [NSMutableDictionary dictionary], subs);
+//                __unsafe_unretained id key = (__bridge id)((void*)pKey);
+//                __unsafe_unretained id obj = (__bridge id)((void*)pValue);
+            }
+        });
+    }
+    else if (typeId == CFArrayGetTypeID()) {
+        CFArrayRef array = (CFArrayRef)obj;
+        CFRange r = CFRangeMake(0, CFArrayGetCount(array));
+        enumerateMMCtxArray(array, r, ^(uintptr_t value, CFIndex idx, BOOL * _Nonnull stop) {
+            MMCtxRange_T *range = (MMCtxRange_T*)CFDictionaryGetValue(rangeDictRef, (void*)value);
+            if (range) {
+                MM_RANGE_INTO_DICT(range, [NSMutableDictionary dictionary], subs);
+//                __unsafe_unretained id obj = (__bridge id)((void*)value);
+//                MM_ARRAY_FOREACH_READ(subs);
+            }
+        });
+    }
+    else if (typeId == CFSetGetTypeID()) {
+        CFSetRef set = (CFSetRef)obj;
+        enumerateMMCtxSet(set, ^(uintptr_t value, BOOL * _Nonnull stop) {
+            MMCtxRange_T *range = (MMCtxRange_T*)CFDictionaryGetValue(rangeDictRef, (void*)value);
+            if (range) {
+                MM_RANGE_INTO_DICT(range, [NSMutableDictionary dictionary], subs);
+//                __unsafe_unretained id obj = (__bridge id)(void*)value;
+//                MM_SET_FOREACH_READ(subs);
+            }
+        });
+    }
+    else if (typeId == CFBagGetTypeID()) {
+        CFBagRef bag = (CFBagRef)obj;
+        enumerateMMCtxBag(bag, ^(uintptr_t value, BOOL * _Nonnull stop) {
+            MMCtxRange_T *range = (MMCtxRange_T*)CFDictionaryGetValue(rangeDictRef, (void*)value);
+            if (range) {
+                MM_RANGE_INTO_DICT(range, [NSMutableDictionary dictionary], subs);
+//                __unsafe_unretained id obj = (__bridge id)(void*)value;
+//                MM_SET_FOREACH_READ(subs);
+            }
+        });
+    }
+    return subs;
+}
+
+NSArray *pri_foreachOCObject(id obj) {
+    NSMutableArray *subs = [NSMutableArray array];
+    if ([obj isKindOfClass:[NSArray class]]) {
+        NSArray *array = (NSArray*)obj;
+        [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_ARRAY_FOREACH_READ(subs)];
+    }
+    else if ([obj isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *dict = (NSDictionary*)obj;
+        [dict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) MM_DICT_FOREACH_READ(subs)];
+    }
+    else if ([obj isKindOfClass:[NSSet class]]) {
+        NSSet *set = (NSSet*)obj;
+        [set enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) MM_SET_FOREACH_READ(subs)];
+    }
+    else if ([obj isKindOfClass:[NSHashTable class]]) {
+        NSHashTable *ht = (NSHashTable*)obj;
+        [ht hz_enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) MM_ARRAY_FOREACH_READ(subs)];
+    }
+    else if ([obj isKindOfClass:[NSMapTable class]]) {
+        NSMapTable *mt = (NSMapTable*)obj;
+        [mt hz_enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) MM_DICT_FOREACH_READ(subs)];
+    }
+    else {
+//        CFTypeID typeId = CFGetTypeID(obj);
+//        if (typeId == CFDictionaryGetTypeID()) {
+//            CFDictionaryRef dict = (CFDictionaryRef)obj;
+//            enumerateMMCtxDictionry(dict, ^(uintptr_t pKey, uintptr_t pValue, BOOL * _Nonnull stop) {
+//                __unsafe_unretained id key = (__bridge id)((void*)pKey);
+//                __unsafe_unretained id obj = (__bridge id)((void*)pValue);
+//                MM_DICT_FOREACH_READ(subs);
+//            });
+//        }
+//        else if (typeId == CFArrayGetTypeID()) {
+//            CFArrayRef array = (CFArrayRef)obj;
+//            CFRange r = CFRangeMake(0, CFArrayGetCount(array));
+//            enumerateMMCtxArray(array, r, ^(uintptr_t value, CFIndex idx, BOOL * _Nonnull stop) {
+//                __unsafe_unretained id obj = (__bridge id)((void*)value);
+//                MM_ARRAY_FOREACH_READ(subs);
+//            });
+//        }
+//        else if (typeId == CFSetGetTypeID()) {
+//            CFSetRef set = (CFSetRef)obj;
+//            enumerateMMCtxSet(set, ^(uintptr_t value, BOOL * _Nonnull stop) {
+//                __unsafe_unretained id obj = (__bridge id)(void*)value;
+//                MM_SET_FOREACH_READ(subs);
+//            });
+//        }
+//        else if (typeId == CFBagGetTypeID()) {
+//            CFBagRef bag = (CFBagRef)obj;
+//            enumerateMMCtxBag(bag, ^(uintptr_t value, BOOL * _Nonnull stop) {
+//                __unsafe_unretained id obj = (__bridge id)(void*)value;
+//                MM_SET_FOREACH_READ(subs);
+//            });
+//        }
+//        else {
+//            //其他系统类不进行遍历
+//        }
+    }
+    return subs;
+}
+
 #define CHECK_MMCTX  assert(this == MMContext::shareContext())
 
 MMContext* MMContext::shareContext() {
@@ -424,6 +550,9 @@ MMCtxZone_T *MMContext::addCtxZone(malloc_zone_t *zone, uint32_t type, uint32_t 
     ctxZone->zone_type = type;
     ctxZone->rangeList = createMMCtxArray(range_cnt);
     CFArrayAppendValue(zoneList, ctxZone);
+    
+//    NSLog(@"rone.name=%s",ctxZone->zone_name);
+    
     return ctxZone;
 }
 
@@ -450,6 +579,8 @@ MMCtxRange_T *MMContext::addRangeIntoCtxZone(MMCtxZone_T *zone, vm_range_t range
 }
 
 
+
+
 void MMContext::readHeap() {
     CFIndex cnt = CFArrayGetCount(zoneList);
     CFRange r = CFRangeMake(0, cnt);
@@ -467,16 +598,16 @@ void MMContext::readHeap() {
             [rangeDict setObject:@(ctxRange->range.address) forKey:MM_AddrKey];
             [rangeDict setObject:@(ctxRange->range.size) forKey:MM_SizeKey];
             [rangeDict setObject:@(ctxRange->type) forKey:MM_TypeKey];
+            if (ctxRange->name) {
+                [rangeDict setObject:MM_OBJC_STR(ctxRange->name) forKey:MM_NameKey];
+            }
             if (ctxRange->type == MMCtxRNGTypeObjc) {
                 //如果是非系统类，遍历ivarList
-                if (ctxRange->name) {
-                    [rangeDict setObject:MM_OBJC_STR(ctxRange->name) forKey:MM_NameKey];
-                }
     
                 NSMutableArray *subs = [NSMutableArray array];
                 Class cls = objc_getClass(ctxRange->name);
                 void *mainPtr = (void*)ctxRange->range.address;
-                id mainObj = (__bridge id)mainPtr;
+                __unsafe_unretained id mainObj = (__bridge id)mainPtr;
                 if (!SYSTEM_CLASS(cls)) {
                     unsigned int cnt;
                     Ivar *ivars = class_copyIvarList(cls, &cnt);
@@ -494,93 +625,50 @@ void MMContext::readHeap() {
                                 
                                 [sub setObject:MM_VALUE_OBJ(obj) forKey:MM_AddrKey];
                             
+                                NSArray *subList = pri_foreachOCObject(obj);
+                                if (subList.count > 0) {
+                                    NSLog(@"subList=%@",subList);
+                                }
+                                
                                 [subs addObject:sub];
                             }
                         }
                         //c/c++的指针,*是uint8_t/int8_t *的指针
                         else if (type[0] == '^' || type[0] == '*') {
-                            void *ptrTmp = (__bridge void *)object_getIvar((__bridge id)mainPtr, ivar);
+                            void *ptrTmp = (__bridge void *)object_getIvar(mainObj, ivar);
                             if (ptrTmp) {
                                 NSMutableDictionary *sub = [NSMutableDictionary dictionary];
                                 [sub setObject:MM_OBJC_STR(type) forKey:MM_TypeKey];
                                 
                                 [sub setObject:MM_VALUE_PTR(ptrTmp) forKey:MM_AddrKey];
                                 
+                                //CF对象
+                                size_t len = strlen(type);
+                                if (len >= 3 && strncmp(type, "^{", 2) == 0 && type[len -1] == '}') {
+                                    NSArray *subList = pri_foreachCFObject(ptrTmp, this->rangeInfo);
+                                }
+                                
                                 [subs addObject:sub];
                             }
                         }
                     }
+//                    if (subs.count > 0) {
+//                        NSLog(@"subs=%@",subs);
+//                    }
                     if (ivars) {
                         free(ivars);
                     }
                 }
                 else {
-                    //如果是系统类（集合类是否需要一一遍历？？？）
-                    if ([mainObj isKindOfClass:[NSArray class]]) {
-                        NSArray *array = (NSArray*)mainObj;
-                        [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_ARRAY_FOREACH_READ(subs)];
-                    }
-                    else if ([mainObj isKindOfClass:[NSDictionary class]]) {
-                        NSDictionary *dict = (NSDictionary*)mainObj;
-                        [dict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) MM_DICT_FOREACH_READ(subs)];
-                    }
-                    else if ([mainObj isKindOfClass:[NSSet class]]) {
-                        NSSet *set = (NSSet*)mainObj;
-                        [set enumerateObjectsUsingBlock:^(id  _Nonnull obj, BOOL * _Nonnull stop) MM_SET_FOREACH_READ(subs)];
-                    }
-                    else if ([mainObj isKindOfClass:[NSHashTable class]]) {
-                        NSHashTable *ht = (NSHashTable*)mainObj;
-                        [ht hz_enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) MM_ARRAY_FOREACH_READ(subs)];
-                    }
-                    else if ([mainObj isKindOfClass:[NSMapTable class]]) {
-                        NSMapTable *mt = (NSMapTable*)mainObj;
-                        [mt hz_enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) MM_DICT_FOREACH_READ(subs)];
-                    }
-                    else {
-                        CFTypeID typeId = CFGetTypeID(mainPtr);
-                        if (typeId == CFDictionaryGetTypeID()) {
-                            CFDictionaryRef dict = (CFDictionaryRef)mainPtr;
-                            enumerateMMCtxDictionry(dict, ^(uintptr_t pKey, uintptr_t pValue, BOOL * _Nonnull stop) {
-                                id key = (__bridge id)((void*)pKey);
-                                id obj = (__bridge id)((void*)pValue);
-                                MM_DICT_FOREACH_READ(subs);
-                            });
-                        }
-                        else if (typeId == CFArrayGetTypeID()) {
-                            CFArrayRef array = (CFArrayRef)mainPtr;
-                            CFRange r = CFRangeMake(0, CFArrayGetCount(array));
-                            enumerateMMCtxArray(array, r, ^(uintptr_t value, CFIndex idx, BOOL * _Nonnull stop) {
-                                id obj = (__bridge id)((void*)value);
-                                MM_ARRAY_FOREACH_READ(subs);
-                            });
-                        }
-                        else if (typeId == CFSetGetTypeID()) {
-                            CFSetRef set = (CFSetRef)mainPtr;
-                            enumerateMMCtxSet(set, ^(uintptr_t value, BOOL * _Nonnull stop) {
-                                id obj = (__bridge id)(void*)value;
-                                MM_SET_FOREACH_READ(subs);
-                            });
-                        }
-                        else if (typeId == CFBagGetTypeID()) {
-                            CFBagRef bag = (CFBagRef)mainPtr;
-                            enumerateMMCtxBag(bag, ^(uintptr_t value, BOOL * _Nonnull stop) {
-                                id obj = (__bridge id)(void*)value;
-                                MM_SET_FOREACH_READ(subs);
-                            });
-                        }
-                        else {
-                            //其他系统类不进行遍历
-                        }
-                    }
+                    
                 }
                 [rangeDict setObject:subs forKey:MM_SubsKey];
             }
             else {
                 //MMCtxRNGTypeCXX,MMCtxRNGTypeRaw
-                if (ctxRange->type == MMCtxRNGTypeCXX && ctxRange->name) {
-                    [rangeDict setObject:MM_OBJC_STR(ctxRange->name) forKey:MM_NameKey];
-                }
-                
+//                if (ctxRange->type == MMCtxRNGTypeCXX && ctxRange->name) {
+//                    [rangeDict setObject:MM_OBJC_STR(ctxRange->name) forKey:MM_NameKey];
+//                }
                 //MMContext::以pointerSize为步长遍历
                 NSMutableArray *subs = [NSMutableArray array];
                 vm_range_t r = ctxRange->range;
@@ -597,7 +685,7 @@ void MMContext::readHeap() {
         });
         [zoneArray addObject:rangeArray];
     });
-    NSLog(@"zoneArray=%@",zoneArray);
+//    NSLog(@"zoneArray=%@",zoneArray);
     this->heapList = [zoneArray copy];
 }
 
@@ -607,16 +695,21 @@ bool MMContext::suspendTaskThread() {
     foreach_task_threads(^bool(thread_act_array_t thread_array, mach_msg_type_number_t cnt) {
         this->suspendThreadCnt = cnt;
         this->suspendThreadList = thread_array;
+        NSLog(@"thread.cnt=%u",cnt);
         return true;
     }, ^(thread_t thread, mach_msg_type_number_t idx, bool *stop) {
         if (thread == mach_thread_self()) {
             return;
         }
         
+        NSLog(@"suspend.thread=%u",thread);
         if (KERN_SUCCESS != thread_suspend(thread)) {
+            NSLog(@"suspendfailed=%u",thread);
             for (mach_msg_type_number_t i = 0; i < idx; ++i) {
                 thread_t th = this->suspendThreadList[i];
-                thread_resume(th);
+                if (th != mach_thread_self()) {
+                    thread_resume(th);
+                }
             }
             OK = false;
             *stop = true;
@@ -689,6 +782,10 @@ void MMContext::readStack() {
 void MMContext::resumeTaskThread() {
     for (mach_msg_type_number_t i = 0; i < suspendThreadCnt; ++i) {
         thread_t thread = suspendThreadList[i];
+        if (thread == mach_thread_self()) {
+            continue;
+        }
+        NSLog(@"resume.thread=%u",thread);
         if (KERN_SUCCESS != thread_resume(thread)) {
             NSLog(@"resume thread:%u failed", thread);
         }
@@ -697,7 +794,7 @@ void MMContext::resumeTaskThread() {
     for (mach_msg_type_number_t i = 0; i < suspendThreadCnt; ++i) {
         mach_port_deallocate(mach_task_self(), suspendThreadList[i]);
     }
-    vm_deallocate(mach_task_self(), (vm_address_t)&suspendThreadList, suspendThreadCnt * sizeof(thread_t));
+    vm_deallocate(mach_task_self(), (vm_address_t)suspendThreadList, suspendThreadCnt * sizeof(thread_t));
 }
 
 
@@ -709,15 +806,17 @@ void MMContext::start() {
         if (!result) {
             return;
         }
-        
+
         prepareReadHeapZone();
-        
+
         readHeapZone();
-        
-        readStack();
-        
+
+        readHeap();
+
+//        readStack();
+
         //writeData
-        
+
         resumeTaskThread();
     });
     

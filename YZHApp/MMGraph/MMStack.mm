@@ -125,7 +125,7 @@ bool foreach_task_threads(MM_foreach_task_thread_before_block before_block,
     for (i = 0; i < thread_cnt; ++i) {
         mach_port_deallocate(mach_task_self(), thread_array[i]);
     }
-    vm_deallocate(mach_task_self(), (vm_address_t)&thread_array, thread_cnt * sizeof(thread_t));
+    vm_deallocate(mach_task_self(), (vm_address_t)thread_array, thread_cnt * sizeof(thread_t));
     return true;
 }
 
