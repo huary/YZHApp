@@ -99,7 +99,78 @@ protected:
 }
 
 - (void)pri_test {
-    MMContext::shareContext()->start();
+    MMContext::shareContext()->start(nil);
+    return;
+    
+//    unsigned int cnt = 0;
+//
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:self];
+//
+//    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//        NSLog(@"nav.vcs=%@",nav.viewControllers);
+//    });
+    
+//    NSLog(@"UINavigationController");
+//    Ivar *ivars = class_copyIvarList([UINavigationController class], &cnt);
+//    for (unsigned int i = 0; i < cnt; ++i) {
+//        Ivar ivar = ivars[i];
+//        if (ivar_getTypeEncoding(ivar)[0] == '@') {
+//            id obj = object_getIvar(nav, ivar);
+//            NSLog(@"UINavigationController.obj=%@",obj);
+//        }
+//        NSLog(@"UINavigationController.ivar=%s",ivar_getName(ivar));
+//    }
+//    free(ivars);
+
+//    UITabBarController *tarbarVC = [[UITabBarController alloc] init];
+//
+//    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//        NSLog(@"tarbarvc.vcs=%@",tarbarVC.viewControllers);
+//    });
+    
+//    NSLog(@"UITabBarController");
+//    ivars = class_copyIvarList([UITabBarController class], &cnt);
+//    for (unsigned int i = 0; i < cnt; ++i) {
+//        Ivar ivar = ivars[i];
+//        NSLog(@"UITabBarController.ivar=%s",ivar_getName(ivar));
+//    }
+//    free(ivars);
+    
+    
+//    NSLog(@"UIViewController");
+//    ivars = class_copyIvarList([UIViewController class], &cnt);
+//    for (unsigned int i = 0; i < cnt; ++i) {
+//        Ivar ivar = ivars[i];
+//        NSLog(@"UIViewController.ivar=%s",ivar_getName(ivar));
+//    }
+//    free(ivars);
+    
+//    UITabBarController *tabBarVC = (UITabBarController*)obj;
+//    Class cls = [UITabBarController class];
+//    //不能通过属性直接访问viewControllers，否则会报非主线程访问的奔溃
+//    const char *ivarName = "_viewControllers";
+//    Ivar ivar = class_getInstanceVariable(cls,ivarName);
+//    if (ivar) {
+//        NSArray<UIViewController*> *VCs = object_getIvar(tabBarVC, ivar);
+//        if (VCs) {
+//            [VCs enumerateObjectsUsingBlock:^(UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_VCS_FOREACH_READ(subs)];
+//        }
+//    }
+    
+    
+//    UIViewController *VC = (UIViewController*)obj;
+//    Class cls = [UIViewController class];
+//    //不能通过属性直接访问childViewControllers，否则会报非主线程访问的奔溃
+//    const char *ivarName = "_childViewControllers";
+//    Ivar ivar = class_getInstanceVariable(cls,ivarName);
+//    if (ivar) {
+//        NSArray<UIViewController*> *childVCs = object_getIvar(VC, ivar);
+//        if (childVCs) {
+//            [childVCs enumerateObjectsUsingBlock:^(UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_VCS_FOREACH_READ(subs)];
+//        }
+//    }
+    
+    
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {

@@ -138,6 +138,7 @@ typedef struct {
 extern "C" const MM_CFRunTimeClass * _CFRuntimeGetClassWithTypeID(CFTypeID typeID);
 #endif
 
+static malloc_zone_t *MMCtxZone = NULL;
 
 dispatch_queue_t workQueue() {
     static dispatch_once_t onceToken;
@@ -150,15 +151,18 @@ dispatch_queue_t workQueue() {
 
 
 malloc_zone_t *MMContextZone() {
-    static malloc_zone_t *MMCtxZone = NULL;
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
     if (MMCtxZone == NULL) {
-        MMCtxZone = malloc_create_zone(8 * 1024 * 1024, 0);
+        MMCtxZone = malloc_create_zone(4096, 0);
         malloc_set_zone_name(MMCtxZone, "MMGraphCtxZone");        
     }
-//    });
     return MMCtxZone;
+}
+
+void destroyContextZone() {
+    if (MMCtxZone) {
+        malloc_destroy_zone(MMCtxZone);
+        MMCtxZone = NULL;
+    }
 }
 
 CFMutableDictionaryRef createMMCtxDictionary(CFIndex capacity) {
@@ -454,26 +458,47 @@ static NSDictionary *heapOCContainerInstanceRangeInfo(id obj, MMCtxRange *range)
         [mt hz_enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) MM_DICT_FOREACH_READ(subs)];
     }
     else if ([obj isKindOfClass:[UINavigationController class]]) {
-//        UINavigationController *navVC = (UINavigationController*)obj;
-//        [navVC.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_VCS_FOREACH_READ(subs)];
+        UINavigationController *navVC = (UINavigationController*)obj;
+        //UINavigationController和UITabBarController是没有viewcontrollers的ivar的，可以非主线程访问ViewControllers
+        [navVC.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_VCS_FOREACH_READ(subs)];
     }
     else if ([obj isKindOfClass:[UITabBarController class]]) {
-//        UITabBarController *tabBarVC = (UITabBarController*)obj;
-//        [tabBarVC.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_VCS_FOREACH_READ(subs)];
+        UITabBarController *tabBarVC = (UITabBarController*)obj;
+        //UINavigationController和UITabBarController是没有viewcontrollers的ivar的，可以非主线程访问ViewControllers
+        [tabBarVC.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_VCS_FOREACH_READ(subs)];
     }
     else if ([obj isKindOfClass:[UIViewController class]]) {
-//        UIViewController *VC = (UIViewController*)obj;
-//        [VC.childViewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) MM_VCS_FOREACH_READ(subs)];
+        UIViewController *VC = (UIViewController*)obj;
+        Class cls = [UIViewController class];
+        //不能通过属性直接访问childViewControllers，否则会报非主线程访问的奔溃
+        const char *ivarName = "_childViewControllers";
+        Ivar ivar = class_getInstanceVariable(cls,ivarName);
+        if (ivar) {
+            NSArray<UIViewController*> *childVCs = object_getIvar(VC, ivar);
+            if (childVCs && [childVCs isKindOfClass:[NSArray class]]) {
+                [childVCs enumerateObjectsUsingBlock:^(UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if ([obj isKindOfClass:[UIViewController class]]) {
+                        MM_VCS_FOREACH_READ(subs);
+                    }
+                }];
+            }
+        }
     }
     else if ([obj isKindOfClass:[UIWindow class]]) {
-//        UIWindow *window = (UIWindow*)obj;
-//        if (window.rootViewController) {
-//            UIViewController *rootVC = window.rootViewController;
-//            NSMutableDictionary *sub = [NSMutableDictionary dictionary];
-//            [sub setObject:NSStringFromClass(object_getClass(rootVC)) forKey:MM_TypeKey];
-//            [sub setObject:MM_VALUE_OBJ(rootVC) forKey:MM_AddrKey];
-//            [subs addObject:sub];
-//        }
+        UIWindow *window = (UIWindow*)obj;
+        Class cls = [UIWindow class];
+        //不能通过属性直接访问rootViewController，否则会报非主线程访问的奔溃
+        const char *rootVCIvarName = "_rootViewController";
+        Ivar ivar = class_getInstanceVariable(cls,rootVCIvarName);
+        if (ivar) {
+            UIViewController *rootVC = object_getIvar(window, ivar);
+            if (rootVC && [rootVC isKindOfClass:[UIViewController class]]) {
+                NSMutableDictionary *sub = [NSMutableDictionary dictionary];
+                [sub setObject:NSStringFromClass(object_getClass(rootVC)) forKey:MM_TypeKey];
+                [sub setObject:MM_VALUE_OBJ(rootVC) forKey:MM_AddrKey];
+                [subs addObject:sub];
+            }
+        }
     }
     else {
         
@@ -581,7 +606,6 @@ static NSArray<NSDictionary*> *readHeapRange(MMCtxRange *ctxRange, CFDictionaryR
                     
                         [subs addObject:sub];
                         
-//                        NSLog(@"heap.oc.ivar=%@",sub);
                         //遍历集合类
                         MMCtxRange *r = heapOCContainerInstanceRange(obj, rangeInfo);
                         if (r) {
@@ -660,6 +684,22 @@ static NSArray<NSDictionary*> *readHeapAddress(vm_address_t address, CFDictionar
 
 #define CHECK_MMCTX  assert(this == MMContext::shareContext())
 #pragma mark private
+void MMContext::restart() {
+    this->objcClassList = createMMCtxArray(32);
+    this->cxxTypeInfoList = createMMCtxArray(32);
+    this->objcInstanceList = createMMCtxArray(32);
+    this->zoneList = createMMCtxArray(8);
+    this->rangeInfo = createMMCtxDictionary(32);
+    this->machODataConstOff = 0;
+    this->machODataConstSize = 0;
+    
+    this->suspendThreadList = NULL;
+    this->suspendThreadCnt = 0;
+    this->heapList = nil;
+    this->stackList = nil;
+}
+
+
 void MMContext::readHeap() {
     prepareReadHeapZone();
 
@@ -798,7 +838,25 @@ void MMContext::buildHeapInfo() {
     this->heapList = [zoneArray copy];
 }
 
+void MMContext::releaseZone() {
+    destroyContextZone();
+    this->objcClassList = NULL;
+    this->cxxTypeInfoList = NULL;
+    this->objcInstanceList = NULL;
+    this->zoneList = NULL;
+    this->rangeInfo = NULL;
+    this->machODataConstOff = 0;
+    this->machODataConstSize = 0;
+    this->suspendThreadList = NULL;
+    this->suspendThreadCnt = 0;
+    this->heapList = nil;
+    this->stackList = nil;
+}
+
 void MMContext::exportToFile(NSString *filePath) {
+    if (filePath.length <= 0) {
+        return;
+    }
     NSMutableDictionary *json = [NSMutableDictionary dictionary];
     if (heapList.count > 0) {
         [json setObject:heapList forKey:MM_HEAP_INFO_KEY];
@@ -819,18 +877,6 @@ MMContext* MMContext::shareContext() {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         static MMContext shareContext;
-        shareContext.objcClassList = NULL;
-        shareContext.cxxTypeInfoList = NULL;
-        shareContext.objcInstanceList = createMMCtxArray(32);
-        shareContext.zoneList = NULL;
-        shareContext.rangeInfo = createMMCtxDictionary(32);
-        shareContext.machODataConstOff = 0;
-        shareContext.machODataConstSize = 0;
-        
-        shareContext.suspendThreadList = NULL;
-        shareContext.suspendThreadCnt = 0;
-        shareContext.heapList = nil;
-        shareContext.stackList = nil;
         shareInstancePtr = &shareContext;
     });
     return shareInstancePtr;
@@ -839,19 +885,14 @@ MMContext* MMContext::shareContext() {
 void MMContext::allRegisteredObjCClassList(){
     CHECK_MMCTX;
     
-    if (objcClassList) {
-        CFRelease(objcClassList);
-    }
-    
     int cnt = objc_getClassList(nullptr, 0);
-    objcClassList = createMMCtxArray(cnt);
 
     Class *classList = (Class*)MMCtxCalloc(cnt, sizeof(Class));
     objc_getClassList(classList, cnt);
 
     for (unsigned int i = 0; i < cnt; ++i) {
         Class cls = classList[i];
-        CFArrayAppendValue(objcClassList, (__bridge const void *)cls);
+        CFArrayAppendValue(this->objcClassList, (__bridge const void *)cls);
     }
     
     if (classList) {
@@ -862,27 +903,19 @@ void MMContext::allRegisteredObjCClassList(){
 void MMContext::addCxxTypeInfo(uintptr_t typeInfo) {
     CHECK_MMCTX;
     
-    if (!cxxTypeInfoList) {
-        cxxTypeInfoList = createMMCtxArray(32);
-    }
-    MMCtxArrayAppendValue(cxxTypeInfoList, typeInfo);
+    MMCtxArrayAppendValue(this->cxxTypeInfoList, typeInfo);
 }
 
 MMCtxZone_T *MMContext::addCtxZone(malloc_zone_t *zone, uint32_t type, uint32_t range_cnt) {
     
     CHECK_MMCTX;
-    
-    if (!zoneList) {
-        zoneList = createMMCtxArray(8);
-    }
-    
+
     MMCtxZone_T *ctxZone = (MMCtxZone_T*)MMCtxCalloc(1, sizeof(MMCtxZone_T));
     ctxZone->zone_name = zone->zone_name;
     ctxZone->zone_type = type;
     ctxZone->rangeList = createMMCtxArray(range_cnt);
     CFArrayAppendValue(zoneList, ctxZone);
     
-//    NSLog(@"rone.name=%s",ctxZone->zone_name);
     
     return ctxZone;
 }
@@ -911,6 +944,9 @@ MMCtxRange_T *MMContext::addRangeIntoCtxZone(MMCtxZone_T *zone, vm_range_t range
 }
 
 void MMContext::start(NSString *filePath) {
+    
+    restart();
+    
     dispatch_async(workQueue(), ^{
         bool result = suspendTaskThread();
         if (!result) {
@@ -925,6 +961,8 @@ void MMContext::start(NSString *filePath) {
 
         buildHeapInfo();
         
-        exportToFile(filePath)
+        releaseZone();
+        
+        exportToFile(filePath);
     }); 
 }

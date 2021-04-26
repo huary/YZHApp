@@ -113,6 +113,8 @@ private:
     
     NSArray *heapList;
     NSArray *stackList;
+    
+    void restart();
 
     //分析导出导出数据
     void readHeap();
@@ -127,6 +129,8 @@ private:
     void resumeTaskThread();
     
     void buildHeapInfo();
+    
+    void releaseZone();
 
     void exportToFile(NSString *filePath);
 public:
