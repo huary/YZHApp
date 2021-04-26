@@ -56,26 +56,22 @@ void *MMCtxRealloc(void *ptr, size_t size);
 
 void MMCtxFree(void *ptr);
 
-/*有可能是CFxxx的class,因此可以通过objc_getClass(clsName)来获取Class，
- 如果是CFxxx的class,得到的Class就是NULL;
- */
-const char *getObjcClassNameForAddress(vm_range_t range);
-const char *getCxxTypeInfoNameForAddress(vm_range_t range);
-
-typedef enum {
-    //objc对象
-    MMCtxRNGTypeObjc    = 1,
-    //c++对象
-    MMCtxRNGTypeCXX     = 2,
-    //raw buffer/struct/class
-    MMCtxRNGTypeRaw     = 3,
-}MMCtxRNGType_E;
-
 //typedef struct MMRangeIvar {
 //    vm_address_t address;
 //    const char *varName;
 //    const char *varType;
 //}MMRangeIvar_T;
+
+typedef enum {
+    //objc对象
+    MMCtxRNGTypeObjc    = 1,
+    //coreFoundation对象
+    MMCtxRNGTypeCF      = 2,
+    //c++对象
+    MMCtxRNGTypeCXX     = 3,
+    //raw buffer/struct/class
+    MMCtxRNGTypeRaw     = 4,
+}MMCtxRNGType_E;
 
 //存储堆区的申请的内存块
 typedef struct MMCtxRange {
@@ -99,6 +95,12 @@ typedef struct MMCtxZone {
     CFMutableArrayRef rangeList;
 }MMCtxZone_T;
 
+/*有可能是CFxxx的class,因此可以通过objc_getClass(clsName)来获取Class，
+ 如果是CFxxx的class,得到的Class就是NULL;
+ */
+const char *getObjcClassNameForAddress(vm_range_t range, MMCtxRNGType_E *type);
+const char *getCxxTypeInfoNameForAddress(vm_range_t range);
+
 class MMContext {
 private:
     CFMutableArrayRef objcClassList;
@@ -111,6 +113,22 @@ private:
     
     NSArray *heapList;
     NSArray *stackList;
+
+    //分析导出导出数据
+    void readHeap();
+    
+    //stack,休眠当前进程中所有的线程
+    bool suspendTaskThread();
+    
+    //stack,读取休眠的线程栈
+    void readStack();
+    
+    //stack,恢复当前进程中所有的线程(前面休眠的)
+    void resumeTaskThread();
+    
+    void buildHeapInfo();
+
+    void exportToFile(NSString *filePath);
 public:
     int64_t machODataConstOff;
     int64_t machODataConstSize;
@@ -137,21 +155,9 @@ public:
     MMCtxZone_T *addCtxZone(malloc_zone_t *zone, uint32_t type, uint32_t range_cnt);
     
     MMCtxRange_T *addRangeIntoCtxZone(MMCtxZone_T *zone, vm_range_t range);
-    
-    //读取对重的数据
-    void readHeap();
-    
-    //stack,休眠当前进程中所有的线程
-    bool suspendTaskThread();
-    
-    //stack,读取休眠的线程栈
-    void readStack();
-    
-    //stack,恢复当前进程中所有的线程(前面休眠的)
-    void resumeTaskThread();
 
     //开始进行内存快照
-    void start();
+    void start(NSString *filePath);
 };
 
 NS_ASSUME_NONNULL_END

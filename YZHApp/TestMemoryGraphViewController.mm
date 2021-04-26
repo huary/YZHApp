@@ -103,7 +103,9 @@ protected:
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-//    [self pri_test];
+    [self pri_test];
+    
+    return;
     
 //    readVMRegin();
     
@@ -130,30 +132,30 @@ protected:
 //    NSLog(@"fp=%@,sp=%@",@(fp),@(sp));
     
     
-    self.bptr = new B();
+//    self.bptr = new B();
 //    self.bptr = &_b;
-
-    self.ptr_t = (TT*)calloc(1, sizeof(TT));
-
-    self.ptr = (uint8_t*)malloc(100);
-    memset(self.ptr, 0, 100);
-
-    self.cptr = (char *)calloc(100, sizeof(char));
-
-    self.sptr = (uint16_t*)calloc(100, sizeof(uint16_t));
-
-    self.iptr = (uint32_t*)calloc(100, sizeof(uint32_t));
-
-    NSLog(@"self.bptr=%p",self.bptr);
-
-
-    self.dictRef = CFDictionaryCreateMutable(nullptr, 100, nullptr, nullptr);
+//
+//    self.ptr_t = (TT*)calloc(1, sizeof(TT));
+//
+//    self.ptr = (uint8_t*)malloc(100);
+//    memset(self.ptr, 0, 100);
+//
+//    self.cptr = (char *)calloc(100, sizeof(char));
+//
+//    self.sptr = (uint16_t*)calloc(100, sizeof(uint16_t));
+//
+//    self.iptr = (uint32_t*)calloc(100, sizeof(uint32_t));
+//
+//    NSLog(@"self.bptr=%p",self.bptr);
+//
+//
+//    self.dictRef = CFDictionaryCreateMutable(nullptr, 100, nullptr, nullptr);
 //
 //    CFDictionarySetValue(self.dictRef, (void*)1, (void*)2);
 //
 //    [self pri_test];
 
-    [self pri_getIvar];
+//    [self pri_getIvar];
 
     
 //    MMGraphTest();
