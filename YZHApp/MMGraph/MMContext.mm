@@ -9,6 +9,7 @@
 #import "MMContext.h"
 #import <malloc/malloc.h>
 #import <mach/thread_act.h>
+#import <objc/runtime.h>
 #import <assert.h>
 #import <iostream>
 #import "MMHeap.h"
@@ -593,7 +594,7 @@ static NSArray<NSDictionary*> *readHeapRange(MMCtxRange *ctxRange, CFDictionaryR
                 Ivar ivar = ivars[i];
                 const char *type = ivar_getTypeEncoding(ivar);
                 //oc对象
-                if (type[0] == '@') {
+                if (type[0] == _C_ID) {
                     id obj = object_getIvar(mainObj, ivar);
                     if (obj) {
                         const char *name = ivar_getName(ivar);
@@ -618,7 +619,7 @@ static NSArray<NSDictionary*> *readHeapRange(MMCtxRange *ctxRange, CFDictionaryR
                     }
                 }
                 //c/c++/cf的指针,*是uint8_t/int8_t *的指针
-                else if (type[0] == '^' || type[0] == '*') {
+                else if (type[0] == _C_PTR || type[0] == _C_CHARPTR) {
                     void *ptrTmp = (__bridge void *)object_getIvar(mainObj, ivar);
                     if (ptrTmp) {
                         NSMutableDictionary *sub = [NSMutableDictionary dictionary];
