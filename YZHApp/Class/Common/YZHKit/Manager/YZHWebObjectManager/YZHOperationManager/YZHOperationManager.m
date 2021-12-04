@@ -72,7 +72,9 @@
     firstLIFOTaskOperation.startBlock = ^(YZHOperation *operation) {
         [operation finishExecuting];
     };
-    [self.operationQueue addOperation:firstLIFOTaskOperation];
+    if ([self _shouldAddIntoQueueForTaskOperation:firstLIFOTaskOperation]) {
+        [self.operationQueue addOperation:firstLIFOTaskOperation];
+    }
     return firstLIFOTaskOperation;
 }
 
@@ -122,7 +124,7 @@
         }
         else {
         }
-        if (addToQueue) {
+        if (addToQueue && [self _shouldAddIntoQueueForTaskOperation:taskOperation]) {
             [self.operationQueue addOperation:taskOperation];
         }
         else {
@@ -141,7 +143,7 @@
         NSEnumerator *objEnumerator = [self.notInQueueTaskOperationList objectEnumerator];
         YZHOperation *taskOperation = nil;
         while (taskOperation = [objEnumerator nextObject]) {
-            if ([taskOperation canAddIntoOperationQueue]) {
+            if ([self _shouldAddIntoQueueForTaskOperation:taskOperation]) {
                 [self.operationQueue addOperation:taskOperation];
             }
         }
@@ -154,7 +156,8 @@
 {
     sync_lock(self.lock, ^{
         YZHOperation *taskOperation = [self.taskOperationMapTable objectForKey:key];
-        if ([taskOperation canAddIntoOperationQueue] && [self.notInQueueTaskOperationList containsObject:taskOperation]) {
+        if ([self _shouldAddIntoQueueForTaskOperation:taskOperation] &&
+            [self.notInQueueTaskOperationList containsObject:taskOperation]) {
             [self.operationQueue addOperation:taskOperation];
         }
         [self.notInQueueTaskOperationList removeObject:taskOperation];
@@ -174,8 +177,11 @@
 {
     sync_lock(self.lock, ^{
         taskOperation.key = key;
-        if ([taskOperation canAddIntoOperationQueue]) {
+        if ([self _shouldAddIntoQueueForTaskOperation:taskOperation]) {
             [self.operationQueue addOperation:taskOperation];
+        }
+        else {
+            [self.notInQueueTaskOperationList addObject:taskOperation];
         }
         [self.taskOperationMapTable setObject:taskOperation forKey:key];
     });
@@ -205,6 +211,20 @@
 //        NSLog(@"self.notInQueueTaskOperationList=%ld",self.notInQueueTaskOperationList.count);
 //        NSLog(@"=====%@,%@",self.taskOperationMapTable,self.notInQueueTaskOperationList);
     });
+}
+
+
+/// 需要在lock中调用
+- (BOOL)_shouldAddIntoQueueForTaskOperation:(YZHOperation*)taskOperation {
+    BOOL canAdd = [taskOperation canAddIntoOperationQueue];
+    if (!canAdd) {
+        return NO;
+    }
+    if (self.maxAddIntoQueueCount > 0 &&
+        self.operationQueue.operationCount < self.maxAddIntoQueueCount) {
+        return YES;
+    }
+    return YES;
 }
 
 @end

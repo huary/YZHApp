@@ -7,7 +7,7 @@
 //
 
 #import "NSObject+YZHAddForDealloc.h"
-#import <objc/runtime.h>
+#import "NSObject+YZHAdd.h"
 
 @interface YZHDeallocProxy : NSObject
 {
@@ -41,21 +41,14 @@
 
 @implementation NSObject (YZHAddForDealloc)
 
-- (YZHDeallocProxy *)deallocProxy {
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setDeallocProxy:(YZHDeallocProxy*)deallocProxy {
-    objc_setAssociatedObject(self, @selector(deallocProxy), deallocProxy, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)addDeallocBlock:(YZHDeallocBlock)deallocBlock {
+- (void)hz_addDeallocBlock:(YZHDeallocBlock)deallocBlock {
     @synchronized (self) {
-        YZHDeallocProxy *proxy = [self deallocProxy];
+        NSString *key = @"hz_deallocProxy";
+        YZHDeallocProxy *proxy = [self hz_strongReferenceObjectForKey:key];
         if (!proxy) {
             proxy = [[YZHDeallocProxy alloc] init];
             proxy.target = self;
-            [self setDeallocProxy:proxy];
+            [self hz_addStrongReferenceObject:proxy forKey:key];
         }
         
         YZHDeallocBlock oldBlock = proxy.deallocBlock;

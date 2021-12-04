@@ -7,9 +7,9 @@
 //
 
 #import "YZHTransaction.h"
-#import "YZHOrderSet.h"
+#import "YZHOrderMap.h"
 
-static YZHOrderSet<NSString*, YZHTransaction*> *transactionSet_s = nil;
+static YZHOrderMap<NSString*, YZHTransaction*> *transactionMap_s = nil;
 
 static void pri_setupTransaction(void);
 
@@ -79,20 +79,21 @@ static void pri_setupTransaction(void);
     pri_setupTransaction();
     
     if (self.handleDataBlock) {
-        YZHTransaction *transaction = [transactionSet_s objectForKey:self.transactionId];
+        YZHTransaction *transaction = [transactionMap_s objectForKey:self.transactionId];
         if (!transaction) {
             transaction = self;
         }
-        transaction.curData = self.curData;
+//        transaction.curData = self.curData;
         self.preData = transaction.preData;
-        transaction.preData = self.handleDataBlock(self);
+        self.preData = self.handleDataBlock(self);
     }
-    [transactionSet_s addObject:self forKey:self.transactionId];
+//    [transactionMap_s addObject:self forKey:self.transactionId];
+    [transactionMap_s addOrReplaceObject:self forKey:self.transactionId];
 }
 
 - (void)rollback
 {
-    [transactionSet_s removeObjectForKey:self.transactionId];
+    [transactionMap_s removeObjectForKey:self.transactionId];
 }
 
 - (void)dealloc
@@ -106,21 +107,26 @@ static void pri_setupTransaction(void);
 
 static void pri_runloopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
 
-    if (transactionSet_s.count == 0) {
+    if (transactionMap_s.count == 0) {
         return;
     }
     
-    YZHOrderSet<NSString*, YZHTransaction*> *tmp = transactionSet_s;
-    transactionSet_s = [YZHOrderSet new];
-    [tmp enumerateKeysAndObjectsUsingBlock:^(YZHTransaction * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        obj.actionBlock(obj);
-    }];
+    //这里需要进行while (transactionSet_s.count)时是因为obj.actionBlock有可能给transactionSet_s增加处理事件
+    while (transactionMap_s.count) {
+        @autoreleasepool {
+            YZHOrderMap<NSString*, YZHTransaction*> *tmp = transactionMap_s;
+            transactionMap_s = [YZHOrderMap new];
+            [tmp enumerateKeysAndObjectsUsingBlock:^(YZHTransaction * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                obj.actionBlock(obj);
+            }];
+        }
+    }
 }
 
 static void pri_setupTransaction(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        transactionSet_s = [YZHOrderSet new];
+        transactionMap_s = [YZHOrderMap new];
         CFRunLoopRef runloop = CFRunLoopGetMain();
         CFRunLoopObserverRef observer = CFRunLoopObserverCreate(CFAllocatorGetDefault(),
                                                                 kCFRunLoopBeforeWaiting |

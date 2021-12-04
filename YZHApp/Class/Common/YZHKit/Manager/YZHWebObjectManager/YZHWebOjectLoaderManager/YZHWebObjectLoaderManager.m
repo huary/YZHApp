@@ -9,7 +9,6 @@
 #import "YZHWebObjectLoaderManager.h"
 #import "NSMapTable+YZHAdd.h"
 
-static YZHWebObjectLoaderManager *shareLoaderManager_s = nil;
 
 @interface YZHWebObjectLoaderManager ()
 
@@ -20,8 +19,9 @@ static YZHWebObjectLoaderManager *shareLoaderManager_s = nil;
 
 @implementation YZHWebObjectLoaderManager
 
-+(instancetype)shareLoaderManager
++(instancetype)sharedLoaderManager
 {
+    static YZHWebObjectLoaderManager *shareLoaderManager_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         shareLoaderManager_s = [[super allocWithZone:NULL] init];
@@ -31,12 +31,12 @@ static YZHWebObjectLoaderManager *shareLoaderManager_s = nil;
 
 +(id)allocWithZone:(struct _NSZone *)zone
 {
-    return [YZHWebObjectLoaderManager shareLoaderManager];
+    return [YZHWebObjectLoaderManager sharedLoaderManager];
 }
 
 -(id)copyWithZone:(struct _NSZone *)zone
 {
-    return [YZHWebObjectLoaderManager shareLoaderManager];
+    return [YZHWebObjectLoaderManager sharedLoaderManager];
 }
 
 -(NSMapTable<id, YZHWebObjectLoader*>*)loaderMapTable

@@ -64,9 +64,6 @@
 
 @end
 
-static YZHMemoryCache *shareMemoryCache_s = nil;
-
-
 @interface YZHMemoryCache <KeyType, ObjectType> ()
 //UI
 /* <#注释#> */
@@ -87,13 +84,14 @@ static YZHMemoryCache *shareMemoryCache_s = nil;
 
 @implementation YZHMemoryCache
 
-+(instancetype)shareMemoryCache
++(instancetype)sharedMemoryCache
 {
+    static YZHMemoryCache *sharedMemoryCache_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        shareMemoryCache_s = [[YZHMemoryCache alloc] init];
+        sharedMemoryCache_s = [[YZHMemoryCache alloc] init];
     });
-    return shareMemoryCache_s;
+    return sharedMemoryCache_s;
 }
 
 -(instancetype)init

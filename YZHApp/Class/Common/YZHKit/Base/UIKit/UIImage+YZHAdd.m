@@ -7,7 +7,7 @@
 //
 
 #import "UIImage+YZHAdd.h"
-#import "YZHUIGraphicsImage.h"
+#import "YZHGraphics.h"
 #import "YZHCGUtil.h"
 
 @implementation UIImage (YZHAdd)
@@ -108,7 +108,7 @@
 -(UIImage*)hz_imageByCornerRadius:(CGFloat)cornerRadius corners:(UIRectCorner)corners borderWidth:(CGFloat)borderWidth borderColor:(UIColor*)borderColor
 {
     CGRect rect = CGRectMake(0, 0, self.size.width, self.size.height);
-    return [YZHUIGraphicsImageContext graphicesImage:self graphicsSize:self.size inRect:rect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth borderColor:borderColor];
+    return [YZHGraphicsContext graphicesImage:self graphicsSize:self.size inRect:rect byRoundingCorners:corners cornerRadius:cornerRadius borderWidth:borderWidth borderColor:borderColor];
 }
 
 -(CGSize)hz_contentSizeInSize:(CGSize)inSize contentMode:(UIViewContentMode)contentMode

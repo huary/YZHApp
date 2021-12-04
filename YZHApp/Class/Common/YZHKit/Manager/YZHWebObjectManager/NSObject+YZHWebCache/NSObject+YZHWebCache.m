@@ -47,7 +47,7 @@
 //    [lastOperation cancelForURL:url];
     [self _cancelPrevAllOperation];
     
-    YZHWebObjectLoader *loader = [[YZHWebObjectLoaderManager shareLoaderManager] loaderForKey:@(type)];
+    YZHWebObjectLoader *loader = [[YZHWebObjectLoaderManager sharedLoaderManager] loaderForKey:@(type)];
     if (!loader) {
         return;
     }

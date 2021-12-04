@@ -11,7 +11,7 @@
 
 @interface YZHWebObjectLoaderManager : NSObject
 
-+(instancetype)shareLoaderManager;
++(instancetype)sharedLoaderManager;
 
 -(void)addLoader:(YZHWebObjectLoader*)loader forKey:(id)key;
 

@@ -48,7 +48,7 @@
 
 //+(void)alertInfoWithMessage:(NSString*)message delay:(NSTimeInterval)delay animated:(BOOL)animated
 //{
-//    YZHUIAlertView *alertView =[[YZHUIAlertView alloc] initWithTitle:@"提示" alertMessage:message alertViewStyle:YZHUIAlertViewStyleAlertInfo];
+//    YZHAlertView *alertView =[[YZHAlertView alloc] initWithTitle:@"提示" alertMessage:message alertViewStyle:YZHAlertViewStyleAlertInfo];
 //    if (delay > 0) {
 //        alertView.delayDismissInterval = delay;
 //    }
@@ -65,8 +65,8 @@
 //
 //+(void)alertForceWithTitle:(NSString*)title message:(id)message
 //{
-//    YZHUIAlertView *alertView =[[YZHUIAlertView alloc] initWithTitle:title alertMessage:message alertViewStyle:YZHUIAlertViewStyleAlertForce];
-//    [alertView addAlertActionWithTitle:@"确定" actionStyle:YZHUIAlertActionStyleConfirm actionBlock:nil];
+//    YZHAlertView *alertView =[[YZHAlertView alloc] initWithTitle:title alertMessage:message alertViewStyle:YZHAlertViewStyleAlertForce];
+//    [alertView addAlertActionWithTitle:@"确定" actionStyle:YZHAlertActionStyleConfirm actionBlock:nil];
 //    [alertView alertShowInView:nil animated:NO];
 //}
 

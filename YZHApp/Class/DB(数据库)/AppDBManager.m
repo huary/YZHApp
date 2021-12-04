@@ -11,8 +11,6 @@
 #define DBQUEUE_KEY "DBQueue_Key"
 
 
-static AppDBManager *shareDBManager_s = nil;
-
 @interface AppDBManager ()
 
 @property (nonatomic, strong) NSString *DBPath;
@@ -24,23 +22,24 @@ static AppDBManager *shareDBManager_s = nil;
 
 @implementation AppDBManager
 
-+(instancetype)shareDBManager
++(instancetype)sharedDBManager
 {
+    static AppDBManager *sharedDBManager_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        shareDBManager_s = [[super allocWithZone:NULL] init];
+        sharedDBManager_s = [[super allocWithZone:NULL] init];
     });
-    return shareDBManager_s;
+    return sharedDBManager_s;
 }
 
 +(id)allocWithZone:(struct _NSZone *)zone
 {
-    return [AppDBManager shareDBManager];
+    return [AppDBManager sharedDBManager];
 }
 
 -(id)copyWithZone:(struct _NSZone *)zone
 {
-    return [AppDBManager shareDBManager];
+    return [AppDBManager sharedDBManager];
 }
 
 -(NSString*)DBPath

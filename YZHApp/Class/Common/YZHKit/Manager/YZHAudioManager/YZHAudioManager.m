@@ -12,13 +12,11 @@
 
 NSNotificationName const YZHAudioManagerDidFinishPlayingNotification = @"YZHAudioManagerDidFinishPlayingNotification";
 
-static YZHAudioPlayOption *defaultPlayOption_s = nil;
-static YZHAudioManager *shareAudioManager_s = nil;
-
 @implementation YZHAudioPlayOption
 
 + (instancetype)defaultPlayOption
 {
+    static YZHAudioPlayOption *defaultPlayOption_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         defaultPlayOption_s = [YZHAudioPlayOption new];
@@ -59,24 +57,25 @@ static YZHAudioManager *shareAudioManager_s = nil;
 @synthesize audioRecorder = _audioRecorder;
 @synthesize audioPlayer = _audioPlayer;
 
-+(instancetype)shareAudioManager
++(instancetype)sharedAudioManager
 {
+    static YZHAudioManager *sharedAudioManager_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        shareAudioManager_s = [[super allocWithZone:NULL] init];
-        [shareAudioManager_s pri_setupDefault];
+        sharedAudioManager_s = [[super allocWithZone:NULL] init];
+        [sharedAudioManager_s pri_setupDefault];
     });
-    return shareAudioManager_s;
+    return sharedAudioManager_s;
 }
 
 +(id)allocWithZone:(struct _NSZone *)zone
 {
-    return [YZHAudioManager shareAudioManager];
+    return [YZHAudioManager sharedAudioManager];
 }
 
 -(id)copyWithZone:(struct _NSZone *)zone
 {
-    return [YZHAudioManager shareAudioManager];
+    return [YZHAudioManager sharedAudioManager];
 }
 
 - (void)pri_setupDefault

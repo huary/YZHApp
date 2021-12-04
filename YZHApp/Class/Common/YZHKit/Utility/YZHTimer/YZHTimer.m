@@ -8,6 +8,7 @@
 
 #import "YZHTimer.h"
 #import "YZHKitType.h"
+#import "YZHQueue.h"
 
 @implementation YZHTimer
 {
@@ -15,15 +16,15 @@
     SEL _selector;
     BOOL _isToTarget;
     BOOL _wallTime;
+    YZHQueue *_queue;
     NSTimeInterval _timeAfter;
     YZHTimerFireBlock _fireBlock;
     dispatch_source_t _timerSource;
-    dispatch_semaphore_t _sem;
     uint64_t _startTime;
     uint64_t _endTime;
     
-    uint64_t _suspendStartTime;
-    uint64_t _suspendTime;
+//    uint64_t _suspendStartTime;
+//    uint64_t _suspendTime;
     
     BOOL _isSuspend;
 }
@@ -101,11 +102,12 @@
             NSAssert(fireBlock != nil, @"fireBlock must not nil");
         }
         
-        _sem = dispatch_semaphore_create(1);
         dispatch_queue_t q = queue;
         if (!q) {
             q = dispatch_get_main_queue();
         }
+        
+        _queue = [[YZHQueue alloc] initWithQueue:q];
         _timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, q);
         
         WEAK_SELF(weakSelf);
@@ -121,112 +123,95 @@
         dispatch_resume(_timerSource);
         
         _isSuspend = NO;
-        
-        [self _registNotification:YES];
     }
     return self;
 }
 
-
--(void)_registNotification:(BOOL)regist
-{
-//    if (regist) {
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
-//    }
-//    else {
-//        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-//        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
-//    }
-}
-
--(void)_didEnterBackground:(NSNotification*)notification
-{
-    _suspendStartTime = USEC_FROM_DATE_SINCE1970_NOW;
-    [self suspend];
-}
-
--(void)_willEnterForeground:(NSNotification*)notification
-{
-    [self resume];
-    _suspendTime += USEC_FROM_DATE_SINCE1970_NOW - _suspendStartTime;
-}
-
 -(void)updateNextStart:(NSTimeInterval)after
 {
-    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, after * NSEC_PER_SEC);
-    if (_wallTime) {
-        start = dispatch_walltime(NULL, after * NSEC_PER_SEC);
+    @synchronized (self) {
+        [_queue dispatchQueueBlock:^(YZHQueue * _Nonnull queue) {
+            if (!self->_valid) {
+                return;
+            }
+            dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, after * NSEC_PER_SEC);
+            if (self->_wallTime) {
+                start = dispatch_walltime(NULL, after * NSEC_PER_SEC);
+            }
+            dispatch_source_set_timer(self->_timerSource, start, self->_timeInterval * NSEC_PER_SEC, 0);
+        }];
     }
-    dispatch_source_set_timer(_timerSource, start, _timeInterval * NSEC_PER_SEC, 0);
 }
 
 -(void)updateTimeInterval:(NSTimeInterval)interval
 {
-    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, interval * NSEC_PER_SEC);
-    if (_wallTime) {
-        start = dispatch_walltime(NULL, interval * NSEC_PER_SEC);
+    @synchronized (self) {
+        [_queue dispatchQueueBlock:^(YZHQueue * _Nonnull queue) {
+            if (!self->_valid) {
+                return;
+            }
+            dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, interval * NSEC_PER_SEC);
+            if (self->_wallTime) {
+                start = dispatch_walltime(NULL, interval * NSEC_PER_SEC);
+            }
+            dispatch_source_set_timer(self->_timerSource, start, interval * NSEC_PER_SEC, 0);
+        }];
     }
-    dispatch_source_set_timer(_timerSource, start, interval * NSEC_PER_SEC, 0);
 }
 
 
 - (void)invalidate
 {
-    dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
-    if (_valid) {
-        _endTime = USEC_FROM_DATE_SINCE1970_NOW;
-        dispatch_source_cancel(_timerSource);
-        // 在已经suspend的情况下，如果释放source会导致crash
-        [self _resumeAction];
-        _timerSource = NULL;
-        _target = nil;
-        _selector = NULL;
-        _fireBlock = nil;
-        
-        _valid = NO;
+    @synchronized (self) {
+        [_queue dispatchQueueBlock:^(YZHQueue * _Nonnull queue) {
+            if (self->_valid) {
+                self->_endTime = USEC_FROM_DATE_SINCE1970_NOW;
+                dispatch_source_cancel(self->_timerSource);
+                // 在已经suspend的情况下，如果释放source会导致crash
+                [self pri_resumeAction];
+                self->_timerSource = NULL;
+                self->_target = nil;
+                self->_selector = NULL;
+                self->_fireBlock = nil;
+                
+                self->_valid = NO;
+                
+            }
+        }];
+        _queue = nil;
     }
-    dispatch_semaphore_signal(_sem);
 }
 
 - (void)fire
 {
-    dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
-
-    if (!_valid) {
-        dispatch_semaphore_signal(_sem);
-        return;
-    }
-    // 临时持有各个对象，防止fire和invalidate同时执行的临界情况
-    // 防止出现（null selector）的异常情况
-    BOOL repeat = _repeat;
-    id targetTmp = _target;
-    SEL selectorTmp = _selector;
-    BOOL isToTarget = _isToTarget;
-    YZHTimerFireBlock fireBlockTmp = _fireBlock;
-    dispatch_semaphore_signal(_sem);
-    
-    if (fireBlockTmp) {
-        fireBlockTmp(self);
-    }
-    else {
-        if (selectorTmp) {
+    @synchronized (self) {
+        [_queue dispatchQueueBlock:^(YZHQueue * _Nonnull queue) {
+            if (!self->_valid) {
+                return;
+            }
+            
+            if (self->_fireBlock) {
+                self->_fireBlock(self);
+            }
+            else {
+                if (self->_selector) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-            [targetTmp performSelector:selectorTmp withObject:self];
+                    [self->_target performSelector:self->_selector withObject:self];
 #pragma clang diagnostic pop
-        }
+                }
+            }
+            
+            if (self->_repeat == NO || (self->_isToTarget && self->_target == nil)) {
+                [self invalidate];
+            }
+        }];
     }
-    
-    if (repeat == NO || (isToTarget && targetTmp == nil)) {
-        [self invalidate];
-    }
-    targetTmp = nil;
 }
 
 -(NSTimeInterval)startTime
 {
-    return _startTime;
+    return _startTime * 1.0/USEC_PER_SEC;
 }
 
 -(NSTimeInterval)elapseTime
@@ -241,7 +226,7 @@
 //    return (endTime - _startTime - _suspendTime) * 1.0 / USEC_PER_SEC;
 }
 
-- (void)_suspendAction
+- (void)pri_suspendAction
 {
     if (_timerSource) {
         if (_isSuspend == NO) {
@@ -251,7 +236,7 @@
     }
 }
 
-- (void)_resumeAction
+- (void)pri_resumeAction
 {
     if (_timerSource) {
         if (_isSuspend == YES) {
@@ -263,16 +248,20 @@
 
 -(void)suspend
 {
-    dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
-    [self _suspendAction];
-    dispatch_semaphore_signal(_sem);
+    @synchronized (self) {
+        [_queue dispatchQueueBlock:^(YZHQueue * _Nonnull queue) {
+            [self pri_suspendAction];
+        }];
+    }
 }
 
 -(void)resume
 {
-    dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
-    [self _resumeAction];
-    dispatch_semaphore_signal(_sem);
+    @synchronized (self) {
+        [_queue dispatchQueueBlock:^(YZHQueue * _Nonnull queue) {
+            [self pri_resumeAction];
+        }];
+    }
 }
 
 -(BOOL)isSuspend
@@ -282,9 +271,11 @@
 
 -(void)dealloc
 {
-    NSLog(@"timer dealloc");
-    [self invalidate];
-    [self _registNotification:NO];
+    @synchronized (self) {
+        [_queue dispatchSyncQueueBlock:^(YZHQueue * _Nonnull queue) {
+            [self invalidate];
+        }];
+    }
 }
 
 @end

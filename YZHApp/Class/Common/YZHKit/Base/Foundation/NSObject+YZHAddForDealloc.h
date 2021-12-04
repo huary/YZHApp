@@ -14,7 +14,7 @@ typedef void(^YZHDeallocBlock)(void *deallocTarget);
 
 @interface NSObject (YZHAddForDealloc)
 
-- (void)addDeallocBlock:(YZHDeallocBlock)deallocBlock;
+- (void)hz_addDeallocBlock:(YZHDeallocBlock)deallocBlock;
 
 @end
 

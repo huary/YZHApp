@@ -384,18 +384,18 @@ _DID_BECOME_FIRST_RESPONDER_END:
 /*****************************************************************************
  *YZHShareKeyboardManager
  *****************************************************************************/
-static YZHShareKeyboardManager *_shareKeyboardManager_s = nil;
 
-@implementation YZHShareKeyboardManager
+@implementation YZHSharedKeyboardManager
 
-+(instancetype)shareKeyboardManager
++(instancetype)sharedKeyboardManager
 {
+    static YZHSharedKeyboardManager *_sharedKeyboardManager_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _shareKeyboardManager_s = [[super allocWithZone:NULL] init];
-        [_shareKeyboardManager_s _setUpDefault];
+        _sharedKeyboardManager_s = [[super allocWithZone:NULL] init];
+        [_sharedKeyboardManager_s _setUpDefault];
     });
-    return _shareKeyboardManager_s;
+    return _sharedKeyboardManager_s;
 }
 
 -(void)_setUpDefault
@@ -405,12 +405,12 @@ static YZHShareKeyboardManager *_shareKeyboardManager_s = nil;
 
 +(id)allocWithZone:(struct _NSZone *)zone
 {
-    return [YZHShareKeyboardManager shareKeyboardManager];
+    return [YZHSharedKeyboardManager sharedKeyboardManager];
 }
 
 -(id)copyWithZone:(struct _NSZone *)zone
 {
-    return [YZHShareKeyboardManager shareKeyboardManager];
+    return [YZHSharedKeyboardManager sharedKeyboardManager];
 }
 
 @end

@@ -19,12 +19,12 @@ NSString * const YZHIntervalActionLastTimeIntervalKey = TYPE_STR(YZHIntervalActi
 NSString * const YZHIntervalActionElapsedTimeIntervalKey = TYPE_STR(YZHIntervalActionElapsedTimeInterval);
 
 
-typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
+typedef NS_ENUM(NSInteger, YZHGestureRecognizerState)
 {
-    YZHUIGestureRecognizerStateNull     = 0,
-    YZHUIGestureRecognizerStateBegan    = 1,
-    YZHUIGestureRecognizerStateChanged  = 2,
-    YZHUIGestureRecognizerStateEnded    = 3,
+    YZHGestureRecognizerStateNull     = 0,
+    YZHGestureRecognizerStateBegan    = 1,
+    YZHGestureRecognizerStateChanged  = 2,
+    YZHGestureRecognizerStateEnded    = 3,
 };
 
 
@@ -34,14 +34,14 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
  ****************************************************/
 @implementation UIGestureRecognizer (GestureRecognizerInfo)
 
-- (void)setHz_state:(YZHUIGestureRecognizerState)hz_state
+- (void)setHz_state:(YZHGestureRecognizerState)hz_state
 {
     objc_setAssociatedObject(self, @selector(hz_state), @(hz_state), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(YZHUIGestureRecognizerState)hz_state
+-(YZHGestureRecognizerState)hz_state
 {
-    return (YZHUIGestureRecognizerState)[objc_getAssociatedObject(self, _cmd) integerValue];
+    return (YZHGestureRecognizerState)[objc_getAssociatedObject(self, _cmd) integerValue];
 }
 
 -(void)setHz_userInfo:(NSDictionary *)hz_userInfo
@@ -295,25 +295,25 @@ typedef NS_ENUM(NSInteger, YZHUIGestureRecognizerState)
         {
             if (self.gestureRecognizer.state == UIGestureRecognizerStateBegan) {
                 self.gestureBlock(self.gestureRecognizer);
-                self.gestureRecognizer.hz_state = YZHUIGestureRecognizerStateBegan;
+                self.gestureRecognizer.hz_state = YZHGestureRecognizerStateBegan;
             }
             else if (self.gestureRecognizer.state == UIGestureRecognizerStateChanged) {
                 if (option == YZHIntervalGestureRecognizerActionOptionsBeginChangeEnd) {
-                    if (self.gestureRecognizer.hz_state == YZHUIGestureRecognizerStateBegan) {
+                    if (self.gestureRecognizer.hz_state == YZHGestureRecognizerStateBegan) {
                         self.gestureBlock(self.gestureRecognizer);
-                        self.gestureRecognizer.hz_state = YZHUIGestureRecognizerStateChanged;
+                        self.gestureRecognizer.hz_state = YZHGestureRecognizerStateChanged;
                     }
                     return;
                 }
                 else {
                     self.gestureBlock(self.gestureRecognizer);
-                    self.gestureRecognizer.hz_state = YZHUIGestureRecognizerStateChanged;
+                    self.gestureRecognizer.hz_state = YZHGestureRecognizerStateChanged;
                 }
             }
             else if (self.gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-                if (self.gestureRecognizer.hz_state == YZHUIGestureRecognizerStateChanged) {
+                if (self.gestureRecognizer.hz_state == YZHGestureRecognizerStateChanged) {
                     self.gestureBlock(self.gestureRecognizer);
-                    self.gestureRecognizer.hz_state = YZHUIGestureRecognizerStateEnded;
+                    self.gestureRecognizer.hz_state = YZHGestureRecognizerStateEnded;
                 }
                 return;
             }

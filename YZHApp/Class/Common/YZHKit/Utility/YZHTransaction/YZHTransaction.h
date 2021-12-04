@@ -21,7 +21,7 @@ typedef id _Nullable (^YZHTransactionHandleDataBlock)(YZHTransaction *transactio
 
 + (YZHTransaction *)transactionWithTransactionId:(NSString *)transactionId
                                      currentData:(id)currentData
-                                      handleData:(YZHTransactionHandleDataBlock)handleDataBlock
+                                      handleData:(nullable YZHTransactionHandleDataBlock)handleDataBlock
                                           action:(YZHTransactionActionBlock)actionBlock;
 
 - (NSString *)transactionId;

@@ -80,10 +80,10 @@ typedef CGAffineTransform(^YZHKeyboardShiftTransformBlock)(YZHKeyboardManager *k
 /*****************************************************************************
  *YZHShareKeyboardManager
  *****************************************************************************/
-@interface YZHShareKeyboardManager : NSObject
+@interface YZHSharedKeyboardManager : NSObject
 
 @property (nonatomic, strong, readonly) YZHKeyboardManager *keyboardManager;
 
-+(instancetype)shareKeyboardManager;
++(instancetype)sharedKeyboardManager;
 
 @end

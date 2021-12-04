@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "YZHUIAlertView.h"
+#import "YZHAlertView.h"
 
 /****************************************************
  *<#标注#>
@@ -64,7 +64,7 @@
  ****************************************************/
 @interface YZHAudioRecordView : UIView
 
-@property (nonatomic, strong, readonly) YZHUIAlertView *alertView;
+@property (nonatomic, strong, readonly) YZHAlertView *alertView;
 
 /* <#注释#> */
 @property (nonatomic, strong) YZHAudioRecordNormalView *normalView;

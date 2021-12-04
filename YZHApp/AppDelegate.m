@@ -8,106 +8,169 @@
 
 #import "AppDelegate.h"
 #import "YZHKit.h"
+#import "ViewController.h"
+#import "YZHQueue.h"
 
-//#define CHECK_N(x, n, ...)          n
-//#define CHECK(...)                  CHECK_N(__VA_ARGS__, 0,)
-//#define PROBE(x)                    x, 1,
-//
-//#define IS_PAREN_PROBE(...)         PROBE(~)
-//#define IS_PAREN(x)                 CHECK(IS_PAREN_PROBE x)
-//
-//
-//#define NOT_0                       PROBE(~)
-//#define NOT(x)                      CHECK(CONCAT(NOT_,x))
-//
-//#define IIF_0(t, ...)               __VA_ARGS__
-//#define IIF_1(t, ...)               t
-//#define IIF(c)                      CONCAT(IIF_, c)
-//
-//#define COMP_0                      1
-//#define COMP_1                      0
-//#define COMP(b)                     CONCAT(COMP_, b)
-//
-//#define BOOL(x)                     COMPL(NOT(x))
-//#define IF(c)                       IIF(BOOL(c))
-//
-//#define EAT(...)
-//#define EXPAND(...)                 __VA_ARGS__
-//#define WHEN(c)                     IF(c)(EXPAND, EAT)
+#import "IHRT_First_ViewController.h"
+#import "IHRT_Second_ViewController.h"
+#import "IHRT_Third_ViewController.h"
+#import "IHRT_Fourth_ViewController.h"
+#import "IHRT_Fifth_ViewController.h"
 
+#import "CAT_First_ViewController.h"
+#import "CAT_Second_ViewController.h"
+#import "CAT_Third_ViewController.h"
+#import "CAT_Fourth_ViewController.h"
+#import "CAT_Fifth_ViewController.h"
 
-/* Auxiliary macros */
-//#define M_CHECK_(a, b, ...)     b
-//#define M_CHECK(...)            M_CHECK_(__VA_ARGS__)
-//
-//#define M_IS_PAREN_(...)        1, 1,
-//#define M_IS_PAREN(x)           M_CHECK(M_IS_PAREN_ x, 0)
-//
-//#define M_CONCAT_(a, b)         a ## b
-//#define M_CONCAT(a, b)          M_CONCAT_(a, b)
-//
-///* Conditional definition macros */
-//#define DEF(x)                  M_IS_PAREN(x)
-//
-//#define DEF_IF_0(id, def)
-//#define DEF_IF_1(id, def){id, def},
-//
-//#define COND_DEF(x, y)          M_CONCAT(DEF_IF_, DEF(x))(x, y)
+#import "YZHNavigationTypes.h"
+#import "UIViewController+YZHNavigation.h"
+#import "UINavigationController+YZHNavigation.h"
 
-/* Implementation */
-
-#define ID_1 27,
-#define ID_3 28
-#define ID_4 (29)
-
-
-//#define HAV_XXX_SDK
-//
-//#if __has_include("YZHKit.h")
-//#define YZHKIT_SDK  (1)
-//#endif
-//
-//#define IF_DONE_0(...)
-//#define IF_DONE_1(...)              __VA_ARGS__
-//#define YZH_KIT_DONE(...)           M_CONCAT(IF_DONE_,DEF(YZHKIT_SDK))(__VA_ARGS__)
-
-
-#define COMPARE_foo(x)  x
-#define COMPARE_bar(x)  x
-#define PRIMITIVE_COMPARE(x,y)      IS_PAREN(COMPARE_ ## x(COMPARE_ ## y)(()))
-
-//#define ABC   (1)
-//
-//#define _IS_PAREN(a,...)                         1, a
-//#define IS_PAREN(x)                              M_CHECK(_IS_PAREN x, 0)
-//
-//
-//#define YZH_KIT_DONE(...)                       CONCAT(DEF_IF_,IS_PAREN(ABC))(__VA_ARGS__)
-
-
-
-struct A {
-    int a;
-    int b;
-};
-
-
-struct B {
-    struct A a[0];
-    int b;
-    int c;
-};
-
-
+#import "UITabBarController+UITabBarView.h"
+#import "UIViewController+YZHNavigationRootVCInitSetup.h"
 
 @interface AppDelegate ()
+
+@property (nonatomic, strong) YZHTabBarController *tabBarController;
 
 @end
 
 @implementation AppDelegate
 
+- (void)pri_setupNavBarAppearance {
+    /*这是barButton的字体色/背景色/font，
+     *[UIBarButtonItem appearance]的titleTextAttributesForState没有设置时，取[UINavigationBar appearance]的
+     *[UIBarButtonItem appearance].tintColor = [UIColor blackColor];同[UIBarButtonItem appearance]中的NSForegroundColorAttributeName
+     */
+    [[UIBarButtonItem appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:BLACK_COLOR,
+                                                           NSBackgroundColorAttributeName:BLUE_COLOR,
+    } forState:UIControlStateNormal];
+    
+    [UINavigationBar appearance].barTintColor = [UIColor whiteColor];
+    [UINavigationBar appearance].titleTextAttributes = @{NSFontAttributeName:NAVIGATION_ITEM_TITLE_FONT,
+                                                         NSForegroundColorAttributeName:RED_COLOR,
+                                                         NSBackgroundColorAttributeName:YELLOW_COLOR,
+    };
+}
+
+- (void)pri_setupWindow {
+    self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+}
+
+- (void)pri_setupRootVC{
+    [self pri_setupWindow];
+    
+    YZHTabBarController *tabBarVC = [[YZHTabBarController alloc] init];
+    
+    tabBarVC.tabBarAttributes = @{YZHTabBarItemTitleTextFontKey:SYS_FONT(12),
+                                  YZHTabBarItemTitleNormalColorKey:RGB_WITH_INT_WITH_NO_ALPHA(0X808080),
+                                  YZHTabBarItemTitleSelectedColorKey:RED_COLOR,
+                                  YZHTabBarItemSelectedBackgroundColorKey:ORANGE_COLOR,
+                                  YZHTabBarItemHighlightedBackgroundColorKey:RED_COLOR
+    };
+    BOOL useSystemNavigation = YES;
+#if 0
+    [tabBarVC setupChildViewController:[IHRT_First_ViewController new]
+                                 title:@"default"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleDefault];
+    
+    [tabBarVC setupChildViewController:[IHRT_Second_ViewController new]
+                                 title:@"GBarDefItem"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleGlobalBarDefaultItem];
+    
+    [tabBarVC setupChildViewController:[IHRT_Third_ViewController new]
+                                 title:@"GBarItem"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleGlobalBarItem];
+    
+    [tabBarVC setupChildViewController:[IHRT_Fourth_ViewController new]
+                                 title:@"VCBarItem"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleVCBarItem];
+
+    [tabBarVC setupChildViewController:[IHRT_Fifth_ViewController new]
+                                 title:@"GBarDefItem"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleVCBarDefaultItem];
+#else
+//    UIViewController *vc = [CAT_First_ViewController new];
+//    vc.hz_navigationEnableForRootVCInitSetToNavigation = YES;
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    
+        
+    CAT_First_ViewController *first = [CAT_First_ViewController new];
+    first.hz_navigationEnable = YES;
+    [tabBarVC setupChildViewController:first
+                                 title:@"default"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleDefault];
+    
+    CAT_Second_ViewController *second = [CAT_Second_ViewController new];
+    second.hz_navigationEnable = YES;
+    [tabBarVC setupChildViewController:second
+                                 title:@"GBarDefItem"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleGlobalBarDefaultItem];
+    
+    CAT_Third_ViewController *third = [CAT_Third_ViewController new];
+    third.hz_navigationEnable = YES;
+    [tabBarVC setupChildViewController:third
+                                 title:@"GBarItem"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleGlobalBarItem];
+    
+    CAT_Fourth_ViewController *fourth = [CAT_Fourth_ViewController new];
+    fourth.hz_navigationEnable = YES;
+    [tabBarVC setupChildViewController:fourth
+                                 title:@"VCBarItem"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleVCBarItem];
+
+    CAT_Fifth_ViewController *fifth = [CAT_Fifth_ViewController new];
+    fifth.hz_navigationEnable = YES;
+    [tabBarVC setupChildViewController:fifth
+                                 title:@"GBarDefItem"
+                                 image:nil
+                         selectedImage:nil
+                   useSystemNavigation:useSystemNavigation
+             navigationBarAndItemStyle:YZHNavigationBarAndItemStyleVCBarDefaultItem];
+#endif
+    self.window.rootViewController = tabBarVC;
+}
+
+- (void)resetRootVC {
+    [self pri_setupRootVC];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [self pri_setupNavBarAppearance];
+    
+    [self pri_setupRootVC];
+    
+    [self.window makeKeyAndVisible];
+    
     // Override point for customization after application launch.
     
 //    UIEdgeInsets insets = AVAILABLE_IOS_V_EXP(11.0, UIEdgeInsets insets = [[UIApplication sharedApplication].windows firstObject].safeAreaInsets; UIEdgeInsets insets = UIEdgeInsetsZero;);
@@ -138,7 +201,7 @@ struct B {
 //        NSLog(@"b.done=%d",b);
 //    });
     
-
+/*
     YZH_KIT_FUNC({
         
         onExit(
@@ -188,7 +251,7 @@ struct B {
     NSLog(@"finish");
     
     NSLog(@"a=%d,b=%d,c3=%d",a,b,c);
-    
+    */
     
 //    int a = CHECK(PROBE());
 //    int b = CHECK(x+5);

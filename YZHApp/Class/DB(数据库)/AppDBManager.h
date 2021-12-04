@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define CHECK_DB_QUEUE          NSAssert([[DBManager shareDBManager] isDBExecuteQueue], @"must execute in DBQueue")
+#define CHECK_DB_QUEUE          NSAssert([[DBManager sharedDBManager] isDBExecuteQueue], @"must execute in DBQueue")
 
 typedef id(^DBExecuteBlock)(void);
 typedef id(^DBExecuteDBBlock)(void *db);
@@ -19,7 +19,7 @@ typedef void(^DBExecuteCompletionBlock)(id result);
 
 //@property (nonatomic, strong) id db;
 
-+(instancetype)shareDBManager;
++(instancetype)sharedDBManager;
 
 -(dispatch_queue_t)dbExecuteQueue;
 

@@ -79,10 +79,6 @@
 
 
 
-typedef BOOL(^UIPanGestureRecognizerShouldBeginBlock)(UIScrollView *scrollView, UIGestureRecognizer *gestureRecognizer);
-
-typedef BOOL(^UIPanGestureRecognizersShouldRecognizeSimultaneouslyBlock)(UIScrollView *scrollView,UIGestureRecognizer *first, UIGestureRecognizer *second);
-
 static inline void dispatch_async_in_main_queue(void (^block)(void)) {
     dispatch_async(dispatch_get_main_queue(), block);
 }

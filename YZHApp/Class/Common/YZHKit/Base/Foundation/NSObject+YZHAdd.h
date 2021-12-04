@@ -21,8 +21,10 @@
 
 //multi,不要对外开放
 //@property (nonatomic, strong) NSMapTable *hz_weakReferenceObjectsTable;
-//@property (nonatomic, strong) NSMapTable *hz_strongReferenceObjectsTable;
+//@property (nonatomic, strong) NSMutableDictionary *hz_strongReferenceObjectsTable;
 
++ (BOOL)hz_exchangeInstanceMethod:(SEL)orgSelector with:(SEL)newSelector;
++ (BOOL)hz_exchangeClassMethod:(SEL)orgSelector with:(SEL)newSelector;
 
 -(id)hz_respondsAndPerformSelector:(SEL)selector;
 -(id)hz_respondsAndPerformSelector:(SEL)selector withObject:(id)object;
@@ -30,14 +32,12 @@
 +(id)hz_respondsToSelector:(SEL)selector forClass:(Class)cls;
 +(id)hz_respondsToSelector:(SEL)selector forClass:(Class)cls withObject:(id)object;
 
-
 -(void)hz_addWeakReferenceObject:(id)object forKey:(id)key;
+-(void)hz_removeWeakReferenceObjectForKey:(id)key;
 -(id)hz_weakReferenceObjectForKey:(id)key;
 
 -(void)hz_addStrongReferenceObject:(id)object forKey:(id)key;
+-(void)hz_removeStrongReferenceObjectForKey:(id)key;
 -(id)hz_strongReferenceObjectForKey:(id)key;
-
--(BOOL)hz_exchangeInstanceMethodFrom:(SEL)from to:(SEL)to;
--(BOOL)hz_exchangeClassMethodFrom:(SEL)from to:(SEL)to;
 
 @end

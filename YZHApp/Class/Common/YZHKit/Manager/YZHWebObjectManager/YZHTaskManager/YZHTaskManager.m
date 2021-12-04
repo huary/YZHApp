@@ -25,6 +25,8 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
 
 @property (nonatomic, assign) BOOL hasAddToQueue;
 
+@property (nonatomic, assign) NSInteger referCnt;
+
 @property (nonatomic, strong) NSMapTable *taskStartInfo;
 
 @end
@@ -39,6 +41,14 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
 -(BOOL)hasAddToQueue
 {
     return [objc_getAssociatedObject(self, _cmd) boolValue];
+}
+
+-(void)setReferCnt:(NSInteger)referCnt {
+    objc_setAssociatedObject(self, @selector(referCnt), @(referCnt), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+-(NSInteger)referCnt {
+    return [objc_getAssociatedObject(self, _cmd) integerValue];
 }
 
 -(void)setTaskStartInfo:(NSMapTable *)taskStartInfo
@@ -63,6 +73,8 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
  *YZHTaskManager
  ****************************************************/
 @interface YZHTaskManager ()
+
+@property (nonatomic, assign) NSInteger addIntoQueueCnt;
 
 @property (nonatomic, strong) dispatch_semaphore_t lock;
 
@@ -154,7 +166,7 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
         return nil;
     }
     if (cancelPrev) {
-        [self _cancelTaskOperationForKey:key cancelRetain:NO];
+        [self _cancelTaskOperationForKey:key isFinish:NO cancelRetain:NO];
     }
     
     BOOL sync = _sync;
@@ -171,7 +183,7 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
             }
         }
         
-        [weakSelf _taskStartAction];
+        [weakSelf _taskStartAction:operation];
         
         if (!sync) {
             [operation finishExecuting];
@@ -199,12 +211,12 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
 //这里不开启检查
 -(void)_operationCompletion:(YZHOperation*)operation inOperationMamager:(YZHOperationManager*)operationManager
 {
-    sync_lock(self.lock, ^{
-        [self.taskList removeObject:operation];
-        [self.taskMapTable removeObjectForKey:operation.key];
-        --self->_currentRunningTaskCnt;
-        self->_currentRunningTaskCnt = MAX(self.currentRunningTaskCnt, 0);
-    });
+//    sync_lock(self.lock, ^{
+//        [self.taskList removeObject:operation];
+//        [self.taskMapTable removeObjectForKey:operation.key];
+//        --self->_currentRunningTaskCnt;
+//        self->_currentRunningTaskCnt = MAX(self.currentRunningTaskCnt, 0);
+//    });
 }
 
 
@@ -220,12 +232,12 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
 
 -(void)notifyTaskFinishForKey:(id)key
 {
-    [self _cancelTaskOperationForKey:key cancelRetain:NO];
+    [self _cancelTaskOperationForKey:key isFinish:YES cancelRetain:NO];
 }
 
 -(void)notifyTaskFinishForKey:(id)key cancelRetain:(BOOL)cancelRetain
 {
-    [self _cancelTaskOperationForKey:key cancelRetain:cancelRetain];
+    [self _cancelTaskOperationForKey:key isFinish:YES cancelRetain:cancelRetain];
 }
 
 -(void)cancelAllTask
@@ -240,7 +252,7 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
     });
 }
 
--(void)_cancelTaskOperationForKey:(id)key cancelRetain:(BOOL)cancelRetain
+-(void)_cancelTaskOperationForKey:(id)key isFinish:(BOOL)isFinish cancelRetain:(BOOL)cancelRetain
 {
     sync_lock(self.lock, ^{
         YZHOperation *taskOperation = [self.taskMapTable objectForKey:key];
@@ -249,12 +261,16 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
             return ;
         }
         
-        YZHTaskStopBlock stopBlock = [taskOperation.taskStartInfo objectForKey:taskStopBlockKey_s];
-        if (stopBlock) {
-            stopBlock(self, taskOperation.taskObject);
+        if (isFinish) {
+            [taskOperation finishExecuting];
         }
-    
-        [taskOperation cancel];
+        else {
+            YZHTaskStopBlock stopBlock = [taskOperation.taskStartInfo objectForKey:taskStopBlockKey_s];
+            if (stopBlock) {
+                stopBlock(self, taskOperation.taskObject);
+            }
+            [taskOperation cancel];
+        }
 
         [self.taskList removeObject:taskOperation];
         [self.taskMapTable removeObjectForKey:key];
@@ -263,24 +279,35 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
             [self.taskList addObject:newTaskOperation];
             [self.taskMapTable setObject:newTaskOperation forKey:key];
         }
-
-        --self->_currentRunningTaskCnt;
-        self->_currentRunningTaskCnt = MAX(self->_currentRunningTaskCnt, 0);
+        
+        //这里不用判断是否cancel OK（即taskOperation.isFinished）
+        if (taskOperation.referCnt > 0) {
+            --taskOperation.referCnt;
+            --self->_currentRunningTaskCnt;
+            self->_currentRunningTaskCnt = MAX(self->_currentRunningTaskCnt, 0);
+        }
         [self _checkTaskListQueue];
     });
 }
 
 //在operation启动的时候
--(void)_taskStartAction
+-(void)_taskStartAction:(YZHOperation *)taskOperation
 {
     sync_lock(self.lock, ^{
-        ++self->_currentRunningTaskCnt;
+        --self->_addIntoQueueCnt;
+        if (!taskOperation.isFinished) {
+            ++self->_currentRunningTaskCnt;
+            ++taskOperation.referCnt;
+        }
     });
 }
 
 //这里不能单独调用，需要放在lock里面
 -(void)_checkTaskListQueue
 {
+    if (self.maxConcurrentRunningTaskCnt - self.addIntoQueueCnt <= 0) {
+        return;
+    }
     NSInteger diffCnt = self.maxConcurrentRunningTaskCnt - self.currentRunningTaskCnt;
     if (diffCnt == 0) {
         return;
@@ -293,6 +320,7 @@ static NSString *taskRestartBlockKey_s = @"restartBlock";
                     ++addCnt;
                     [_operationManager addTaskOperationIntoQueue:obj forKey:obj.key];
                     obj.hasAddToQueue = YES;
+                    ++self.addIntoQueueCnt;
                 }
             }
             else {

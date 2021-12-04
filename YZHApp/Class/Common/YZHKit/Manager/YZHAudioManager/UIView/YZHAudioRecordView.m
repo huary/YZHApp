@@ -28,7 +28,7 @@
     self.titleLabel = [UILabel new];
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = WHITE_COLOR;
-    self.titleLabel.font = FONT(14);
+    self.titleLabel.font = SYS_FONT(14);
     self.titleLabel.layer.cornerRadius = 2;
     self.titleLabel.layer.masksToBounds = YES;
     [self addSubview:self.titleLabel];
@@ -105,7 +105,7 @@
 {
     self.countDownLabel = [[UILabel alloc] init];
     self.countDownLabel.textColor = WHITE_COLOR;
-    self.countDownLabel.font = FONT(80);
+    self.countDownLabel.font = SYS_FONT(80);
     self.countDownLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:self.countDownLabel];
 }
@@ -256,10 +256,10 @@
     self.countDownView.frame = self.bounds;
 }
 
--(YZHUIAlertView*)alertView
+-(YZHAlertView*)alertView
 {
     if (_alertView == nil) {
-        _alertView = [[YZHUIAlertView alloc] initWithTitle:nil alertViewStyle:YZHUIAlertViewStyleAlertForce];
+        _alertView = [[YZHAlertView alloc] initWithTitle:nil alertViewStyle:YZHAlertViewStyleAlertForce];
         _alertView.backgroundColor = CLEAR_COLOR;
         _alertView.customContentAlertView = self;
         _alertView.coverColor = CLEAR_COLOR;

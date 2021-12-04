@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "YZHUINavigationController.h"
+#import "YZHTabBarView.h"
+#if __has_include("YZHNavigationController.h")
+#define HAVE_YZH_NAVIGATION_KIT 1
+#import "YZHNavigationController.h"
+#import "YZHNavigationTypes.h"
+#import "UITabBarController+UITabBarView.h"
+#import "UIViewController+YZHNavigationRootVCInitSetup.h"
+#import "UINavigationController+YZHNavigation.h"
+#endif
 
 UIKIT_EXTERN NSString *const YZHTabBarItemTitleTextFontKey;
 UIKIT_EXTERN NSString *const YZHTabBarItemTitleNormalColorKey;
@@ -40,50 +48,125 @@ UIKIT_EXTERN NSString *const YZHTabBarItemActionUserInteractionKey;
  */
 @interface YZHTabBarController : UITabBarController
 
+//设置
 @property (nonatomic, copy) NSDictionary *tabBarAttributes;
+
 @property (nonatomic, weak) id<YZHTabBarControllerDelegate> tabBarDelegate;
 
 /* doubleTapMaxTimeInterval 双击间隔的时间，以毫秒为单位，默认为180ms */
 @property (nonatomic, assign) NSInteger doubleTapMaxTimeIntervalMS;
 
-+(YZHTabBarController*)shareTabBarController;
+@property (nonatomic, strong, readonly) YZHTabBarView *tabBarView;
+
++(YZHTabBarController*)sharedTabBarController;
 
 -(void)doSelectTo:(NSInteger)toIndex;
 
--(void)setupChildViewController:(UIViewController*)childVC
-                      withTitle:(NSString*)title
-                          image:(UIImage*)image
-                  selectedImage:(UIImage*)selectedImage
-navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAndItemStyle;
+#if HAVE_YZH_NAVIGATION_KIT
+//childVC 不可以为nil
+-(UINavigationController*)setupChildViewController:(UIViewController*)childVC
+                                             title:(NSString*)title
+                                             image:(UIImage*)image
+                                     selectedImage:(UIImage*)selectedImage
+                               useSystemNavigation:(BOOL)useSystemNavigation
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
 
--(void)setupChildViewController:(UIViewController*)childVC
-                      withTitle:(NSString*)title
-                      imageName:(NSString*)imageName
-              selectedImageName:(NSString*)selectedImageName
-navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAndItemStyle;
+//childVC 不可以为nil
+-(UINavigationController*)setupChildViewController:(UIViewController*)childVC
+                                             title:(NSString*)title
+                                         imageName:(NSString*)imageName
+                                 selectedImageName:(NSString*)selectedImageName
+                               useSystemNavigation:(BOOL)useSystemNavigation
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
 
--(void)setupChildViewController:(UIViewController *)childVC
-                 customItemView:(UIView*)customItemView
-navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAndItemStyle;
+-(UINavigationController*)setupChildViewController:(UIViewController*)childVC
+                                    customItemView:(UIView *)customItemView
+                               useSystemNavigation:(BOOL)useSystemNavigation
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+
+-(UINavigationController*)setupChildViewController:(UIViewController*)childVC
+                               useSystemNavigation:(BOOL)useSystemNavigation
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+#else
+//childVC 不可以为nil
+-(UINavigationController*)setupChildViewController:(UIViewController*)childVC
+                                             title:(NSString*)title
+                                             image:(UIImage*)image
+                                     selectedImage:(UIImage*)selectedImage;
+
+//childVC 不可以为nil
+-(UINavigationController*)setupChildViewController:(UIViewController*)childVC
+                                             title:(NSString*)title
+                                         imageName:(NSString*)imageName
+                                 selectedImageName:(NSString*)selectedImageName;
+
+-(UINavigationController*)setupChildViewController:(UIViewController*)childVC
+                                    customItemView:(UIView *)customItemView;
+
+-(UINavigationController*)setupChildViewController:(UIViewController*)childVC;
+#endif
+
+-(void)setupChildNavigationController:(UINavigationController*)navigationController;
 
 -(void)clear;
 
--(void)resetChildViewController:(UIViewController*)childVC
-                      withTitle:(NSString*)title
-                          image:(UIImage*)image
-                  selectedImage:(UIImage*)selectedImage
-navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAndItemStyle
-                          atIndex:(NSInteger)index;
+#if HAVE_YZH_NAVIGATION_KIT
+-(UINavigationController*)resetChildViewController:(UIViewController*)childVC
+                                           atIndex:(NSInteger)index
+                                             title:(NSString*)title
+                                             image:(UIImage*)image
+                                     selectedImage:(UIImage*)selectedImage
+                               useSystemNavigation:(BOOL)useSystemNavigation
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
 
--(void)resetChildViewController:(UIViewController*)childVC
-                        withTitle:(NSString*)title
-                        imageName:(NSString*)imageName
-                selectedImageName:(NSString*)selectedImageName
-navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAndItemStyle
-                          atIndex:(NSInteger)index;
+-(UINavigationController*)resetChildViewController:(UIViewController*)childVC
+                                           atIndex:(NSInteger)index
+                                             title:(NSString*)title
+                                         imageName:(NSString*)imageName
+                                 selectedImageName:(NSString*)selectedImageName
+                               useSystemNavigation:(BOOL)useSystemNavigation
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
 
--(void)resetChildViewController:(UIViewController *)childVC
-                 customItemView:(UIView*)customItemView
-navigationControllerBarAndItemStyle:(UINavigationControllerBarAndItemStyle)barAndItemStyle
-                        atIndex:(NSInteger)index;
+-(UINavigationController*)resetChildViewController:(UIViewController *)childVC
+                                           atIndex:(NSInteger)index
+                                    customItemView:(UIView*)customItemView
+                               useSystemNavigation:(BOOL)useSystemNavigation
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+
+-(UINavigationController*)resetChildViewController:(UIViewController *)childVC
+                                           atIndex:(NSInteger)index
+                               useSystemNavigation:(BOOL)useSystemNavigation
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+#else
+
+-(UINavigationController*)resetChildViewController:(UIViewController*)childVC
+                                           atIndex:(NSInteger)index
+                                             title:(NSString*)title
+                                             image:(UIImage*)image
+                                     selectedImage:(UIImage*)selectedImage;
+
+-(UINavigationController*)resetChildViewController:(UIViewController*)childVC
+                                           atIndex:(NSInteger)index
+                                             title:(NSString*)title
+                                         imageName:(NSString*)imageName
+                                 selectedImageName:(NSString*)selectedImageName;
+
+-(UINavigationController*)resetChildViewController:(UIViewController *)childVC
+                                    customItemView:(UIView*)customItemView
+                                           atIndex:(NSInteger)index;
+
+-(UINavigationController*)resetChildViewController:(UIViewController *)childVC
+                                           atIndex:(NSInteger)index;
+
+#endif
+
+-(void)resetupChildNavigationController:(UINavigationController*)navigationController atIndex:(NSInteger)index;
+
+
+-(void)removeChildViewControllerAtIndex:(NSInteger)index;
+
+-(void)exchangeChildViewControllerAtIndex:(NSInteger)index1 withChildViewControllerAtIndex:(NSInteger)index2 animation:(BOOL)animation;
+
+-(void)exchangeChildViewControllerAtIndex:(NSInteger)index1 withChildViewControllerAtIndex:(NSInteger)index2 animationBlock:(YZHTabBarViewExchangeTabBarButtonAnimationBlock)animationBlock;
+
 @end

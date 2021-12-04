@@ -9,24 +9,24 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@protocol YZHUIRefreshViewProtocol;
+@protocol YZHRefreshViewProtocol;
 
-typedef BOOL(^YZHUIRefreshConditionBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model);
-typedef BOOL(^YZHUIRefreshBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model);
+typedef BOOL(^YZHRefreshConditionBlock)(UIResponder<YZHRefreshViewProtocol> *refreshView, id model);
+typedef BOOL(^YZHRefreshBlock)(UIResponder<YZHRefreshViewProtocol> *refreshView, id model);
 
-typedef void(^YZHUIRefreshViewDidBindBlock)(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model, id key);
+typedef void(^YZHRefreshViewDidBindBlock)(UIResponder<YZHRefreshViewProtocol> *refreshView, id model, id key);
 
-@protocol YZHUIRefreshViewProtocol <NSObject>
+@protocol YZHRefreshViewProtocol <NSObject>
 
 @optional
 
 @property (nonatomic, strong) id hz_refreshModel;
 
 //刷新block
-@property (nonatomic, copy) YZHUIRefreshBlock hz_refreshBlock;
+@property (nonatomic, copy) YZHRefreshBlock hz_refreshBlock;
 
 //绑定完成的block
-@property (nonatomic, copy) YZHUIRefreshViewDidBindBlock hz_didBindBlock;
+@property (nonatomic, copy) YZHRefreshViewDidBindBlock hz_didBindBlock;
 
 //刷新方法、同refreshBlock
 -(BOOL)hz_refreshViewWithModel:(id)model;
@@ -40,35 +40,35 @@ typedef void(^YZHUIRefreshViewDidBindBlock)(UIResponder<YZHUIRefreshViewProtocol
 @interface NSObject (YZHRefreshView)
 
 //对模型绑定刷新的view
--(void)hz_addRefreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView forKey:(id)key;
+-(void)hz_addRefreshView:(UIResponder<YZHRefreshViewProtocol>*)refreshView forKey:(id)key;
 
 //刷新所有绑定的view
 -(BOOL)hz_refresh;
 
 //根据刷新条件刷新所有绑定的view
--(BOOL)hz_refresh:(YZHUIRefreshConditionBlock)condition;
+-(BOOL)hz_refresh:(YZHRefreshConditionBlock)condition;
 
 //根据绑定的Key对view进行刷新
 -(BOOL)hz_refreshViewWithKey:(id)key;
 
 
 //通过指定View镜像刷新
--(BOOL)hz_refreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView;
+-(BOOL)hz_refreshView:(UIResponder<YZHRefreshViewProtocol>*)refreshView;
 
 
 //根据条件，对绑定的Key对view进行刷新
--(BOOL)hz_refreshViewWithKey:(id)key condition:(YZHUIRefreshConditionBlock)condition;
+-(BOOL)hz_refreshViewWithKey:(id)key condition:(YZHRefreshConditionBlock)condition;
 
 
 //根据条件，对view进行刷新
--(BOOL)hz_refreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView condition:(YZHUIRefreshConditionBlock)condition;
+-(BOOL)hz_refreshView:(UIResponder<YZHRefreshViewProtocol>*)refreshView condition:(YZHRefreshConditionBlock)condition;
 
 
 //获取指定的view
--(UIResponder<YZHUIRefreshViewProtocol>*)hz_refreshViewForKey:(id)key;
+-(UIResponder<YZHRefreshViewProtocol>*)hz_refreshViewForKey:(id)key;
 
 //获取所有绑定的View
--(NSArray<UIResponder<YZHUIRefreshViewProtocol>*>*)hz_allRefreshView;
+-(NSArray<UIResponder<YZHRefreshViewProtocol>*>*)hz_allRefreshView;
 
 //清空绑定的view
 -(void)hz_clearRefreshView:(UIResponder*)refreshView;

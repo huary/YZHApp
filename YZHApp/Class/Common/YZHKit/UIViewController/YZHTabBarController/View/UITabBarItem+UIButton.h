@@ -8,20 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger,NSBadgeType)
+typedef NS_ENUM(NSInteger, YZHBadgeType)
 {
     //直接hidden
-    NSBadgeTypeNULL     = -1,
+    YZHBadgeTypeNULL     = -1,
     //会根据需要显示的badgeValue判断是否显示(IS_AVAILABLE_NSSTRNG(realShowValue))
-    NSBadgeTypeDefault  = 0,
+    YZHBadgeTypeDefault  = 0,
     //直接展示小圆圈
-    NSBadgeTypeDot      = 1,
+    YZHBadgeTypeDot      = 1,
 };
 
-typedef NS_ENUM(NSInteger,NSButtonImageTitleStyle)
+typedef NS_ENUM(NSInteger, YZHButtonImageTitleStyle)
 {
-    NSButtonImageTitleStyleVertical      = 0,
-    NSButtonImageTitleStyleHorizontal    = 1,
+    YZHButtonImageTitleStyleVertical      = 0,
+    YZHButtonImageTitleStyleHorizontal    = 1,
 };
 
 struct CGRange {
@@ -49,11 +49,11 @@ CGRangeEqualToZero(CGRange r)
 }
 
 
-typedef NSString*(^UITabBarItemBadgeBlock)(UIButton *badgeButton, NSString *badgeValue, NSBadgeType *badgeType);
+typedef NSString*(^UITabBarItemBadgeBlock)(UIButton *badgeButton, NSString *badgeValue, YZHBadgeType *badgeType);
 
 @interface UITabBarItem (UIButton)
 
-@property (nonatomic, assign) NSButtonImageTitleStyle hz_buttonStyle;
+@property (nonatomic, assign) YZHButtonImageTitleStyle hz_buttonStyle;
 
 //这个一般不用设置的。
 @property (nonatomic, assign) CGPoint hz_buttonItemOrigin;

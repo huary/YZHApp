@@ -84,6 +84,44 @@ typedef id(^WeakReferenceObjectBlock)(void);
     return table;
 }
 
++ (BOOL)hz_exchangeInstanceMethod:(SEL)orgSelector with:(SEL)newSelector {
+    Method orgMethod = class_getInstanceMethod(self, orgSelector);
+    Method newMethod = class_getInstanceMethod(self, newSelector);
+    if (!orgMethod || !newMethod) {
+        return NO;
+    }
+    
+    BOOL add = class_addMethod(self, orgSelector, method_getImplementation(newMethod), method_getTypeEncoding(newMethod));
+    if (add) {
+        class_replaceMethod(self, newSelector, method_getImplementation(orgMethod), method_getTypeEncoding(orgMethod));
+    }
+    else {
+        method_exchangeImplementations(orgMethod, newMethod);
+    }
+    
+    return YES;
+}
+
++ (BOOL)hz_exchangeClassMethod:(SEL)orgSelector with:(SEL)newSelector {
+    Method orgMethod = class_getClassMethod(self, orgSelector);
+    Method newMethod = class_getClassMethod(self, newSelector);
+    if (!orgMethod || !newMethod) {
+        return NO;
+    }
+    
+    Class metaCls = object_getClass(self);
+
+    BOOL add = class_addMethod(metaCls, orgSelector, method_getImplementation(newMethod), method_getTypeEncoding(newMethod));
+    if (add) {
+        class_replaceMethod(metaCls, newSelector, method_getImplementation(orgMethod), method_getTypeEncoding(orgMethod));
+    }
+    else {
+        method_exchangeImplementations(orgMethod, newMethod);
+    }
+    
+    return YES;
+}
+
 -(id)hz_respondsAndPerformSelector:(SEL)selector
 {
     if (selector == NULL) {
@@ -149,6 +187,11 @@ typedef id(^WeakReferenceObjectBlock)(void);
     [self.hz_weakReferenceObjectsTable setObject:object forKey:key];
 }
 
+-(void)hz_removeWeakReferenceObjectForKey:(id)key {
+    [self.hz_weakReferenceObjectsTable removeObjectForKey:key];
+
+}
+
 -(id)hz_weakReferenceObjectForKey:(id)key
 {
     return [self.hz_weakReferenceObjectsTable objectForKey:key];
@@ -159,34 +202,12 @@ typedef id(^WeakReferenceObjectBlock)(void);
     [self.hz_strongReferenceObjectsTable setObject:object forKey:key];
 }
 
+-(void)hz_removeStrongReferenceObjectForKey:(id)key {
+    [self.hz_strongReferenceObjectsTable removeObjectForKey:key];
+}
+
 -(id)hz_strongReferenceObjectForKey:(id)key
 {
     return [self.hz_strongReferenceObjectsTable objectForKey:key];
-}
-
--(BOOL)hz_exchangeInstanceMethodFrom:(SEL)from to:(SEL)to
-{
-    Class cls = [self class];
-    Method fromMethod = class_getInstanceMethod(cls, from);
-    Method toMethod = class_getInstanceMethod(cls, to);
-    if (fromMethod == NULL || toMethod == NULL) {
-        return NO;
-    }
-//    class_addMethod(cls, from, class_getMethodImplementation(cls, from), method_getTypeEncoding(fromMethod));
-//    class_addMethod(cls, to, class_getMethodImplementation(cls, to), method_getTypeEncoding(toMethod));
-    method_exchangeImplementations(fromMethod, toMethod);
-    return YES;
-}
-
--(BOOL)hz_exchangeClassMethodFrom:(SEL)from to:(SEL)to
-{
-    Class cls = [self class];
-    Method fromMethod = class_getClassMethod(cls, from);
-    Method toMethod = class_getClassMethod(cls, to);
-    if (fromMethod == NULL || toMethod == NULL) {
-        return NO;
-    }
-    method_exchangeImplementations(fromMethod, toMethod);
-    return YES;
 }
 @end

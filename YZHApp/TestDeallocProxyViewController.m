@@ -26,12 +26,48 @@
 
 @interface ATestProxy : B
 
+@property (nonatomic, strong) NSString *text;
+
 @end
 
 
 
 @implementation ATestProxy
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self pri_testNotification];
+    }
+    return self;
+}
+
+- (void)pri_testOnce {
+    static BOOL once = NO;
+    if (!once) {
+        once = YES;
+        NSLog(@"once=%p",self);
+    }
+    
+}
+
+- (void)pri_testNotification {
+    id observer = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"will resign active");
+    }];
+    [self hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
+        
+        NSLog(@"before remove observer");
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:observer name:UIApplicationWillResignActiveNotification object:nil];
+        
+        NSLog(@"after remove observer");
+    }];
+    
+    [observer hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
+        NSLog(@"observer dealloc");
+    }];
+}
 
 
 - (void)pri_print:(NSString *)text {
@@ -40,15 +76,6 @@
 
 - (void)dealloc {
     NSLog(@"ATestProxy ======= dealloc,%p",self);
-//    ON_RETURN{
-//        NSLog(@"after dealloc");
-//    };
-//
-//
-//    onExit({
-//        NSLog(@"after dealloc 2");
-//    })
-
 }
 
 @end
@@ -247,27 +274,27 @@ static void dealloc_func(id self, SEL _cmd) {
     ATestProxy *t = [ATestProxy new];
     
         
-    [t addDeallocBlock:^(void * _Nonnull deallocTarget) {
+    [t hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
         [(__bridge id)deallocTarget pri_print:@"start"];
     }];
     
-    [t addDeallocBlock:^(void * _Nonnull deallocTarget) {
+    [t hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
         NSLog(@"deallocated=%p,%d",deallocTarget, __LINE__);
     }];
     
-    [t addDeallocBlock:^(void * _Nonnull deallocTarget) {
+    [t hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
         NSLog(@"deallocated=%p,%d",deallocTarget, __LINE__);
     }];
     
-    [t addDeallocBlock:^(void * _Nonnull deallocTarget) {
+    [t hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
         NSLog(@"deallocated=%p,%d",deallocTarget, __LINE__);
     }];
     
-    [t addDeallocBlock:^(void * _Nonnull deallocTarget) {
+    [t hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
         NSLog(@"deallocated=%p,%d",deallocTarget, __LINE__);
     }];
     
-    [t addDeallocBlock:^(void * _Nonnull deallocTarget) {
+    [t hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
         [(__bridge id)deallocTarget pri_print:@"end"];
     }];
     
@@ -284,12 +311,86 @@ static void dealloc_func(id self, SEL _cmd) {
     NSLog(@"cls=%@",NSStringFromClass([t class]));
 }
 
+- (void)pri_test3 {
+    ATestProxy *t1 = [ATestProxy new];
+    [t1 pri_testOnce];
+    [t1 pri_testOnce];
+
+    ATestProxy *t2 = [ATestProxy new];
+    [t2 pri_testOnce];
+    [t2 pri_testOnce];
+
+}
+
+static ATestProxy *test = nil;
+
+- (void)pri_testKVO {
+    ATestProxy *t = [ATestProxy new];
+    [t hz_addKVOForKeyPath:@"text" options:NSKeyValueObservingOptionNew context:nil block:^(id target, NSString *keyPath, id object, NSDictionary<NSKeyValueChangeKey,id> *change, void *context) {
+        NSLog(@"KVO.changge.1=%@",change);
+    }];
+    
+//    [t addObserver:self forKeyPath:@"text" options:NSKeyValueObservingOptionNew context:nil];
+    
+    [t hz_addKVOForKeyPath:@"text" options:NSKeyValueObservingOptionNew context:nil block:^(id target, NSString *keyPath, id object, NSDictionary<NSKeyValueChangeKey,id> *change, void *context) {
+        NSLog(@"KVO.changge.2=%@",change);
+    }];
+    
+    [t hz_addKVOForKeyPath:@"text" options:NSKeyValueObservingOptionNew context:nil block:^(id target, NSString *keyPath, id object, NSDictionary<NSKeyValueChangeKey,id> *change, void *context) {
+        NSLog(@"KVO.changge.3=%@",change);
+    }];
+    
+    t.text = @"hello world";
+    
+//    t = nil;
+    
+    [t hz_removeKVOObserverBlockForKeyPath:@"text"];
+    
+    t.text = @"after remove";
+    
+    NSLog(@"t.text=%@",t.text);
+//    test = t;
+    
+    
+    
+
+}
+
+NSMutableArray *array = nil;
+
+- (void)pri_testArray {
+    
+    [array removeAllObjects];
+    
+    NSLog(@"removeAllObjects");
+}
+
+- (void)pri_add {
+    ATestProxy *a = [ATestProxy new];
+    a.text = @"a ATest Proxy";
+    NSLog(@"a======%p",a);
+    [array addObject:a];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    NSLog(@"change=%@",change);
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
 //    [self pri_test];
     
     
 //    [self pri_test2];
 
+//    [self pri_test3];
+    
+    [self pri_testKVO];
+    
+//    array = [NSMutableArray array];
+//
+//    [self pri_add];
+//
+//    [self pri_testArray];
 }
 
 @end

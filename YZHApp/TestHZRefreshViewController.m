@@ -27,7 +27,7 @@
 @end
 
 
-@interface TestCell : UITableViewCell<YZHUIRefreshViewProtocol>
+@interface TestCell : UITableViewCell<YZHRefreshViewProtocol>
 
 /** <#注释#> */
 @property (nonatomic, strong) UILabel *lab;
@@ -50,7 +50,7 @@
     self.lab.backgroundColor = [UIColor redColor];
     [self.contentView addSubview:self.lab];
     
-    self.lab.hz_refreshBlock = ^BOOL(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model) {
+    self.lab.hz_refreshBlock = ^BOOL(UIResponder<YZHRefreshViewProtocol> *refreshView, id model) {
         UILabel *lab = refreshView;
 //        TestModel *m = model;
 //        lab.text = m.doneText;
@@ -138,7 +138,7 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-//    YZHUIRefreshBlock refreshBlock = ^BOOL(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model) {
+//    YZHRefreshBlock refreshBlock = ^BOOL(UIResponder<YZHRefreshViewProtocol> *refreshView, id model) {
 //        UILabel *l = (UILabel*)refreshView;
 //        TestModel *m = model;
 //        l.text = m.text;

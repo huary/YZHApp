@@ -26,7 +26,7 @@ typedef void(^YZHCacheRemoveCompletionBlock)(YZHCache *cache, NSString *key, NSS
 
 @interface YZHCache : NSObject
 
-+(instancetype)shareCache;
++(instancetype)sharedCache;
 
 @property (nonatomic, strong, readonly) YZHMemoryCache *memoryCache;
 

@@ -33,6 +33,8 @@ typedef void(^YZHOperationCompletionBlock)(YZHOperation *operation);
 //为了不和父类的completionBlock重名
 @property (nonatomic, copy) YZHOperationCompletionBlock finishBlock;
 
+-(BOOL)isStarted;
+
 -(void)finishExecuting;
 
 -(BOOL)canAddIntoOperationQueue;

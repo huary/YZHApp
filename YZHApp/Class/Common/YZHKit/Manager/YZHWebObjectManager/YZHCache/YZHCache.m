@@ -9,7 +9,6 @@
 #import "YZHCache.h"
 #import "YZHUtil.h"
 
-static YZHCache *shareCache_s = nil;
 
 @interface YZHCache ()
 
@@ -20,13 +19,14 @@ static YZHCache *shareCache_s = nil;
 
 @implementation YZHCache
 
-+(instancetype)shareCache
++(instancetype)sharedCache
 {
+    static YZHCache *sharedCache_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        shareCache_s = [[YZHCache alloc] init];
+        sharedCache_s = [[YZHCache alloc] init];
     });
-    return shareCache_s;
+    return sharedCache_s;
 }
 
 -(instancetype)init

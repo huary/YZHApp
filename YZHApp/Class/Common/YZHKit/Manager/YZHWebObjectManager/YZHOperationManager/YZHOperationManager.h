@@ -32,6 +32,9 @@ typedef void(^YZHTaskOperationCompletionBlock)(YZHOperationManager *manager, YZH
 
 @property (nonatomic, assign) NSInteger maxConcurrentOperationCount;
 
+/// 最大可加入到Queue中的operation的个数，默认为0，无限制
+@property (nonatomic, assign) NSInteger maxAddIntoQueueCount;
+
 //这个是默认添加到queue中
 -(YZHOperation*)addTaskOperation:(YZHTaskOperationBlock)taskBlock completion:(YZHTaskOperationCompletionBlock)completion forKey:(id)key;
 

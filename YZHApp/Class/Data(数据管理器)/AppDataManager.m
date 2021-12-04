@@ -8,28 +8,28 @@
 
 #import "AppDataManager.h"
 
-static AppDataManager *shareDataManager_s = nil;
 
 @implementation AppDataManager
 
-+(instancetype)shareDataManager
++(instancetype)sharedDataManager
 {
+    static AppDataManager *sharedDataManager_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        shareDataManager_s = [[super allocWithZone:NULL] init];
-        [shareDataManager_s _setupDefaultValue];
+        sharedDataManager_s = [[super allocWithZone:NULL] init];
+        [sharedDataManager_s _setupDefaultValue];
     });
-    return shareDataManager_s;
+    return sharedDataManager_s;
 }
 
 +(id)allocWithZone:(struct _NSZone *)zone
 {
-    return [AppDataManager shareDataManager];
+    return [AppDataManager sharedDataManager];
 }
 
 -(id)copyWithZone:(struct _NSZone *)zone
 {
-    return [AppDataManager shareDataManager];
+    return [AppDataManager sharedDataManager];
 }
 
 -(void)_setupDefaultValue

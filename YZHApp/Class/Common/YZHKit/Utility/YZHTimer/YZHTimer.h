@@ -13,16 +13,12 @@ typedef void(^YZHTimerFireBlock)(YZHTimer *timer);
 
 @interface YZHTimer : NSObject
 
-/* <#注释#> */
 @property (nonatomic, strong) id userInfo;
 
-/* <#name#> */
 @property (nonatomic, assign, readonly) NSTimeInterval timeInterval;
 
-/* <#name#> */
 @property (nonatomic, assign, readonly) BOOL repeat;
 
-/* <#name#> */
 @property (nonatomic, assign, readonly, getter=isValid) BOOL valid;
 
 //默认在mainQueue
@@ -57,10 +53,6 @@ typedef void(^YZHTimerFireBlock)(YZHTimer *timer);
 
 -(void)fire;
 
-/*
- *这里的suspend、resume、isSuspend放在同一个线程上来操作
- *
- */
 -(void)suspend;
 
 -(void)resume;

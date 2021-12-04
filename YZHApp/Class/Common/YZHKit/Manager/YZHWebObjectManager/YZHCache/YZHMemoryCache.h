@@ -28,7 +28,7 @@
 @property (nonatomic, weak) id<YZHMemoryCacheDelegate> delegate;
 
 //非单例，定义一共享对象
-+(instancetype)shareMemoryCache;
++(instancetype)sharedMemoryCache;
 
 - (ObjectType)objectForKey:(KeyType)key;
 

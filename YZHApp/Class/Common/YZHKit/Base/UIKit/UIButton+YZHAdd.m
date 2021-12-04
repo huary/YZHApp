@@ -1,6 +1,6 @@
 //
 //  UIButton+YZHAdd.m
-//  YZHUINavigationController
+//  YZHNavigationController
 //
 //  Created by yuan on 2018/12/8.
 //  Copyright © 2018年 dlodlo. All rights reserved.
@@ -12,18 +12,18 @@
 #import "NSObject+YZHAdd.h"
 
 /****************************************************
- *YZHUIButtonEventTarget
+ *YZHButtonEventTarget
  ****************************************************/
-@interface YZHUIButtonEventTarget : NSObject
+@interface YZHButtonEventTarget : NSObject
 
 /* <#注释#> */
-@property (nonatomic, copy) YZHUIButtonActionBlock actionBlock;
+@property (nonatomic, copy) YZHButtonActionBlock actionBlock;
 
 @end
 
-@implementation YZHUIButtonEventTarget
+@implementation YZHButtonEventTarget
 
--(instancetype)initWithActionBlock:(YZHUIButtonActionBlock)actionBlock
+-(instancetype)initWithActionBlock:(YZHButtonActionBlock)actionBlock
 {
     self = [super init];
     if (self) {
@@ -50,24 +50,24 @@
 @implementation UIButton (YZHAdd)
 
 
--(void)hz_addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock
+-(void)hz_addControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHButtonActionBlock)actionBlock
 {
-    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
+    NSMutableArray<YZHButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
     if (targetList == nil) {
         targetList = [NSMutableArray array];
         [self hz_addStrongReferenceObject:targetList forKey:@(controlEvents)];
     }
-    YZHUIButtonEventTarget *target = [[YZHUIButtonEventTarget alloc] initWithActionBlock:actionBlock];
+    YZHButtonEventTarget *target = [[YZHButtonEventTarget alloc] initWithActionBlock:actionBlock];
     [self addTarget:target action:@selector(buttonAction:) forControlEvents:controlEvents];
 
     [targetList addObject:target];
 }
 
--(void)hz_removeControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHUIButtonActionBlock)actionBlock
+-(void)hz_removeControlEvent:(UIControlEvents)controlEvents actionBlock:(YZHButtonActionBlock)actionBlock
 {
-    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
+    NSMutableArray<YZHButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
     NSMutableArray *removeList = [NSMutableArray array];
-    [targetList enumerateObjectsUsingBlock:^(YZHUIButtonEventTarget * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [targetList enumerateObjectsUsingBlock:^(YZHButtonEventTarget * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [self removeTarget:obj action:@selector(buttonAction:) forControlEvents:controlEvents];
         [removeList addObject:obj];
     }];
@@ -75,9 +75,9 @@
 }
 
 
--(YZHUIButtonActionBlock)hz_actionBlockForControlEvent:(UIControlEvents)controlEvents
+-(YZHButtonActionBlock)hz_actionBlockForControlEvent:(UIControlEvents)controlEvents
 {
-    NSMutableArray<YZHUIButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
+    NSMutableArray<YZHButtonEventTarget*> *targetList = [self hz_strongReferenceObjectForKey:@(controlEvents)];
     if (IS_AVAILABLE_NSSET_OBJ(targetList)) {
         return [targetList firstObject].actionBlock;
     }

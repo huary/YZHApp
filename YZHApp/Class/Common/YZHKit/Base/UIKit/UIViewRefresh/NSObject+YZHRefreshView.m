@@ -13,12 +13,12 @@
 @implementation NSObject (YZHRefreshView)
 
 
--(void)setHz_bindRefreshViewTable:(NSMapTable<id,UIResponder<YZHUIRefreshViewProtocol> *> *)hz_bindRefreshViewTable
+-(void)setHz_bindRefreshViewTable:(NSMapTable<id,UIResponder<YZHRefreshViewProtocol> *> *)hz_bindRefreshViewTable
 {
     objc_setAssociatedObject(self, @selector(hz_bindRefreshViewTable), hz_bindRefreshViewTable, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
--(NSMapTable<id,UIResponder<YZHUIRefreshViewProtocol>*> *)hz_bindRefreshViewTable
+-(NSMapTable<id,UIResponder<YZHRefreshViewProtocol>*> *)hz_bindRefreshViewTable
 {
     NSMapTable *table =  objc_getAssociatedObject(self, _cmd);
     if (table == nil) {
@@ -43,9 +43,9 @@
     return table;
 }
 
--(YZHUIRefreshConditionBlock)_defaultConditionBlock
+-(YZHRefreshConditionBlock)_defaultConditionBlock
 {
-    YZHUIRefreshConditionBlock condition = ^BOOL(UIResponder<YZHUIRefreshViewProtocol> *refreshView, id model) {
+    YZHRefreshConditionBlock condition = ^BOOL(UIResponder<YZHRefreshViewProtocol> *refreshView, id model) {
         if (refreshView.hz_refreshModel == nil || refreshView.hz_refreshModel == model) {
             return YES;
         }
@@ -55,7 +55,7 @@
 }
 
 
--(void)hz_addRefreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView forKey:(id)key
+-(void)hz_addRefreshView:(UIResponder<YZHRefreshViewProtocol>*)refreshView forKey:(id)key
 {
     [self.hz_bindRefreshViewTable setObject:refreshView forKey:key];
 }
@@ -67,10 +67,10 @@
 }
 
 //根据刷新条件刷新所有绑定的view
--(BOOL)hz_refresh:(YZHUIRefreshConditionBlock)condition
+-(BOOL)hz_refresh:(YZHRefreshConditionBlock)condition
 {
     NSEnumerator *valueEnumerator = self.hz_bindRefreshViewTable.objectEnumerator;
-    UIResponder<YZHUIRefreshViewProtocol> *refreshView = nil;
+    UIResponder<YZHRefreshViewProtocol> *refreshView = nil;
     while (refreshView = [valueEnumerator nextObject]) {
         [self hz_refreshView:refreshView condition:condition];
     }
@@ -81,25 +81,25 @@
 //根据绑定的Key对view进行刷新
 -(BOOL)hz_refreshViewWithKey:(id)key
 {
-    UIResponder<YZHUIRefreshViewProtocol> *refreshView = [self.hz_bindRefreshViewTable objectForKey:key];
+    UIResponder<YZHRefreshViewProtocol> *refreshView = [self.hz_bindRefreshViewTable objectForKey:key];
     return [self hz_refreshView:refreshView];
 }
 
 //通过指定View镜像刷新
--(BOOL)hz_refreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView
+-(BOOL)hz_refreshView:(UIResponder<YZHRefreshViewProtocol>*)refreshView
 {
     return [self hz_refreshView:refreshView condition:nil];
 }
 
 //根据条件，对绑定的Key对view进行刷新
--(BOOL)hz_refreshViewWithKey:(id)key condition:(YZHUIRefreshConditionBlock)condition
+-(BOOL)hz_refreshViewWithKey:(id)key condition:(YZHRefreshConditionBlock)condition
 {
-    UIResponder<YZHUIRefreshViewProtocol> *refreshView = [self.hz_bindRefreshViewTable objectForKey:key];
+    UIResponder<YZHRefreshViewProtocol> *refreshView = [self.hz_bindRefreshViewTable objectForKey:key];
     return [self hz_refreshView:refreshView condition:condition];
 }
 
 //根据条件，对view进行刷新
--(BOOL)hz_refreshView:(UIResponder<YZHUIRefreshViewProtocol>*)refreshView condition:(YZHUIRefreshConditionBlock)condition
+-(BOOL)hz_refreshView:(UIResponder<YZHRefreshViewProtocol>*)refreshView condition:(YZHRefreshConditionBlock)condition
 {
     if (refreshView == nil) {
         return NO;
@@ -122,16 +122,16 @@
     return r;
 }
 
--(UIResponder<YZHUIRefreshViewProtocol>*)hz_refreshViewForKey:(id)key
+-(UIResponder<YZHRefreshViewProtocol>*)hz_refreshViewForKey:(id)key
 {
     return [self.hz_bindRefreshViewTable objectForKey:key];
 }
 
--(NSArray<UIResponder<YZHUIRefreshViewProtocol>*>*)hz_allRefreshView
+-(NSArray<UIResponder<YZHRefreshViewProtocol>*>*)hz_allRefreshView
 {
-    NSMutableArray<UIResponder<YZHUIRefreshViewProtocol> *> *refreshViewList = [NSMutableArray array];
+    NSMutableArray<UIResponder<YZHRefreshViewProtocol> *> *refreshViewList = [NSMutableArray array];
     NSEnumerator *valueEnumerator = self.hz_bindRefreshViewTable.objectEnumerator;
-    UIResponder<YZHUIRefreshViewProtocol> *refreshView = nil;
+    UIResponder<YZHRefreshViewProtocol> *refreshView = nil;
     while (refreshView = [valueEnumerator nextObject]) {
         [refreshViewList addObject:refreshView];
     }
@@ -143,7 +143,7 @@
     NSEnumerator *keyEnumerator = self.hz_bindRefreshViewTable.keyEnumerator;
     id key = nil;
     while (key = [keyEnumerator nextObject]) {
-        UIResponder<YZHUIRefreshViewProtocol> *refreshViewTmp = [self.hz_bindRefreshViewTable objectForKey:key];
+        UIResponder<YZHRefreshViewProtocol> *refreshViewTmp = [self.hz_bindRefreshViewTable objectForKey:key];
         if (refreshViewTmp == refreshView) {
             break;
         }

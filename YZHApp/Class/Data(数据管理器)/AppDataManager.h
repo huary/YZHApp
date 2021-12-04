@@ -12,7 +12,7 @@
 @interface AppDataManager : NSObject
 
 
-+(instancetype)shareDataManager;
++(instancetype)sharedDataManager;
 
 @property (nonatomic, strong, readonly) AppBSUser *lastLoginUser;
 

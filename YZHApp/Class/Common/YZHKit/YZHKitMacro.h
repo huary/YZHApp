@@ -22,11 +22,11 @@
 #endif
 
 //导航栏的常量宏定义，这个和系统一致
-#define NAVIGATION_ITEM_VIEW_SUBVIEWS_LEFT_SPACE                                (20)
-#define NAVIGATION_ITEM_VIEW_SUBVIEWS_RIGHT_SPACE                               (20)
-#define CUSTOM_NAVIGATION_ITEM_VIEW_SUBVIEWS_ITEM_SPACE                         (8)
-#define SYSTEM_NAVIGATION_ITEM_VIEW_SUBVIEWS_ITEM_SPACE                         (8)
-#define NAVIGATION_ITEM_VIEW_LEFT_BACK_ITEM_IMAGE_WITH_TITLE_SPACE              (5)
+//#define NAVIGATION_ITEM_VIEW_SUBVIEWS_LEFT_SPACE                                (20)
+//#define NAVIGATION_ITEM_VIEW_SUBVIEWS_LEFT_RIGHT_SPACE                          (12)
+//#define CUSTOM_NAVIGATION_ITEM_VIEW_SUBVIEWS_ITEM_SPACE                         (8)
+//#define SYSTEM_NAVIGATION_ITEM_VIEW_SUBVIEWS_ITEM_SPACE                         (8)
+//#define NAVIGATION_ITEM_VIEW_LEFT_BACK_ITEM_IMAGE_WITH_TITLE_SPACE              (5)
 
 #define NAVIGATION_ITEM_MIN_WIDTH                                               (40)
 #define NAVIGATION_ITEM_IMAGE_HEIGHT_WITH_NAVIGATION_BAR_HEIGHT_RATIO           (0.4)
@@ -104,7 +104,7 @@
 
 #define STATUS_BAR_ORIENTATION                 [UIApplication sharedApplication].statusBarOrientation
 #define STATUS_BAR_FRAME                       [[UIApplication sharedApplication] statusBarFrame]
-#define TAB_BAR_FRAME                          [YZHTabBarController shareTabBarController].tabBar.frame
+#define TAB_BAR_FRAME                          [YZHTabBarController sharedTabBarController].tabBar.frame
 
 #define STATUS_BAR_HEIGHT                      [[UIApplication sharedApplication] statusBarFrame].size.height
 
@@ -131,10 +131,8 @@
 #define RGBA(R,G,B,A)                           RGBA_F((R)/255.f,(G)/255.f,(B)/255.f,A)
 
 #define RGB_WITH_INT_WITH_NO_ALPHA(C_INT)       RGB(TYPE_AND(TYPE_RS(C_INT,16),255),TYPE_AND(TYPE_RS(C_INT,8),255),TYPE_AND(C_INT,255))
-#define RGB_WITH_STR_WITH_NO_ALPHA(C_STR)       RGB_WITH_INT_WITH_NO_ALPHA([(C_STR) integerValue])
 
 #define RGB_WITH_INT_WITH_ALPHA(C_INT)          RGBA(TYPE_AND(TYPE_RS(C_INT,24),255),TYPE_AND(TYPE_RS(C_INT,16),255),TYPE_AND(TYPE_RS(C_INT,8),255),TYPE_AND(C_INT,255)/255.f)
-#define RGB_WITH_STR_WITH_ALPHA(C_STR)          RGB_WITH_INT_WITH_ALPHA([(C_STR) integerValue])
 
 #define RAND_COLOR                              RGB(TYPE_AND(arc4random(),255),TYPE_AND(arc4random(),255),TYPE_AND(arc4random(),255))
 
@@ -190,15 +188,12 @@
 
 #define UICOLOR_L_D(LC,DC)   (AVAILABLE_IOS_V(13.0) ? [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {return traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? DC : LC;}] : LC)
 
-#define NSOBJECT_FORMAT                         @"%@"
-#define INTEGER_FORMAT                          @"%ld"
-#define LLONG_INTEGER_FORMAT                    @"%lld"
 #define INTEGER_WITH_SPACE_FORMAT               @"%ld "
 #define INTEGER_WITH_SPACE_ANOTHER_FORMAT       @"%ld %@"
 #define FLOAT_2D_NSOBJECT_FORMAT                @"%.2f %@"
 //NSString的一些常用用定义
 #define NEW_STRING(STRING)                      ((STRING != nil) ? [[NSString alloc] initWithString:STRING] : (nil))
-#define NEW_NORMAL_FORMAT_STRING(OBJ)           ((OBJ) ? [[NSString alloc] initWithFormat:NSOBJECT_FORMAT,OBJ] : (nil))
+#define NEW_NORMAL_FORMAT_STRING(OBJ)           ((OBJ) ? [[NSString alloc] initWithFormat:@"%@",OBJ] : (nil))
 #define NEW_DATA(DATA)                          ((DATA) ? [[NSData alloc] initWithData:DATA] : (nil))
 #define STRING_FORMAT(FORMAT,...)               [NSString stringWithFormat:FORMAT,##__VA_ARGS__]
 #define NEW_STRING_WITH_FORMAT(FORMAT,...)      [[NSString alloc] initWithFormat:FORMAT,##__VA_ARGS__]
@@ -243,11 +238,10 @@
 #define NSURL_FROM_STRING(STRING_URL)           [NSURL URLWithString:STRING_URL]
 #define NSURL_FROM_FILE_PATH(FILE_PATH)         [NSURL fileURLWithPath:FILE_PATH]
 
-//字体
-#define FONT(F_S)                               [UIFont systemFontOfSize:(F_S)]
-#define BOLD_FONT(F_S)                          [UIFont boldSystemFontOfSize:(F_S)]
+#define SYS_FONT(F_S)                        [UIFont systemFontOfSize:(F_S)]
+#define BOLD_SYS_FONT(F_S)                          [UIFont boldSystemFontOfSize:(F_S)]
 
-//弱引用
+//弱/强引用
 #define WEAK_NSOBJ(NSOBJ,WEAK_NAME)             __weak __typeof(&*NSOBJ) WEAK_NAME = NSOBJ
 #define WEAK_SELF(WEAK_NAME)                    __weak __typeof(&*self) WEAK_NAME = self
 #define STRONG_SELF(STRONG_NAME)                __strong __typeof(&*weakSelf) STRONG_NAME = weakSelf
@@ -415,11 +409,9 @@
 #define PROJ_MAIN_COLOR
 
 
-//
-//#define _CONCAT_(A,B)                           CONCAT(A,B)
 #define _ATTR_CLEANUP(CF)                       __attribute__((cleanup(CF), unused))
 #define _TYPE_ATTR_CLEANUP_DEC(T, IV, F, V)     T IV _ATTR_CLEANUP(F) = V
-#define ON_RETURN                               _TYPE_ATTR_CLEANUP_DEC(YZH_cleanupBlock_t, CONCAT(imf_returnBlock_,__LINE__), YZH_executeCleanupBlock, ^)
+#define ON_RETURN                               _TYPE_ATTR_CLEANUP_DEC(YZH_cleanupBlock_t, CONCAT(yzh_returnBlock_,__LINE__), YZH_executeCleanupBlock, ^)
 
 #define defer                                   ON_RETURN
 #define onExit(...)                             ON_RETURN{__VA_ARGS__};

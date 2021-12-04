@@ -15,8 +15,47 @@
 #import "TestMessageForwardViewController.h"
 #import "TestDeallocProxyViewController.h"
 #import "TestMemoryGraphViewController.h"
-
 #import <SDWebImage/SDWebImage.h>
+
+#import <dlfcn.h>
+
+#import "YZHActivityManager.h"
+
+
+typedef void(*RegisterEntryFunc)(void);
+
+typedef struct {
+    const char *entryName;
+    const char *entryKey;
+    RegisterEntryFunc func;
+    void *entryCtx;
+}Register_Entry_s;
+
+#define REGISTER_SEGMENT    "__DATA"
+#define REGISTER_SECTION    "_Register_entry"
+#define REGISTER_METHOD     CONCAT(_REGISTER_ENTRY_FUNC_,__LINE__)
+
+
+#define RegisterFunc(NAME,KEY) \
+static void REGISTER_METHOD(void); \
+__attribute((used, section(REGISTER_SEGMENT "," REGISTER_SECTION))) static Register_Entry_s entry = { \
+.entryName = NAME, \
+.entryKey = KEY, \
+.func = REGISTER_METHOD, \
+}; \
+static void REGISTER_METHOD(void)
+
+
+#ifndef  __LP64__
+typedef struct mach_header MACH_HEADER;
+#else
+typedef struct mach_header_64 MACH_HEADER;
+#endif
+
+
+RegisterFunc("A","B") {
+    NSLog(@"hello world");
+}
 
 @interface Test : NSObject <NSCoding>
 
@@ -230,10 +269,44 @@
 
 @end
 
+#include <mach-o/dyld.h>
+#include <mach-o/getsect.h>
+
+static void _image_add_func(const struct mach_header *mhp, intptr_t slide) {
+    
+    unsigned long size = 0;
+    
+    uintptr_t *regdata = (uintptr_t*)getsectiondata(mhp, REGISTER_SEGMENT, REGISTER_SECTION, &size);
+    if (regdata && size > 0) {
+        unsigned long cnt = size / sizeof(Register_Entry_s);
+        Register_Entry_s *entryList = (Register_Entry_s*)regdata;
+        for (int idx = 0; idx < cnt; ++idx) {
+            Register_Entry_s *entry = &entryList[idx];
+            NSLog(@"entry.name=%s,entry.key=%s",entry->entryName, entry->entryKey);
+            entry->func();
+        }
+    }
+}
+
+@interface RegsterEnterManager : NSObject
+
+@end
+
+@implementation RegsterEnterManager
+
++ (void)loadSegmentInfo {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dyld_register_func_for_add_image(_image_add_func);
+    });
+}
+
+@end
+
 @interface UITextBGView : UIView
 
 /** <#注释#> */
-@property (nonatomic, strong) YZHUITextView *textView;
+@property (nonatomic, strong) YZHTextView *textView;
 
 @end
 
@@ -262,7 +335,7 @@
 @property (nonatomic, strong) YZHTimer *timer;
 
 /** <#注释#> */
-@property (nonatomic, strong) YZHUITextView *textView;
+@property (nonatomic, strong) YZHTextView *textView;
 
 /** <#注释#> */
 @property (nonatomic, strong) UIImage *image;
@@ -276,6 +349,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [RegsterEnterManager loadSegmentInfo];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
     // Do any additional setup after loading the view, typically from a nib.
     
 //    [self _test];
@@ -389,11 +466,11 @@
 //    CGFloat X = SAFE_X;
     
 //    int64_t start = MSEC_FROM_DATE_SINCE1970_NOW;
-    YZHUITextView *textView = [[YZHUITextView alloc] initWithFrame:CGRectMake(x, y, w, h)];
+    YZHTextView *textView = [[YZHTextView alloc] initWithFrame:CGRectMake(x, y, w, h)];
 //    textView.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
 //    textView.font = FONT(20);
 //    textView.text = @"123";
-    textView.font = FONT(17);
+    textView.font = SYS_FONT(17);
     textView.placeholder = @"123456789";
     textView.placeholderColor = BROWN_COLOR;
 //    int64_t end = MSEC_FROM_DATE_SINCE1970_NOW;
@@ -425,7 +502,7 @@
 }
 
 - (void)pri_testButton {
-    YZHUIButton *btn = [YZHUIButton buttonWithType:UIButtonTypeCustom];
+    YZHButton *btn = [YZHButton buttonWithType:UIButtonTypeCustom];
     btn.frame = CGRectMake(0, 100, 200, 100);
     [btn setBackgroundColor:[UIColor purpleColor] forState:UIControlStateNormal];
     [btn setBackgroundColor:[UIColor redColor] forState:UIControlStateHighlighted];
@@ -538,7 +615,7 @@
 
 - (void)pri_testHZRefresh {
     
-    YZHUIButton *btn = [YZHUIButton buttonWithType:UIButtonTypeCustom];
+    YZHButton *btn = [YZHButton buttonWithType:UIButtonTypeCustom];
     btn.frame = CGRectMake(100, 100, 200, 80);
     [btn setBackgroundColor:[UIColor purpleColor] forState:UIControlStateNormal];
     [self.view addSubview:btn];
@@ -612,6 +689,8 @@
 //    [self pri_testTransaction];
     
 //    [self pri_testMessageForward];
+    [self pri_testDeallocProxy];
+    return;
     
 //    [self pri_testImage];
 //    CGFloat t = (arc4random() & 7) * 1.0 / 8;
@@ -621,7 +700,7 @@
 //    [self.view endEditing:YES];
 //    [self.timer invalidate];
     
-//    YZHUIAlertView *alertView = [[YZHUIAlertView alloc] initWithTitle:@"提示" alertMessage:@"提示信息" alertViewStyle:YZHUIAlertViewStyleAlertForce];
+//    YZHAlertView *alertView = [[YZHAlertView alloc] initWithTitle:@"提示" alertMessage:@"提示信息" alertViewStyle:YZHAlertViewStyleAlertForce];
 //
 //    [alertView alertShowInView:nil animated:NO];
 //
@@ -635,9 +714,22 @@
 //    [self pri_testGCDTimer];
     
     
-    [self pri_getIvar];
+//    [self pri_getIvar];
     
-    [self pri_testMMGraph];
+//    [self pri_testMMGraph];
+    
+//    [self pri_testAppClass];
+    
+//    [self pri_testRunLoopFreeEvent];
+    
+    static BOOL start = NO;
+    if (!start) {
+        start=YES;
+        [self pri_threadTest];
+    }
+    else {
+        NSLog(@"touch ===============================");
+    }
 }
 
 - (void)pri_getIvar {
@@ -689,6 +781,96 @@
     NSLog(@"finish");
 }
 
+- (void)pri_testAppClass {
+    Class cls = [NSOperation class];
+    NSTimeInterval t1 = [[NSDate date] timeIntervalSince1970] * 1000;
+    
+    NSBundle *bdl = [NSBundle bundleForClass:cls];
+    if (bdl == [NSBundle mainBundle]) {
+        NSLog(@"is custom class");
+    }
+    else {
+        NSLog(@"system class");
+    }
+    NSTimeInterval t2 = [[NSDate date] timeIntervalSince1970] * 1000;
+    NSLog(@"diff=%@ms",@(t2-t1));
+    
+    Dl_info info;
+    if (dladdr((__bridge void *)cls, &info) != 0) {
+        if (info.dli_fname) {
+            NSString *clsBundlePath = [NSString stringWithUTF8String:info.dli_fname];
+            // 在应用bundle中，且不为dylib（Swift库）
+            if (clsBundlePath && [clsBundlePath hasPrefix:NSBundle.mainBundle.bundlePath] && ![clsBundlePath hasSuffix:@".dylib"]) { //App集成的Frameworks都在App目录的Frameworks文件夹下面
+                NSLog(@"custom class");
+            }
+        }
+    }
+
+    NSTimeInterval t3 = [[NSDate date] timeIntervalSince1970] * 1000;
+    NSLog(@"diff.dladdr=%@ms",@(t3-t2));
+}
+
+- (void)pri_testRunLoopFreeEvent {
+    
+    NSLog(@"do test");
+    CFRunLoopRef runLoop = CFRunLoopGetCurrent();
+    CFStringRef runLoopMode = kCFRunLoopDefaultMode;
+    __block CFRunLoopObserverRef observer;
+    __block NSInteger cnt = 0;
+    observer = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, kCFRunLoopBeforeWaiting, true, 0xFFFFFF, ^(CFRunLoopObserverRef ob, CFRunLoopActivity activity) {
+        
+        NSLog(@"before waiting,activity=%@",@(activity));
+        
+        if (cnt == 0) {
+//            dispatch_after_in_main_queue(10, ^{
+//                NSLog(@"after");
+//            });
+//            dispatch_async_in_main_queue(^{
+//                NSLog(@"async");
+//            });
+        }
+        
+//        CFRunLoopRemoveObserver(runLoop, ob, runLoopMode);
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            CFRunLoopAddObserver(runLoop, ob, runLoopMode);
+//        });
+//        CFRelease(observer);
+        
+        ++cnt;
+    });
+    CFRunLoopAddObserver(runLoop, observer, runLoopMode);
+    
+    CFRunLoopObserverRef afterWaitingObserver = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, kCFRunLoopAfterWaiting, true, 0xFFFFFF, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
+        NSLog(@"after waiting,activity=%@",@(activity));
+        
+    });
+    CFRunLoopAddObserver(runLoop, afterWaitingObserver, runLoopMode);
+}
+
+- (void)pri_threadTest {
+//    NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(pri_newThreadEntry) object:nil];
+//    thread.name = @"test";
+//    [thread start];
+    
+    [self pri_newThreadEntry];
+}
+
+- (void)pri_newThreadEntry {
+    
+    NSInteger cnt = 10;
+    for (NSInteger i = 0; i < cnt; ++i) {
+        NSLog(@"ADD.i=%@",@(i));
+        [YZHActivityManager addActivity:kCFRunLoopBeforeWaiting taskBlock:^(CFRunLoopActivity activity) {
+            NSLog(@"i=%@",@(i));
+            [NSThread sleepForTimeInterval:0.5];
+        }];
+    }
+    NSLog(@"finish");
+}
+
+- (void)pri_performTest:(id)object {
+    NSLog(@"object=%@",object);
+}
 
 
 - (void)didReceiveMemoryWarning {

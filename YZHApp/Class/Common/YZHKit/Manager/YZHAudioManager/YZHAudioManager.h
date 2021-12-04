@@ -57,7 +57,7 @@ typedef void(^YZHAudioManagerEndPlayBlock)(YZHAudioManager* audioManager, NSURL 
 //@property (nonatomic, strong) YZHAudioPlayOption *playOption;
 
 
-+(instancetype)shareAudioManager;
++(instancetype)sharedAudioManager;
 
 /*
  * 进来录音，
