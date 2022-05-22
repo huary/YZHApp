@@ -1,13 +1,9 @@
 //
 //  UITabBarController+UITabBarView.m
 //  YZHNavigationController
-//
-//  Created by yuan on 2018/6/14.
-//  Copyright © 2018年 dlodlo. All rights reserved.
-//
 
-#import "UITabBarController+UITabBarView.h"
-#import "NSObject+YZHAdd.h"
+
+#import "UITabBarController+YZHTabBarView.h"
 
 @implementation UITabBarController (YZHTabBarView)
 

@@ -8,8 +8,9 @@
 
 #import "YZHNavigationItemView.h"
 #import "YZHNavigationItnTypes.h"
-#import "UIView+YZHAdd.h"
-#import "YZHKitType.h"
+#import "YZHNavigationConfig+Internal.h"
+#import "UIViewController+YZHNavigationItn.h"
+#import "UIViewController+YZHNavigationRootVCInitSetup.h"
 
 NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttributesTextName);
 
@@ -53,10 +54,11 @@ NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttrib
 {
     self = [super initWithFrame:frame];
     if (self) {
-        _leftEdgeSpace = navigationDefaultEdgeSpace_s + navigationLeftEdgeSpace_s;
-        _rightEdgeSpace = navigationDefaultEdgeSpace_s + navigationRightEdgeSpace_s;
-        _leftItemsSpace = navigationLeftItemsSpace_s;
-        _rightItemsSpace = navigationRightItemsSpace_s;
+        YZHNavigationConfig *config = [UIViewController hz_navigationConfig];
+        _leftEdgeSpace = config.navigationLeftEdgeSpace;
+        _rightEdgeSpace = config.navigationRightEdgeSpace;
+        _leftItemsSpace = config.navigationLeftItemsSpace;
+        _rightItemsSpace = config.navigationRightItemsSpace;
         [self setupChildView];
     }
     return self;
@@ -85,6 +87,7 @@ NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttrib
 -(void)_updateItemFrame
 {
     CGSize size = self.bounds.size;
+#if 0
     CGRect frame = CGRectMake(0, 0, size.width/2, size.height);
     if (!CGRectEqualToRect(self.leftItemView.frame, frame)) {
         self.leftItemView.frame = frame;
@@ -93,6 +96,7 @@ NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttrib
     if (!CGRectEqualToRect(self.rightItemView.frame, frame)) {
         self.rightItemView.frame = frame;
     }
+#endif
     if (!CGSizeEqualToSize(self.centerItemView.frame.size, size)) {
         self.centerItemView.frame = self.bounds;
     }
@@ -164,8 +168,13 @@ NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttrib
     }
     [titleLable sizeToFit];
     CGRect frame = titleLable.frame;
-    CGFloat o = STATUS_BAR_HEIGHT;    
-    CGFloat w = frame.size.width;
+    CGFloat o = self.hz_height - self.hz_viewController.hz_itn_itemViewLayoutHeight;
+    CGFloat maxWidth = self.hz_width;
+    YZHNavigationConfig *config = [UIViewController hz_navigationConfig];
+    if (config.navigationTitleWidthBlock) {
+        maxWidth = config.navigationTitleWidthBlock(config, self);
+    }
+    CGFloat w = MIN(frame.size.width, maxWidth);
 //    CGFloat h = self.centerItemView.bounds.size.height - STATUS_BAR_HEIGHT;
     CGFloat h = frame.size.height;
     CGFloat x = (self.centerItemView.bounds.size.width - w)/2;
@@ -231,12 +240,16 @@ NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttrib
 }
 
 -(void)setLeftEdgeSpace:(CGFloat)leftEdgeSpace {
-    _leftEdgeSpace = navigationDefaultEdgeSpace_s + MAX(leftEdgeSpace, navigationLeftEdgeSpace_s);
+//    YZHNavigationConfig *config = [UIViewController hz_navigationConfig];
+//    _leftEdgeSpace = config.navigationDefaultEdgeSpace + MAX(leftEdgeSpace, config.navigationLeftEdgeSpace);
+    _leftEdgeSpace = leftEdgeSpace;
     [self _transactionLayout:[NSString stringWithFormat:@"%p.leftEdgeSpace",self] left:YES];
 }
 
 -(void)setRightEdgeSpace:(CGFloat)rightEdgeSpace {
-    _rightEdgeSpace = navigationDefaultEdgeSpace_s + MAX(rightEdgeSpace, navigationRightEdgeSpace_s);
+//    YZHNavigationConfig *config = [UIViewController hz_navigationConfig];
+//    _rightEdgeSpace = config.navigationDefaultEdgeSpace + MAX(rightEdgeSpace, config.navigationRightEdgeSpace);
+    _rightEdgeSpace = rightEdgeSpace;
     [self _transactionLayout:[NSString stringWithFormat:@"%p.rightEdgeSpace",self] left:NO];
 }
 
@@ -309,7 +322,7 @@ NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttrib
     }];
 }
 
--(void)setLeftButtonItems:(NSArray *)leftButtonItems isReset:(BOOL)reset
+-(void)setLeftButtonItems:(NSArray<UIView *> *)leftButtonItems isReset:(BOOL)reset
 {
     if (reset) {
         [self.leftItemView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -320,26 +333,34 @@ NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttrib
         [self _addKVOForItemView:view left:YES];
     }
     
-    [self _layoutLeftItems];
+//    [self _layoutLeftItems];
+    [self _transactionLayout:[NSString stringWithFormat:@"%p.addLeftItems",self] left:YES];
 }
 
 -(void)_layoutLeftItems
 {
     NSInteger tag = 0;
-    CGFloat height = self.leftItemView.bounds.size.height;
     CGFloat offsetX = self.leftEdgeSpace;
+    CGFloat height = self.leftItemView.bounds.size.height;
+    CGFloat layoutH = self.hz_viewController.hz_itn_itemViewLayoutHeight;
+    YZHNavigationConfig *config = [UIViewController hz_navigationConfig];
+    CGFloat offsetY = self.hz_height - layoutH;
     for (UIView *item in self.leftItemView.subviews) {
         [item hz_switchKVOForKeyPath:@"frame" OFF:YES];
         CGRect frame = item.frame;
-        frame.origin = CGPointMake(offsetX, (height + STATUS_BAR_HEIGHT - frame.size.height)/2);
+        if (config.fixItemHToLayoutH) {
+            frame.size = CGSizeMake(frame.size.width, layoutH);
+        }
+        frame.origin = CGPointMake(offsetX, (height + offsetY - frame.size.height)/2);
         item.tag = ++tag;
         item.frame = frame;
         offsetX = CGRectGetMaxX(frame) + self.leftItemsSpace;
         [item hz_switchKVOForKeyPath:@"frame" OFF:NO];
     }
+    self.leftItemView.hz_width = self.leftItemView.subviews.lastObject.hz_right;
 }
 
--(void)setRightButtonItems:(NSArray *)rightButtonItems isReset:(BOOL)reset
+-(void)setRightButtonItems:(NSArray<UIView *> *)rightButtonItems isReset:(BOOL)reset
 {
     if (reset) {
         [self.rightItemView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -349,18 +370,34 @@ NSAttributedStringKey const YZHTitleAttributesTextName = TYPE_STR(YZHTitleAttrib
         [self.rightItemView addSubview:view];
         [self _addKVOForItemView:view left:NO];
     }
-    [self _layoutRightItems];
+    
+//    [self _layoutRightItems];
+    [self _transactionLayout:[NSString stringWithFormat:@"%p.addRightItems",self] left:NO];
 }
 
 -(void)_layoutRightItems
 {
     NSInteger tag = 0;
-    CGFloat height = self.rightItemView.bounds.size.height;
-    CGFloat offsetX = self.rightItemView.bounds.size.width -  self.rightEdgeSpace;
+    CGRect frame = self.rightItemView.frame;
+    CGFloat height = frame.size.height;
+    CGFloat width = self.rightEdgeSpace;
+    for (UIView *item in self.rightItemView.subviews) {
+        width += item.hz_width;
+    }
+    width += (self.rightItemView.subviews.count - 1) * self.rightItemsSpace;
+    self.rightItemView.frame = CGRectMake(self.bounds.size.width - width, frame.origin.y, width, height);
+    
+    CGFloat offsetX = width -  self.rightEdgeSpace;
+    YZHNavigationConfig *config = [UIViewController hz_navigationConfig];
+    CGFloat layoutH = self.hz_viewController.hz_itn_itemViewLayoutHeight;
+    CGFloat offsetY = self.hz_height - layoutH;
     for (UIView *item in self.rightItemView.subviews) {
         [item hz_switchKVOForKeyPath:@"frame" OFF:YES];
         CGRect frame = item.frame;
-        frame.origin = CGPointMake(offsetX - frame.size.width, (height + STATUS_BAR_HEIGHT - frame.size.height)/2);
+        if (config.fixItemHToLayoutH) {
+            frame.size = CGSizeMake(frame.size.width, layoutH);
+        }
+        frame.origin = CGPointMake(offsetX - frame.size.width,  (height + offsetY - frame.size.height)/2);
         item.tag = ++tag;
         item.frame = frame;
         offsetX = CGRectGetMinX(frame) - self.rightItemsSpace;

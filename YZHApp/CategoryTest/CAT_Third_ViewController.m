@@ -9,7 +9,42 @@
 #import "CAT_Third_ViewController.h"
 #import "UIViewController+YZHNavigation.h"
 
+@interface UIShapeView : UIView
+
+@property (nonatomic, strong) UIBezierPath *path;
+
+@end
+
+@implementation UIShapeView
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [super setBackgroundColor:CLEAR_COLOR];
+    }
+    return self;
+}
+
++ (Class)layerClass {
+    return [CAShapeLayer class];
+}
+
+- (void)setPath:(UIBezierPath *)path {
+    _path = path;
+    ((CAShapeLayer*)self.layer).path = path.CGPath;
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+//    [super setBackgroundColor:backgroundColor];
+    ((CAShapeLayer*)self.layer).fillColor = backgroundColor.CGColor;
+}
+
+@end
+
 @interface CAT_Third_ViewController ()
+
+@property (nonatomic, strong) UIShapeView *shapeView;
 
 @property (nonatomic, assign) NSInteger level;
 
@@ -25,6 +60,8 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     [self pri_setupNavgationBar];
+    
+    [self pri_setupSubviews];
 }
 
 - (void)pri_setupNavgationBar {
@@ -51,18 +88,18 @@
         [self hz_addNavigationLeftItemWithImage:nil title:@"L" isReset:YES actionBlock:nil];
         [self hz_addNavigationRightItemsWithTitles:@[@"R"] isReset:YES actionBlock:nil];
 
-        [self hz_addNavigationLeftItemsWithTitles:@[@"L-1",@"L-2",] isReset:YES actionBlock:^(UIViewController *viewController, UIButton *button) {
-            NSLog(@"left.btn=%ld",button.tag);
+        [self hz_addNavigationLeftItemsWithTitles:@[@"L-1",@"L-2",] isReset:YES actionBlock:^(UIViewController *viewController, UIView *itemView) {
+            NSLog(@"left.btn=%ld",itemView.tag);
         }];
-        [self hz_addNavigationRightItemsWithTitles:@[@"R-1",@"R-2"] isReset:NO actionBlock:^(UIViewController *viewController, UIButton *button) {
-            NSLog(@"right.btn=%ld",button.tag);
+        [self hz_addNavigationRightItemsWithTitles:@[@"R-1",@"R-2"] isReset:NO actionBlock:^(UIViewController *viewController, UIView *itemView) {
+            NSLog(@"right.btn=%ld",itemView.tag);
         }];
         return;
     }
     
     self.hz_navigationBarViewBackgroundColor = [UIColor purpleColor];
 
-    [self hz_addNavigationFirstLeftBackItemWithTitle:@"返回" actionBlock:^(UIViewController *viewController, UIButton *button) {
+    [self hz_addNavigationFirstLeftBackItemWithTitle:@"返回" actionBlock:^(UIViewController *viewController, UIView *itemView) {
         [viewController.navigationController popViewControllerAnimated:YES];
     }];
     
@@ -70,10 +107,18 @@
     self.hz_navigationTitle = [NSString stringWithFormat:@"%ld-level-%ld",nav.hz_navigationBarAndItemStyle,self.level];
 }
 
+- (UIShapeView *)shapeView {
+    if (!_shapeView) {
+        _shapeView = [[UIShapeView alloc] initWithFrame:CGRectMake(25, 100, self.view.hz_width - 50, 500)];
+    }
+    return _shapeView;
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     if (self.level == 0) {
         [self pri_enter];
     }
+//    [self pri_testShapeView];
 }
 
 - (void)pri_enter {
@@ -81,6 +126,24 @@
     vc.level = self.level + 1;
     vc.hz_navigationEnable = YES;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)pri_setupSubviews {
+    [self.view addSubview:self.shapeView];
+    self.shapeView.backgroundColor = RED_COLOR;
+}
+
+- (void)pri_testShapeView {
+    
+    NSMutableDictionary *dict = @{@"1":@"1"}.mutableCopy;
+    [dict addEntriesFromDictionary:@{@"1":@"2"}];
+    NSLog(@"dict=%@",dict);
+    
+    CGFloat tl = arc4random() % 11;
+    CGFloat tr = arc4random() % 23;
+    CGFloat bl = arc4random() % 31;
+    CGFloat br = arc4random() % 41;
+    self.shapeView.path = [UIBezierPath hz_bezierPathWithRoundedRect:self.shapeView.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadiusList:@[@(tl),@(tr),@(bl),@(br)]];
 }
 
 @end

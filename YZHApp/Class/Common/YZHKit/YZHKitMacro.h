@@ -308,7 +308,7 @@
 #define MB_UNIT_STR(SIZE)                       (((SIZE) > (MB_VALUE)) ? GB_MB_UNIT_STR(SIZE) : STRING_FORMAT(FLOAT_2D_NSOBJECT_FORMAT,(SIZE)*1.0/(KB_VALUE),KB_NAME_STR))
 
 
-#define FILE_SIZE_DESCRIPTION(FILE_SIZE)        [NSString stringWithFormat:@"%@%@",FILE_SIZE_TEXT,MB_UNIT_STR(FILE_SIZE)]
+#define FILE_SIZE_DYZHRIPTION(FILE_SIZE)        [NSString stringWithFormat:@"%@%@",FILE_SIZE_TEXT,MB_UNIT_STR(FILE_SIZE)]
 
 //计数
 //以万为单位
@@ -320,7 +320,7 @@
 
 
 //00(分钟):00(秒)
-#define TIME_SECOND_UNIT_STR(SEC)               (((SEC) >= 6000) ? STRING_FORMAT(@"%d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN) : STRING_FORMAT(@"%02d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN))
+#define TIME_SECOND_UNIT_STR(SEC)               (((SEC) >= SEC_PER_MIN) ? STRING_FORMAT(@"%d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN) : STRING_FORMAT(@"%02d:%02d",(int)(SEC)/SEC_PER_MIN,(int)(SEC)%SEC_PER_MIN))
 
 //xx小时xx分xx秒 格式
 #define TIME_TEXT_FORMAT_HMS(SEC)               ((((int)SEC) >= SEC_PER_MIN) ? ((((int)SEC) >= SEC_PER_HOUR) ? STRING_FORMAT(@"%d%@%d%@%d%@",((int)SEC)/SEC_PER_HOUR,TIME_HOUR_TEXT, (((int)SEC)%SEC_PER_HOUR)/SEC_PER_MIN,TIME_MIN_TEXT, ((int)SEC)%SEC_PER_MIN,TIME_SEC_TEXT) : STRING_FORMAT(@"%d%@%d%@",((int)SEC)/SEC_PER_MIN,TIME_MIN_TEXT, (((int)SEC)%SEC_PER_MIN),TIME_SEC_TEXT)) : STRING_FORMAT(@"%d%@",(int)SEC,TIME_SEC_TEXT))

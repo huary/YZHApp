@@ -12,7 +12,7 @@
 #define HAVE_YZH_NAVIGATION_KIT 1
 #import "YZHNavigationController.h"
 #import "YZHNavigationTypes.h"
-#import "UITabBarController+UITabBarView.h"
+#import "UITabBarController+YZHTabBarView.h"
 #import "UIViewController+YZHNavigationRootVCInitSetup.h"
 #import "UINavigationController+YZHNavigation.h"
 #endif
@@ -22,6 +22,7 @@ UIKIT_EXTERN NSString *const YZHTabBarItemTitleNormalColorKey;
 UIKIT_EXTERN NSString *const YZHTabBarItemTitleSelectedColorKey;
 UIKIT_EXTERN NSString *const YZHTabBarItemSelectedBackgroundColorKey;
 UIKIT_EXTERN NSString *const YZHTabBarItemHighlightedBackgroundColorKey;
+UIKIT_EXTERN NSString *const YZHTabBarTopLineHeightKey;
 
 UIKIT_EXTERN NSString *const YZHTabBarItemActionUserInteractionKey;
 
@@ -58,7 +59,7 @@ UIKIT_EXTERN NSString *const YZHTabBarItemActionUserInteractionKey;
 
 @property (nonatomic, strong, readonly) YZHTabBarView *tabBarView;
 
-+(YZHTabBarController*)sharedTabBarController;
++(YZHTabBarController*)shareTabBarController;
 
 -(void)doSelectTo:(NSInteger)toIndex;
 
@@ -137,6 +138,34 @@ UIKIT_EXTERN NSString *const YZHTabBarItemActionUserInteractionKey;
                                            atIndex:(NSInteger)index
                                useSystemNavigation:(BOOL)useSystemNavigation
                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+
+//insert
+-(UINavigationController*)insertChildViewController:(UIViewController*)childVC
+                                            atIndex:(NSInteger)index
+                                              title:(NSString*)title
+                                              image:(UIImage*)image
+                                      selectedImage:(UIImage*)selectedImage
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+
+-(UINavigationController*)insertChildViewController:(UIViewController*)childVC
+                                            atIndex:(NSInteger)index
+                                              title:(NSString*)title
+                                          imageName:(NSString*)imageName
+                                  selectedImageName:(NSString*)selectedImageName
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+
+-(UINavigationController*)insertChildViewController:(UIViewController *)childVC
+                                            atIndex:(NSInteger)index
+                                     customItemView:(UIView*)customItemView
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+
+-(UINavigationController*)insertChildViewController:(UIViewController *)childVC
+                                            atIndex:(NSInteger)index
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
 #else
 
 -(UINavigationController*)resetChildViewController:(UIViewController*)childVC
@@ -160,8 +189,22 @@ UIKIT_EXTERN NSString *const YZHTabBarItemActionUserInteractionKey;
 
 #endif
 
+//仅仅是创建，不添加到viewcontrollers，也不添加到tabbar中
+-(UINavigationController *)createChildViewController:(UIViewController *)childVC
+                                               title:(NSString *)title
+                                               image:(UIImage *)image
+                                       selectedImage:(UIImage *)selectedImage
+                                 useSystemNavigation:(BOOL)useSystemNavigation
+                           navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+
+//仅仅是创建，不添加到viewcontrollers，也不添加到tabbar中
+-(UINavigationController*)createChildViewController:(UIViewController*)childVC
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle;
+
 -(void)resetupChildNavigationController:(UINavigationController*)navigationController atIndex:(NSInteger)index;
 
+-(void)removeChildNavigationController:(UINavigationController*)navigationController;
 
 -(void)removeChildViewControllerAtIndex:(NSInteger)index;
 

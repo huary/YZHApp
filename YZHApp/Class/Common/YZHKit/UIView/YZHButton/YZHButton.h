@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, NSButtonLayoutStyle)
     NSButtonLayoutStyleRL             = 1,
     NSButtonLayoutStyleUD             = 2,
     NSButtonLayoutStyleDU             = 3,
-    //自定义image和title的space，有6个bit位
+    //自定义image和title的space，有6个bit位,1111,1100
     NSButtonLayoutStyleSpaceMask      = 0XFC,
     //自定义image和title的space，以及上（左）下（右）等距
     NSButtonLayoutStyleEQSpace        = (1 << 2),

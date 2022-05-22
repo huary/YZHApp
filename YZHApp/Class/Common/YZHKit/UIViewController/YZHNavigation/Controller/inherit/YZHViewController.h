@@ -12,7 +12,7 @@
 
 @interface YZHViewController : UIViewController
 
-//导航栏上的title
+// 导航栏标题
 @property (nonatomic, strong) NSString *navigationTitle;
 
 //设置barViewStyle的style
@@ -119,6 +119,18 @@
 //通过YZHGraphicsContext来添加leftButtonItem,block
 -(UIButton *)addNavigationLeftItemWithGraphicsImageContext:(YZHGraphicsContext*)graphicsImageContext title:(NSString*)title isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock;
 
+//直接在Left添加UIView,UIView的subview可以是自动布局的,target selector
+-(void)addNavigationLeftItemView:(UIView *)itemView target:(id)target action:(SEL)selector isReset:(BOOL)reset;
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的,actionBlock
+-(void)addNavigationLeftItemView:(UIView *)itemView isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock;
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的,itemViews, target selector
+-(void)addNavigationLeftItemViews:(NSArray<UIView*>*)itemViews target:(id)target action:(SEL)selector isReset:(BOOL)reset;
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的,itemViews, actionBlock
+-(void)addNavigationLeftItemViews:(NSArray<UIView*>*)itemViews isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock;
+
 //right
 //添加（title）这样的按钮
 -(NSArray<UIButton*> *)addNavigationRightItemsWithTitles:(NSArray<NSString*> *)titles target:(id)target action:(SEL)selector isReset:(BOOL)reset;
@@ -144,10 +156,22 @@
 //添加（UIView）这样的按钮,block
 -(NSArray<UIButton*> *)addNavigationRightItemsWithCustomView:(NSArray<UIView*> *)rightItems isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock;
 
+//直接在right添加UIView,UIView的subview可以是自动布局的,target selector
+-(void)addNavigationRightItemView:(UIView *)itemView target:(id)target action:(SEL)selector isReset:(BOOL)reset;
+
+//直接在right添加UIView,UIView的subview可以是自动布局的,action Block
+-(void)addNavigationRightItemView:(UIView *)itemView isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock;
+
+//直接在right添加UIView,UIView的subview可以是自动布局的, itemViews target selector
+-(void)addNavigationRightItemViews:(NSArray<UIView*> *)itemViews target:(id)target action:(SEL)selector isReset:(BOOL)reset;
+
+//直接在right添加UIView,UIView的subview可以是自动布局的, itemViews actionBlock
+-(void)addNavigationRightItemViews:(NSArray<UIView*> *)itemViews isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock;
+
 //设置items的间距
 -(void)setupItemsSpace:(CGFloat)itemsSpace left:(BOOL)left;
 
-//系统计算公式为（max(20,12 + space)）
+//本SDK计算公式就是设置的
 -(void)setupItemEdgeSpace:(CGFloat)edgeSpace left:(BOOL)left;
 
 //在导航栏上添加自定义的view

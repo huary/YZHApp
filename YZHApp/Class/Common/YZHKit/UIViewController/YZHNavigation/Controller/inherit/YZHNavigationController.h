@@ -26,16 +26,12 @@
 //动画时间,默认为0
 @property (nonatomic, assign) NSTimeInterval transitionDuration;
 
-/*
- *hidesTabBarWhenPushed
- *在navigationController后所有的push操作都会hidesTabBar,
- *在之前已经push的VC的hidesBottomBarWhenPushed都会设置为NO,以后的都会设置为YES
- *默认为YES
- */
+//在push后是否隐藏tabBar，对第一个rootVC不生效，默认为YES
 @property (nonatomic, assign) BOOL hidesTabBarAfterPushed;
 
 //导航栏的事件代理
 @property (nonatomic,weak) id<YZHNavigationControllerDelegate> navDelegate;
+
 //导航栏和item的样式
 @property (nonatomic, assign) YZHNavigationBarAndItemStyle navigationBarAndItemStyle;
 

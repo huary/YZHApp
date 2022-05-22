@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, UICircleProgressViewType)
+typedef NS_ENUM(NSInteger, YZHCircleProgressViewType)
 {
-    UICircleProgressViewTypeDefaultOnce           = 0,
-    UICircleProgressViewTypeInfinitePartRadian    = 1,
-    UICircleProgressViewTypeInfiniteAllRadian     = 2,
+    YZHCircleProgressViewTypeDefaultOnce           = 0,
+    YZHCircleProgressViewTypeInfinitePartRadian    = 1,
+    YZHCircleProgressViewTypeInfiniteAllRadian     = 2,
 };
 
 @interface YZHCircleProgressView : UIView
@@ -35,7 +35,7 @@ typedef NS_ENUM(NSInteger, UICircleProgressViewType)
 @property (nonatomic, copy) UIColor *progressBorderColor;
 
 //默认为CircleProgressViewTypeDefaultOnce
-@property (nonatomic, assign) UICircleProgressViewType circleType;
+@property (nonatomic, assign) YZHCircleProgressViewType circleType;
 
 //在circleType为CircleProgressViewTypeDefaultOnce时，progress就是进度数
 //在circleType为CircleProgressViewTypeInfinitePartRadian时progress为无限循环时固定不变的progressLay的弧度

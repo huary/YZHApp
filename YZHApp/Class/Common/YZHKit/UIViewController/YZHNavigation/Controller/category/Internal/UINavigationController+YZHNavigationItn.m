@@ -150,6 +150,18 @@ ITN_GET_PROPERTY(YZHTimer *, hz_itn_updateTransitionTimer, nil, {
     }
 });
 
+ITN_SET_PROPERTY_C(BOOL, hz_itn_isSetViewControllersToRootVC, Hz_itn_isSetViewControllersToRootVC, {
+    if ([self isKindOfClass:[YZHNavigationController class]]) {
+        ((YZHNavigationController*)self).isSetViewControllersToRootVC = hz_itn_isSetViewControllersToRootVC;
+        return;
+    }
+});
+ITN_GET_PROPERTY_C(BOOL, hz_itn_isSetViewControllersToRootVC, boolValue, NO, {
+    if ([self isKindOfClass:[YZHNavigationController class]]) {
+        return ((YZHNavigationController*)self).isSetViewControllersToRootVC;
+    }
+});
+
 
 //在viewController初始化的时候调用，此函数仅仅是创建了一个NavigationItemView，在push的时候添加
 -(void)hz_itn_createNewNavigationItemViewForViewController:(UIViewController*)viewController

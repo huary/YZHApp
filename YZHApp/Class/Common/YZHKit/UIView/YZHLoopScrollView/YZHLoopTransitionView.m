@@ -70,6 +70,7 @@
 {
     [super layoutSubviews];
     self.loopScrollView.frame = self.bounds;
+    [self.loopScrollView reloadData];
 }
 
 - (YZHLoopScrollView *)loopScrollView
@@ -132,15 +133,23 @@
 
     CGSize contentSize = self.bounds.size;
     if (panGesture.state == UIGestureRecognizerStateBegan) {
+        
+        UIView *transitionView = nil;
+        if ([self.delegate respondsToSelector:@selector(transitionView:willPanStartAtPoint:)]) {
+            transitionView = [self.delegate transitionView:self willPanStartAtPoint:loc];
+        }
+        if (!transitionView) {
+            transitionView = self.loopScrollView;
+        }
 
         CGPoint anchorPoint =  CGPointMake(loc.x/contentSize.width, loc.y/contentSize.height);
         self.panInfo.transitionContainerView.layer.anchorPoint = anchorPoint;
         self.panInfo.transitionContainerView.frame = self.bounds;
-        [self.panInfo.transitionContainerView addSubview:self.loopScrollView];
+        [self.panInfo.transitionContainerView addSubview:transitionView];
         [self.superview addSubview:self.panInfo.transitionContainerView];
         
-        if ([self.delegate respondsToSelector:@selector(transitionView:didStartAtPoint:)]) {
-            [self.delegate transitionView:self didStartAtPoint:loc];
+        if ([self.delegate respondsToSelector:@selector(transitionView:didPanStartAtPoint:)]) {
+            [self.delegate transitionView:self didPanStartAtPoint:loc];
         }
     }
     else if (panGesture.state == UIGestureRecognizerStateChanged) {

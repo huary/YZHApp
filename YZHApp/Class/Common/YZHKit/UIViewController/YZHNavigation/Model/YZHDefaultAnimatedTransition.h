@@ -10,4 +10,5 @@
 
 @interface YZHDefaultAnimatedTransition : YZHBaseAnimatedTransition
 
++ (void)updateTabBarForNavigationController:(UINavigationController *)navigationController fromVC:(UIViewController *)fromVC whenPushPopNoAnimatedTransition:(BOOL)push;
 @end

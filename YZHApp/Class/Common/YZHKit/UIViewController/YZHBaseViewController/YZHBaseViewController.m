@@ -16,21 +16,13 @@
 
 @implementation YZHBaseViewController
 
--(instancetype)init
-{
-    self = [super init];
-    if (self) {
-    }
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.view.backgroundColor = WHITE_COLOR;
     
     [self _setupContentView];
-    
+
     self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
@@ -47,10 +39,13 @@
     CGRect frame = CGRectZero;
     frame.origin = CGPointMake(SAFE_X, SAFE_Y);
     frame.size = [[self class] contentViewSize];
+    if (self.tabBarController.tabBar && self.hidesBottomBarWhenPushed == NO) {
+        frame.size.height = frame.size.height + SAFE_BOTTOM - self.tabBarController.tabBar.hz_height;        
+    }
     self.contentView.frame = frame;
-//    _contentViewSize = self.contentView.bounds.size;
     
-    self.layoutTopY = STATUS_NAV_BAR_HEIGHT - SAFE_Y;
+//    self.layoutTopY = self.navigationBar.hz_height - SAFE_Y;
+    self.contentViewLayoutTopY = self.navigationBar.hz_height - SAFE_Y;
     
     self.contentView.backgroundColor = self.view.backgroundColor;
 }
@@ -77,5 +72,8 @@
     return CGSizeMake(SAFE_WIDTH, SAFE_HEIGHT);
 }
 
++ (CGFloat)bottomSafeOffY {
+    return SAFE_BOTTOM;
+}
 
 @end

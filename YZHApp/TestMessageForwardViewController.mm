@@ -59,20 +59,20 @@
 }
 
 
-+ (void)load {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-
-        [self sig_exchangeInstanceMethod:@selector(methodSignatureForSelector:) with:@selector(sig_methodSignatureForSelector:)];
-
-        [self sig_exchangeInstanceMethod:@selector(forwardInvocation:) with:@selector(sig_forwardInvocation:)];
-        
-        
-        [self sig_exchangeClassMethod:@selector(methodSignatureForSelector:) with:@selector(sig_class_methodSignatureForSelector:)];
-        
-        [self sig_exchangeClassMethod:@selector(forwardInvocation:) with:@selector(sig_class_forwardInvocation:)];
-    });
-}
+//+ (void)load {
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//
+//        [self sig_exchangeInstanceMethod:@selector(methodSignatureForSelector:) with:@selector(sig_methodSignatureForSelector:)];
+//
+//        [self sig_exchangeInstanceMethod:@selector(forwardInvocation:) with:@selector(sig_forwardInvocation:)];
+//        
+//        
+//        [self sig_exchangeClassMethod:@selector(methodSignatureForSelector:) with:@selector(sig_class_methodSignatureForSelector:)];
+//        
+//        [self sig_exchangeClassMethod:@selector(forwardInvocation:) with:@selector(sig_class_forwardInvocation:)];
+//    });
+//}
 
 //+ (void)exchange {
 //    static dispatch_once_t onceToken;

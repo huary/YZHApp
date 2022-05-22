@@ -14,6 +14,7 @@ NSString *const YZHTabBarItemTitleSelectedColorKey = TYPE_STR(YZHTabBarItemTitle
 NSString *const YZHTabBarItemTitleTextFontKey = TYPE_STR(YZHTabBarItemTitleTextFontKey);
 NSString *const YZHTabBarItemSelectedBackgroundColorKey = TYPE_STR(YZHTabBarItemSelectedBackgroundColorKey);
 NSString *const YZHTabBarItemHighlightedBackgroundColorKey = TYPE_STR(YZHTabBarItemHighlightedBackgroundColorKey);
+NSString *const YZHTabBarTopLineHeightKey = TYPE_STR(YZHTabBarTopLineHeightKey);
 
 NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemActionUserInteractionKey);
 
@@ -45,9 +46,9 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
     [self _setupTabBar];
 }
 
-+(YZHTabBarController*)sharedTabBarController
++(YZHTabBarController*)shareTabBarController
 {
-    static YZHTabBarController *sharedTabBarController_s = NULL;
+    static YZHTabBarController *sharedTabBarController_s = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedTabBarController_s = [[YZHTabBarController alloc] init];
@@ -147,16 +148,27 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
     self.viewControllers = VCS;
 }
 
+- (void)_insertChildVC:(UIViewController*)viewController atItemIndex:(NSInteger)itemIndex
+{
+    if (!viewController) {
+        return;
+    }
+    NSMutableArray *VCS = [self.viewControllers mutableCopy];
+    [VCS insertObject:viewController atIndex:itemIndex];
+    self.viewControllers = VCS;
+}
+
 -(void)_removeChildVCAtItemIndex:(NSInteger)itemIndex
 {
-    NSMutableArray *VCS = [self.viewControllers mutableCopy];
-    UIViewController *childVC = [VCS objectAtIndex:itemIndex];
+    UIViewController *childVC = [self.viewControllers objectAtIndex:itemIndex];
     childVC.title = nil;
     childVC.tabBarItem.title = nil;
     childVC.tabBarItem.image = nil;
     childVC.tabBarItem.selectedImage = nil;
-    [VCS removeObject:childVC];
-    self.viewControllers= VCS;
+    [childVC removeFromParentViewController];
+    [self.view setNeedsLayout];
+//    [VCS removeObject:childVC];
+//    self.viewControllers= VCS;
 }
 
 #if HAVE_YZH_NAVIGATION_KIT
@@ -167,25 +179,20 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
                                useSystemNavigation:(BOOL)useSystemNavigation
                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
 {
-    if (childVC == nil) {
+    UINavigationController *nav = [self createChildViewController:childVC
+                                                            title:title
+                                                            image:image
+                                                    selectedImage:selectedImage
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+    if (!nav) {
         return nil;
-    }
-    childVC.title = title;
-    childVC.tabBarItem.image = image;
-    childVC.tabBarItem.selectedImage = selectedImage;
-    childVC.hz_barAndItemStyleForRootVCInitSetToNavigation = barAndItemStyle;
-    UINavigationController *nav = nil;
-    if (useSystemNavigation) {
-        childVC.hz_navigationEnableForRootVCInitSetToNavigation = YES;
-        nav = [[UINavigationController alloc] initWithRootViewController:childVC];
-    }
-    else {
-        nav = [[YZHNavigationController alloc] initWithRootViewController:childVC];
     }
     [self addChildViewController:nav];
     YZHTabBarButton *button = [self.tabBarView addTabBarItem:childVC.tabBarItem];
     button.tabBarController = self;
     childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
     return nav;
 }
 
@@ -211,44 +218,36 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
                                useSystemNavigation:(BOOL)useSystemNavigation
                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
 {
-    if (childVC == nil) {
+    UINavigationController *nav = [self createChildViewController:childVC
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+    if (!nav) {
         return nil;
-    }
-    childVC.hz_barAndItemStyleForRootVCInitSetToNavigation = barAndItemStyle;
-    UINavigationController *nav = nil;
-    if (useSystemNavigation) {
-        childVC.hz_navigationEnableForRootVCInitSetToNavigation = YES;
-        nav = [[UINavigationController alloc] initWithRootViewController:childVC];
-    }
-    else {
-        nav = [[YZHNavigationController alloc] initWithRootViewController:childVC];
     }
     [self addChildViewController:nav];
     YZHTabBarButton *button = [self.tabBarView addTabBarWithCustomView:customItemView];
     button.tabBarController = self;
     childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
     return nav;
 }
 
 -(UINavigationController*)setupChildViewController:(UIViewController*)childVC
                                useSystemNavigation:(BOOL)useSystemNavigation
-                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle {
-    if (childVC == nil) {
+                         navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
+{
+    UINavigationController *nav = [self createChildViewController:childVC
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+
+    if (!nav) {
         return nil;
-    }
-    childVC.hz_barAndItemStyleForRootVCInitSetToNavigation = barAndItemStyle;
-    UINavigationController *nav = nil;
-    if (useSystemNavigation) {
-        childVC.hz_navigationEnableForRootVCInitSetToNavigation = YES;
-        nav = [[UINavigationController alloc] initWithRootViewController:childVC];
-    }
-    else {
-        nav = [[YZHNavigationController alloc] initWithRootViewController:childVC];
     }
     [self addChildViewController:nav];
     YZHTabBarButton *button = [self.tabBarView addTabBarItem:childVC.tabBarItem];
     button.tabBarController = self;
     childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
     return nav;
 }
 
@@ -262,6 +261,7 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
         return nil;
     }
     childVC.title = title;
+    childVC.tabBarItem.title = title;
     childVC.tabBarItem.image = image;
     childVC.tabBarItem.selectedImage = selectedImage;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:childVC];
@@ -318,6 +318,7 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
     YZHTabBarButton *button = [self.tabBarView addTabBarItem:rootVC.tabBarItem];
     button.tabBarController = self;
     rootVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
 }
 
 -(void)clear
@@ -337,24 +338,33 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
                                useSystemNavigation:(BOOL)useSystemNavigation
                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
 {
-    if (childVC == nil) {
+    UINavigationController *nav = [self createChildViewController:childVC
+                                                            title:title
+                                                            image:image
+                                                    selectedImage:selectedImage
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+    if (!nav) {
         return nil;
     }
-    childVC.title = title;
-    childVC.tabBarItem.title = title;
-    childVC.tabBarItem.image = image;
-    childVC.tabBarItem.selectedImage = selectedImage;
-    childVC.hz_barAndItemStyleForRootVCInitSetToNavigation = barAndItemStyle;
-    UINavigationController *nav = nil;
-    if (useSystemNavigation) {
-        childVC.hz_navigationEnableForRootVCInitSetToNavigation = YES;
-        nav = [[UINavigationController alloc] initWithRootViewController:childVC];
+    YZHTabBarButton *button = nil;
+    BOOL add = index == self.viewControllers.count;
+    if (add) {
+        [self addChildViewController:nav];
+        button = [self.tabBarView addTabBarItem:childVC.tabBarItem];
+        button.tabBarController = self;
+        childVC.hz_tabBarButton = button;
     }
     else {
-        nav = [[YZHNavigationController alloc] initWithRootViewController:childVC];
+        if (!IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index)) {
+            return nil;
+        }
+        [self _updateChildVC:nav atItemIndex:index];
+        button = [self.tabBarView resetTabBarItem:childVC.tabBarItem atIndex:index];
     }
-    [self _updateChildVC:nav atItemIndex:index];
-    [self.tabBarView resetTabBarItem:childVC.tabBarItem atIndex:index];
+    button.tabBarController = self;
+    childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
     return nav;
 }
 
@@ -383,25 +393,38 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
                                useSystemNavigation:(BOOL)useSystemNavigation
                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
 {
-    if (!childVC) {
+    UINavigationController *nav = [self createChildViewController:childVC
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+    if (!nav) {
         return nil;
     }
-    childVC.hz_barAndItemStyleForRootVCInitSetToNavigation = barAndItemStyle;
-    UINavigationController *nav = nil;
-    if (useSystemNavigation) {
-        childVC.hz_navigationEnableForRootVCInitSetToNavigation = YES;
-        nav = [[UINavigationController alloc] initWithRootViewController:childVC];
+    YZHTabBarButton *button = nil;
+    BOOL add = index == self.viewControllers.count;
+    if (add) {
+        [self addChildViewController:nav];
+        if (customItemView) {
+            button = [self.tabBarView addTabBarWithCustomView:customItemView];
+        }
+        else {
+            button = [self.tabBarView addTabBarItem:childVC.tabBarItem];
+        }
     }
     else {
-        nav = [[YZHNavigationController alloc] initWithRootViewController:childVC];
+        if (!IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index)) {
+            return nil;
+        }
+        [self _updateChildVC:nav atItemIndex:index];
+        if (customItemView) {
+            button = [self.tabBarView resetTabBarWithCustomView:customItemView atIndex:index];
+        }
+        else {
+            button = [self.tabBarView resetTabBarItem:childVC.tabBarItem atIndex:index];
+        }
     }
-    [self _updateChildVC:nav atItemIndex:index];
-    if (customItemView) {
-        [self.tabBarView resetTabBarWithCustomView:customItemView atIndex:index];
-    }
-    else {
-        [self.tabBarView resetTabBarItem:childVC.tabBarItem atIndex:index];
-    }
+    button.tabBarController = self;
+    childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
     return nav;
 }
 
@@ -410,22 +433,120 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
                                useSystemNavigation:(BOOL)useSystemNavigation
                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
 {
-    if (!childVC) {
+    UINavigationController *nav = [self createChildViewController:childVC
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+    if (!nav) {
         return nil;
     }
-    childVC.hz_barAndItemStyleForRootVCInitSetToNavigation = barAndItemStyle;
-    UINavigationController *nav = nil;
-    if (useSystemNavigation) {
-        childVC.hz_navigationEnableForRootVCInitSetToNavigation = YES;
-        nav = [[UINavigationController alloc] initWithRootViewController:childVC];
+    YZHTabBarButton *button = nil;
+    BOOL add = index == self.viewControllers.count;
+    if (add) {
+        [self addChildViewController:nav];
+        button = [self.tabBarView addTabBarItem:childVC.tabBarItem];
     }
     else {
-        nav = [[YZHNavigationController alloc] initWithRootViewController:childVC];
+        if (!IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index)) {
+            return nil;
+        }
+        [self _updateChildVC:nav atItemIndex:index];
+        button = [self.tabBarView resetTabBarItem:childVC.tabBarItem atIndex:index];
     }
-    [self _updateChildVC:nav atItemIndex:index];
-    [self.tabBarView resetTabBarItem:childVC.tabBarItem atIndex:index];
+    button.tabBarController = self;
+    childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
     return nav;
 }
+
+-(UINavigationController*)insertChildViewController:(UIViewController*)childVC
+                                            atIndex:(NSInteger)index
+                                              title:(NSString*)title
+                                              image:(UIImage*)image
+                                      selectedImage:(UIImage*)selectedImage
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
+{
+    UINavigationController *nav = [self createChildViewController:childVC
+                                                            title:title
+                                                            image:image
+                                                    selectedImage:selectedImage
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+    if (!nav || !IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index)) {
+        return nil;
+    }
+    [self _insertChildVC:nav atItemIndex:index];
+    
+    YZHTabBarButton *button = [self.tabBarView insertTabBarItem:childVC.tabBarItem atIndex:index];
+    button.tabBarController = self;
+    childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
+    return nav;
+}
+
+-(UINavigationController*)insertChildViewController:(UIViewController*)childVC
+                                            atIndex:(NSInteger)index
+                                              title:(NSString*)title
+                                          imageName:(NSString*)imageName
+                                  selectedImageName:(NSString*)selectedImageName
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
+{
+    UIImage *image = [UIImage imageNamed:imageName];
+    UIImage *selectImage = [UIImage imageNamed:selectedImageName];
+    return [self insertChildViewController:childVC
+                            atIndex:index
+                              title:title
+                              image:image
+                      selectedImage:selectImage
+                useSystemNavigation:useSystemNavigation
+          navigationBarAndItemStyle:barAndItemStyle];
+}
+
+-(UINavigationController*)insertChildViewController:(UIViewController *)childVC
+                                            atIndex:(NSInteger)index
+                                     customItemView:(UIView*)customItemView
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
+{
+    UINavigationController *nav = [self createChildViewController:childVC
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+    if (!nav || !IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index)) {
+        return nil;
+    }
+    
+    [self _insertChildVC:childVC atItemIndex:index];
+    
+    YZHTabBarButton *button = [self.tabBarView insertTabBarWithCustomView:customItemView atIndex:index];
+    button.tabBarController = self;
+    childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
+    return nav;
+}
+
+-(UINavigationController*)insertChildViewController:(UIViewController *)childVC
+                                            atIndex:(NSInteger)index
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
+{
+    UINavigationController *nav = [self createChildViewController:childVC
+                                              useSystemNavigation:useSystemNavigation
+                                        navigationBarAndItemStyle:barAndItemStyle];
+    if (!nav || !IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index)) {
+        return nil;
+    }
+    
+    [self _insertChildVC:childVC atItemIndex:index];
+    
+    YZHTabBarButton *button = [self.tabBarView insertTabBarItem:childVC.tabBarItem atIndex:index];
+    button.tabBarController = self;
+    childVC.hz_tabBarButton = button;
+    [self pri_clearTabBar];
+    return nav;
+}
+
+
 #else
 -(UINavigationController*)resetChildViewController:(UIViewController*)childVC
                                            atIndex:(NSInteger)index
@@ -491,42 +612,100 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
 }
 #endif
 
+-(UINavigationController *)createChildViewController:(UIViewController *)childVC
+                                               title:(NSString *)title
+                                               image:(UIImage *)image
+                                       selectedImage:(UIImage *)selectedImage
+                                 useSystemNavigation:(BOOL)useSystemNavigation
+                           navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle {
+    if (childVC == nil) {
+        return nil;
+    }
+    childVC.title = title;
+    childVC.tabBarItem.title = title;
+    childVC.tabBarItem.image = image;
+    childVC.tabBarItem.selectedImage = selectedImage;
+    childVC.hz_barAndItemStyleForRootVCInitSetToNavigation = barAndItemStyle;
+    UINavigationController *nav = nil;
+    if (useSystemNavigation) {
+        childVC.hz_navigationEnableForRootVCInitSetToNavigation = YES;
+        nav = [[UINavigationController alloc] initWithRootViewController:childVC];
+    }
+    else {
+        nav = [[YZHNavigationController alloc] initWithRootViewController:childVC];
+    }
+    return nav;
+}
+
+-(UINavigationController*)createChildViewController:(UIViewController*)childVC
+                                useSystemNavigation:(BOOL)useSystemNavigation
+                          navigationBarAndItemStyle:(YZHNavigationBarAndItemStyle)barAndItemStyle
+{
+    if (childVC == nil) {
+        return nil;
+    }
+    childVC.hz_barAndItemStyleForRootVCInitSetToNavigation = barAndItemStyle;
+    UINavigationController *nav = nil;
+    if (useSystemNavigation) {
+        childVC.hz_navigationEnableForRootVCInitSetToNavigation = YES;
+        nav = [[UINavigationController alloc] initWithRootViewController:childVC];
+    }
+    else {
+        nav = [[YZHNavigationController alloc] initWithRootViewController:childVC];
+    }
+    return nav;
+}
+
 -(void)resetupChildNavigationController:(UINavigationController*)navigationController atIndex:(NSInteger)index {
     if (!navigationController) {
         return;
     }
     UIViewController *rootVC = navigationController.viewControllers.firstObject;
 
-    [self _updateChildVC:navigationController atItemIndex:index];
+    BOOL add = index == self.viewControllers.count;
 
-    [self.tabBarView resetTabBarItem:rootVC.tabBarItem atIndex:index];
+    YZHTabBarButton *button = nil;
+    if (add) {
+        [self addChildViewController:navigationController];
+        button = [self.tabBarView addTabBarItem:rootVC.tabBarItem];
+    }
+    else {
+        if (!IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index)) {
+            return;
+        }
+        [self _updateChildVC:navigationController atItemIndex:index];
+        button = [self.tabBarView resetTabBarItem:rootVC.tabBarItem atIndex:index];
+    }
+    [self pri_clearTabBar];
+    button.tabBarController = self;
+    rootVC.hz_tabBarButton = button;
+}
+
+-(void)removeChildNavigationController:(UINavigationController*)navigationController {
+    if (!navigationController) {
+        return;
+    }
+    NSInteger index = [self.viewControllers indexOfObject:navigationController];
+    NSLog(@"remove.chld.index=%ld",index);
+    if (index != NSNotFound) {
+        [self removeChildViewControllerAtIndex:index];        
+    }
+    [self pri_clearTabBar];
 }
 
 -(void)removeChildViewControllerAtIndex:(NSInteger)index {
+    if (!IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index)) {
+        return;
+    }
     [self _removeChildVCAtItemIndex:index];
     [self.tabBarView removeTabBarAtIndex:index];
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self _clearTabBar];
-}
-
--(void)viewWillLayoutSubviews
-{
-    [super viewWillLayoutSubviews];
-    [self _hiddenTabBarSubView];
-    self.tabBarView.frame = self.tabBar.bounds;
-    UIColor *barTintColor = self.tabBar.barTintColor;
-    if (!barTintColor) {
-        barTintColor = WHITE_COLOR;
-    }
-    self.tabBarView.backgroundColor = barTintColor;
-    [self _clearTabBar];
+    [self pri_clearTabBar];
 }
 
 -(void)exchangeChildViewControllerAtIndex:(NSInteger)index1 withChildViewControllerAtIndex:(NSInteger)index2 animation:(BOOL)animation {
+    if (!IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index1) || !IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index2)) {
+        return;
+    }
     NSMutableArray *VCS = self.viewControllers.mutableCopy;
     UIViewController *VC1 = VCS[index1];
     UIViewController *VC2 = VCS[index2];
@@ -534,9 +713,13 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
     VCS[index2] = VC1;
     self.viewControllers = VCS.copy;
     [self.tabBarView exchangeTabBarButtonAtIndex:index1 withTabBarButtonAtIndex:index2 animation:animation];
+    [self pri_clearTabBar];
 }
 
 -(void)exchangeChildViewControllerAtIndex:(NSInteger)index1 withChildViewControllerAtIndex:(NSInteger)index2 animationBlock:(YZHTabBarViewExchangeTabBarButtonAnimationBlock)animationBlock {
+    if (!IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index1) || !IS_IN_ARRAY_FOR_INDEX(self.viewControllers, index2)) {
+        return;
+    }
     NSMutableArray *VCS = self.viewControllers.mutableCopy;
     UIViewController *VC1 = VCS[index1];
     UIViewController *VC2 = VCS[index2];
@@ -544,9 +727,41 @@ NSString *const YZHTabBarItemActionUserInteractionKey = TYPE_STR(YZHTabBarItemAc
     VCS[index2] = VC1;
     self.viewControllers = VCS.copy;
     [self.tabBarView exchangeTabBarButtonAtIndex:index1 withTabBarButtonAtIndex:index2 animationBlock:animationBlock];
+    [self pri_clearTabBar];
 }
 
--(void)_clearTabBar
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self pri_clearTabBar];
+}
+
+-(void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    [self pri_layoutTabBar];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self pri_layoutTabBar];
+}
+
+-(void)pri_layoutTabBar {
+    [self _hiddenTabBarSubView];
+    self.tabBarView.frame = self.tabBar.bounds;
+    if (self.tabBarView.superview != self.tabBar) {
+        [self.tabBar addSubview:self.tabBarView];        
+    }
+    UIColor *barTintColor = self.tabBar.barTintColor;
+    if (!barTintColor) {
+        barTintColor = WHITE_COLOR;
+    }
+    self.tabBarView.backgroundColor = barTintColor;
+    [self pri_clearTabBar];
+}
+
+-(void)pri_clearTabBar
 {
     [self.tabBar.subviews enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL *stop) {
         if ([obj isKindOfClass:[UIControl class]] || [obj isKindOfClass:NSClassFromString(@"UITabBarButton")]) {

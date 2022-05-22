@@ -97,38 +97,56 @@
         self.loopScrollView.scrollView.scrollEnabled = NO;
         self.panContext.transitionContainerView.frame = self.bounds;
         
-//        self.panContext.imageCellModel = (id<YZHImageCellModelProtocol>)cell.model;
-
-        UIImageView *cellImageView = cell.zoomView.imageView;
-        CGSize cellImageSize = cellImageView.bounds.size;
-
-        loc = [panGesture locationInView:cellImageView];
-        CGPoint imgAnchorPoint = CGPointMake(0.5, 0.5);
-        if (cellImageSize.width > 0 && cellImageSize.height > 0) {
-            imgAnchorPoint = CGPointMake(loc.x/cellImageSize.width, loc.y/cellImageSize.height);
+        UIView *transitionView = nil;
+        if ([self.delegate respondsToSelector:@selector(imageBrowserView:willPanStartAtPoint:forCell:)]) {
+//            loc = [panGesture locationInView:cell];
+            transitionView = [self.delegate imageBrowserView:self willPanStartAtPoint:loc forCell:cell];
         }
+        if (!transitionView) {
+            UIImageView *cellImageView = cell.zoomView.imageView;
+            CGSize cellImageSize = cellImageView.bounds.size;
+            
+            loc = [panGesture locationInView:cellImageView];
+            CGPoint imgAnchorPoint = CGPointMake(0.5, 0.5);
+            if (cellImageSize.width > 0 && cellImageSize.height > 0) {
+                imgAnchorPoint = CGPointMake(loc.x/cellImageSize.width, loc.y/cellImageSize.height);
+            }
 #if USE_IMAGEVIEW_TO_PAN
-        CGRect imgFrame = [cellImageView.superview convertRect:cellImageView.frame toView:self];
-        //不要用initWithFrame 来初始化，用如下：
-        UIImageView *transitionView = [[UIImageView alloc] init];
-        transitionView.layer.anchorPoint = imgAnchorPoint;
-        transitionView.frame = imgFrame;
-        transitionView.image = cell.zoomView.image;
-        [self.panContext.transitionContainerView addSubview:transitionView];
+            CGRect imgFrame = [cellImageView.superview convertRect:cellImageView.frame toView:self];
+            //不要用initWithFrame 来初始化，用如下：
+            UIImageView *transitionImageView = [[UIImageView alloc] init];
+            transitionImageView.layer.anchorPoint = imgAnchorPoint;
+            transitionImageView.frame = imgFrame;
+            transitionImageView.image = cell.zoomView.image;
+            transitionView = transitionImageView;
+            [self.panContext.transitionContainerView addSubview:transitionView];
 #else
-        YZHZoomView *transitionView = [[YZHZoomView alloc] initWithFrame:self.bounds];
-        transitionView.image = cell.zoomView.image;
-        transitionView.imageView.layer.anchorPoint = imgAnchorPoint;
-        transitionView.imageView.frame = cell.zoomView.imageView.frame;
-        transitionView.scrollView.contentSize = cell.zoomView.scrollView.contentSize;
-        transitionView.scrollView.contentOffset = cell.zoomView.scrollView.contentOffset;
-        [self.panContext.transitionContainerView addSubview:transitionView];
+            YZHZoomView *transitionView = [[YZHZoomView alloc] initWithFrame:self.bounds];
+            transitionView.image = cell.zoomView.image;
+            transitionView.imageView.layer.anchorPoint = imgAnchorPoint;
+            transitionView.imageView.frame = cell.zoomView.imageView.frame;
+            transitionView.scrollView.contentSize = cell.zoomView.scrollView.contentSize;
+            transitionView.scrollView.contentOffset = cell.zoomView.scrollView.contentOffset;
+            [self.panContext.transitionContainerView addSubview:transitionView];
 #endif
+        }
+        else {
+            CGPoint anchorPoint = CGPointMake(0.5, 0.5);
+            loc = [panGesture locationInView:transitionView];
+            if (transitionView.bounds.size.width > 0 && transitionView.bounds.size.height > 0) {
+                anchorPoint = CGPointMake(loc.x/transitionView.bounds.size.width, loc.y/transitionView.bounds.size.height);
+            }
+            CGRect frame = [transitionView.superview convertRect:transitionView.frame toView:self];
+            transitionView.layer.anchorPoint = anchorPoint;
+            transitionView.frame = frame;
+            [self.panContext.transitionContainerView addSubview:transitionView];
+        }
+        
         self.panContext.transitionView = transitionView;
         [self.superview addSubview:self.panContext.transitionContainerView];
 
-        if ([self.delegate respondsToSelector:@selector(transitionView:didStartAtPoint:)]) {
-            [self.delegate transitionView:self didStartAtPoint:loc];
+        if ([self.delegate respondsToSelector:@selector(imageBrowserView:didPanStartAtPoint:forCell:)]) {
+            [self.delegate imageBrowserView:self didPanStartAtPoint:loc forCell:cell];
         }
     }
     else if (panGesture.state == UIGestureRecognizerStateChanged) {
@@ -148,8 +166,8 @@
         self.alpha = ratio;
         self.panContext.changedRatio = ratio;
         
-        if ([self.delegate respondsToSelector:@selector(transitionView:updateAtPoint:changedValue:)]) {
-            [self.delegate transitionView:self updateAtPoint:loc changedValue:changedValue];
+        if ([self.delegate respondsToSelector:@selector(imageBrowserView:updateAtPoint:changedValue:forCell:)]) {
+            [self.delegate imageBrowserView:self updateAtPoint:loc changedValue:changedValue forCell:self.panContext.transitionCell];
         }
     }
     else if (panGesture.state == UIGestureRecognizerStateEnded || panGesture.state == UIGestureRecognizerStateCancelled) {
@@ -172,11 +190,21 @@
             cell.zoomView.scrollView.scrollEnabled = YES;
             self.loopScrollView.scrollView.scrollEnabled = YES;
             [self.panContext.transitionContainerView removeFromSuperview];
+            
+            YZHImageCell *cell = self.panContext.transitionCell;
+            
             self.panContext = nil;
             
-            if (dismiss && [self.delegate respondsToSelector:@selector(transitionView:didDismissAtPoint:changedValue:)]) {
-                CGFloat changedValue = [self pri_changedValueForPoint:point];
-                [self.delegate transitionView:self didDismissAtPoint:loc changedValue:changedValue];
+            CGFloat changedValue = [self pri_changedValueForPoint:point];
+            if (dismiss) {
+                if ([self.delegate respondsToSelector:@selector(imageBrowserView:didDismissAtPoint:changedValue:forCell:)]) {
+                    [self.delegate imageBrowserView:self didDismissAtPoint:loc changedValue:changedValue forCell:cell];
+                }
+            }
+            else {
+                if ([self.delegate respondsToSelector:@selector(imageBrowserView:didEndPanToRecoverAtPoint:changedValue:forCell:)]) {
+                    [self.delegate imageBrowserView:self didEndPanToRecoverAtPoint:loc changedValue:changedValue forCell:cell];
+                }
             }
         };
         

@@ -350,9 +350,9 @@ static void _image_add_func(const struct mach_header *mhp, intptr_t slide) {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [RegsterEnterManager loadSegmentInfo];
+//    [RegsterEnterManager loadSegmentInfo];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor orangeColor];
     // Do any additional setup after loading the view, typically from a nib.
     
 //    [self _test];
@@ -361,7 +361,7 @@ static void _image_add_func(const struct mach_header *mhp, intptr_t slide) {
     
 //    [self _test2];
     
-//    [self pri_testTextView];
+    [self pri_testTextView];
     
 //    [self pri_testButton];
     
@@ -685,11 +685,15 @@ static void _image_add_func(const struct mach_header *mhp, intptr_t slide) {
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+//    ViewController *next = [ViewController new];
+//    [self.navigationController pushViewController:next animated:YES];
+//    [self dismissViewControllerAnimated:YES completion:nil];
+    return;
 //    [self pri_testABC];
 //    [self pri_testTransaction];
     
 //    [self pri_testMessageForward];
-    [self pri_testDeallocProxy];
+//    [self pri_testDeallocProxy];
     return;
     
 //    [self pri_testImage];
@@ -871,6 +875,38 @@ static void _image_add_func(const struct mach_header *mhp, intptr_t slide) {
 - (void)pri_performTest:(id)object {
     NSLog(@"object=%@",object);
 }
+
+
+
+- (BOOL)shouldAutorotate
+{
+    BOOL should = [self hz_shouldAutorotate];
+    NSLog(@"VC.should=%@",@(should));
+    return should;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskAll;
+    NSLog(@"VC.mask=%@",@([self hz_supportedInterfaceOrientations]));
+    return [self hz_supportedInterfaceOrientations];
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    NSLog(@"prefer=%@",@([self hz_preferredInterfaceOrientationForPresentation]));
+    return [self hz_preferredInterfaceOrientationForPresentation];
+}
+
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//    [self hz_updateCurrentDeviceOrientation:UIDeviceOrientationLandscapeLeft];
+//}
+//
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//    [self hz_updateCurrentDeviceOrientation:UIDeviceOrientationLandscapeLeft];
+//}
 
 
 - (void)didReceiveMemoryWarning {

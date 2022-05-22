@@ -479,6 +479,46 @@ ITN_GET_PROPERTY(NSDictionary*, hz_titleTextAttributes, nil, {
     return itn_addNavigationLeftItemWithGraphicsImageContextTitleIsResetActionBlock(self, graphicsImageContext, title, reset, actionBlock);
 }
 
+//直接在Left添加UIView,UIView的subview可以是自动布局的,target selector
+-(void)hz_addNavigationLeftItemView:(UIView *)itemView target:(id)target action:(SEL)selector isReset:(BOOL)reset {
+    if ([self isKindOfClass:[YZHViewController class]]) {
+        [(YZHViewController*)self addNavigationLeftItemView:itemView target:target action:selector isReset:reset];
+        return;
+    }
+    PREV_VC_CHECK();
+    itn_addNavigationLeftItemViewsWithTargetSelectorIsReset(self, @[itemView], target, selector, reset);
+}
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的,actionBlock
+-(void)hz_addNavigationLeftItemView:(UIView *)itemView isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock {
+    if ([self isKindOfClass:[YZHViewController class]]) {
+        [(YZHViewController*)self addNavigationLeftItemViews:@[itemView] isReset:reset actionBlock:actionBlock];
+        return;
+    }
+    PREV_VC_CHECK();
+    itn_addNavigationLeftItemViewsWithIsResetActionBlock(self, @[itemView], reset, actionBlock);
+}
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的,itemViews, target selector
+-(void)hz_addNavigationLeftItemViews:(NSArray<UIView*>*)itemViews target:(id)target action:(SEL)selector isReset:(BOOL)reset {
+    if ([self isKindOfClass:[YZHViewController class]]) {
+        [(YZHViewController*)self addNavigationLeftItemViews:itemViews target:target action:selector isReset:reset];
+        return;
+    }
+    PREV_VC_CHECK();
+    itn_addNavigationLeftItemViewsWithTargetSelectorIsReset(self, itemViews, target, selector, reset);
+}
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的,itemViews, actionBlock
+-(void)hz_addNavigationLeftItemViews:(NSArray<UIView*>*)itemViews isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock {
+    if ([self isKindOfClass:[YZHViewController class]]) {
+        [(YZHViewController*)self hz_addNavigationLeftItemViews:itemViews isReset:reset actionBlock:actionBlock];
+        return;
+    }
+    PREV_VC_CHECK();
+    itn_addNavigationLeftItemViewsWithIsResetActionBlock(self, itemViews, reset, actionBlock);
+}
+
 //right
 //添加（title）这样的按钮
 -(NSArray<UIButton*> *)hz_addNavigationRightItemsWithTitles:(NSArray<NSString*> *)titles target:(id)target action:(SEL)selector isReset:(BOOL)reset
@@ -560,6 +600,47 @@ ITN_GET_PROPERTY(NSDictionary*, hz_titleTextAttributes, nil, {
     return itn_addNavigationRightItemsWithCustomViewIsResetActionBlock(self, rightItems, reset, actionBlock);
 }
 
+//直接在right添加UIView,UIView的subview可以是自动布局的,target selector
+-(void)hz_addNavigationRightItemView:(UIView *)itemView target:(id)target action:(SEL)selector isReset:(BOOL)reset {
+    if ([self isKindOfClass:[YZHViewController class]]) {
+        [(YZHViewController*)self addNavigationRightItemView:itemView target:target action:selector isReset:reset];
+        return;
+    }
+    PREV_VC_CHECK();
+    itn_addNavigationRightItemViewsWithTargetSelectorIsReset(self, @[itemView], target, selector, reset);
+}
+
+//直接在right添加UIView,UIView的subview可以是自动布局的,action Block
+-(void)hz_addNavigationRightItemView:(UIView *)itemView isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock {
+    if ([self isKindOfClass:[YZHViewController class]]) {
+        [(YZHViewController*)self addNavigationRightItemView:itemView isReset:reset actionBlock:actionBlock];
+        return;
+    }
+    PREV_VC_CHECK();
+    itn_addNavigationRightItemViewsWithIsResetActionBlock(self, @[itemView], reset, actionBlock);
+}
+
+//直接在right添加UIView,UIView的subview可以是自动布局的, itemViews target selector
+-(void)hz_addNavigationRightItemViews:(NSArray<UIView*> *)itemViews target:(id)target action:(SEL)selector isReset:(BOOL)reset {
+    if ([self isKindOfClass:[YZHViewController class]]) {
+        [(YZHViewController*)self addNavigationRightItemViews:itemViews target:target action:selector isReset:reset];
+        return;
+    }
+    PREV_VC_CHECK();
+    itn_addNavigationRightItemViewsWithTargetSelectorIsReset(self, itemViews, target, selector, reset);
+}
+
+//直接在right添加UIView,UIView的subview可以是自动布局的, itemViews actionBlock
+-(void)hz_addNavigationRightItemViews:(NSArray<UIView*> *)itemViews isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock {
+    if ([self isKindOfClass:[YZHViewController class]]) {
+        [(YZHViewController*)self addNavigationRightItemViews:itemViews isReset:reset actionBlock:actionBlock];
+        return;
+    }
+    PREV_VC_CHECK();
+    itn_addNavigationRightItemViewsWithIsResetActionBlock(self, itemViews, reset, actionBlock);
+}
+
+
 -(void)hz_setupItemsSpace:(CGFloat)itemsSpace left:(BOOL)left {
     if ([self isKindOfClass:[YZHViewController class]]) {
         return [(YZHViewController*)self setupItemsSpace:itemsSpace left:left];
@@ -613,6 +694,12 @@ ITN_GET_PROPERTY(NSDictionary*, hz_titleTextAttributes, nil, {
     }
     PREV_VC_CHECK(0);
     return itn_navigationBarTopLayout(self);
+}
+
+//此值默认为hz_navbarFrameBlock(viewController)-STATUS_BAR_HEIGHT
+- (CGFloat)hz_itemViewLayoutHeight {
+    [self hz_itn_navBarFrame];
+    return self.hz_itn_itemViewLayoutHeight;
 }
 
 @end

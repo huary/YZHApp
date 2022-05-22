@@ -60,10 +60,14 @@ typedef void(^YZHTabBarViewExchangeTabBarButtonAnimationBlock)(YZHTabBarView *ta
 //仅仅创建一个自定义的Single的button，但是不加入到UITabBarView中
 -(YZHTabBarButton*)createSingleTabBarItem:(UITabBarItem *)tabBarItem forControlEvents:(UIControlEvents)controlEvents actionBlock:(YZHButtonActionBlock)actionBlock;
 
+-(YZHTabBarButton*)insertTabBarItem:(UITabBarItem *)tabBarItem atIndex:(NSInteger)index;
 
 -(YZHTabBarButton*)resetTabBarItem:(UITabBarItem *)tabBarItem atIndex:(NSInteger)index;
 //按照UITabBarButton的顺序加入的，大小由系统来计算
 -(YZHTabBarButton*)addTabBarWithCustomView:(UIView*)customView;
+
+-(YZHTabBarButton*)insertTabBarWithCustomView:(UIView*)customView atIndex:(NSInteger)index;
+
 -(YZHTabBarButton*)resetTabBarWithCustomView:(UIView*)customView atIndex:(NSInteger)index;
 
 //按照UITabBarButton的frame加入的，大小和位置有customView.frame来决定
@@ -80,7 +84,13 @@ typedef void(^YZHTabBarViewExchangeTabBarButtonAnimationBlock)(YZHTabBarView *ta
 
 -(void)doSelectTo:(NSInteger)to;
 
--(NSInteger)currentIndex;
+-(NSInteger)itemCount;
+
+//若没有选择的，返回-1
+-(NSInteger)currentSelectedIndex;
+
+//这个仅仅只是让selected的button的呈现选中的状态，以前选中的变成没有选中的（切记谨慎调用）
+-(void)updateSelectIndex:(NSInteger)index;
 
 -(UITabBarItem*)tabBarItemAtIndex:(NSInteger)index;
 

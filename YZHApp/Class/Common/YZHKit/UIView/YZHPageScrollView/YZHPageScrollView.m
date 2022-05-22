@@ -131,7 +131,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
         CGFloat width = self.frame.size.width;
         CGFloat height = self.frame.size.height;
         NSString *title = @"";
-        if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
+        if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
             x = totalWidth;
             y = 0;
             if (self.titleItemWidth > 0) {
@@ -174,7 +174,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
         }
         CGSize size = [self _getPageTitleSizeWithText:title];
         
-        if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
+        if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
             if ([self.delegate respondsToSelector:@selector(pageScrollView:widthForRowAtIndex:)]) {
                 width = [self.delegate pageScrollView:self widthForRowAtIndex:i];
             }
@@ -233,7 +233,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
         }
     }
     
-    if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection))
+    if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection))
     {
         self.scrollView.contentSize = CGSizeMake(totalWidth, self.bounds.size.height);
         self.maxContentOffset = CGPointMake(totalWidth - self.bounds.size.width, 0);
@@ -362,7 +362,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
     UIPageContentOffset *currentOffset = self.buttonContentOffsetInfos[currentSelectedIndex];
     
     CGRect lineFrame = CGRectZero;
-    if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection))
+    if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection))
     {
         if (self.autoAdjustToCenter) {
             CGFloat shiftOffsetX = 0;
@@ -433,7 +433,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
     NSInteger selectIndex = 0;
     if (self.pageViewContentOffsetInfos.count == self.numberOfPages) {
         CGFloat shiftLength = 0;
-        if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
+        if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
             shiftLength = contentOffset.x;
         }
         else
@@ -452,7 +452,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
     else
     {
         CGFloat currentRatio = 0;
-        if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
+        if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
             currentRatio =  contentOffset.x / self.relatePageSize.width;//self.bounds.size.width;
         }
         else
@@ -533,7 +533,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
         CGFloat lineWidth = selectOffsetRatio * selectOffsetPoint.length + nextOffsetRatio * nextOffsetPoint.length;
         
         CGRect lineFrame = self.scrollIndicatorLine.frame;
-        if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
+        if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
             lineFrame.origin.x = lineOffset;
             lineFrame.size.width = lineWidth;
         }
@@ -564,7 +564,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
     }
     UIPageContentOffset *offset = self.buttonContentOffsetInfos[selectIndex];
     
-    if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
+    if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
         CGFloat offsetX = 0;
         if (self.pageViewContentOffsetInfos.count == self.numberOfPages) {
             UIPageContentOffset *pageViewOffset = self.pageViewContentOffsetInfos[selectIndex];
@@ -609,7 +609,7 @@ static const CGFloat defaultMinDifferOffsetRatioDoDidSelectAction = 0.1;//0.05;
 //        }
         //方法2，根据buttonItem的offset来判断
         CGFloat diffOffset = 0;
-        if (UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
+        if (UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(self.scrollDirection)) {
             diffOffset = btnItemContentOffset.x - offset.offset;
         }
         else

@@ -31,6 +31,6 @@ UIKIT_EXTERN NSAttributedStringKey const YZHTitleAttributesTextName;
 
 @property (nonatomic, copy) NSDictionary<NSAttributedStringKey, id> *titleTextAttributes;
 
--(void)setLeftButtonItems:(NSArray*)leftButtonItems isReset:(BOOL)reset;
--(void)setRightButtonItems:(NSArray *)rightButtonItems isReset:(BOOL)reset;
+-(void)setLeftButtonItems:(NSArray<UIView *> *)leftButtonItems isReset:(BOOL)reset;
+-(void)setRightButtonItems:(NSArray<UIView *> *)rightButtonItems isReset:(BOOL)reset;
 @end

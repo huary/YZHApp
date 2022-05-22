@@ -70,9 +70,7 @@ static inline NSString* getThreadKey() {
     item.mode = kCFRunLoopDefaultMode;
     CFRunLoopRef rl = CFRunLoopGetCurrent();
     CFRunLoopAddObserver(rl, item.observer, item.mode);
-    if (rl != CFRunLoopGetMain()) {
-        CFRunLoopRun();
-    }
+    CFRelease(item.observer);
 }
 
 - (void)dealloc {

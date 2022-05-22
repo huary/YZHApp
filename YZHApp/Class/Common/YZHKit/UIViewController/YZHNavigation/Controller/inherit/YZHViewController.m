@@ -11,14 +11,16 @@
 #import "YZHNavigationController.h"
 #import "YZHVCUtils.h"
 #import "YZHNavigationItnTypes.h"
+#import "UIViewController+YZHNavigationRootVCInitSetup.h"
 
 @implementation YZHViewController
 
 - (void)pri_initSetupDefaultValue {
-    _leftEdgeSpace = navigationLeftEdgeSpace_s;
-    _rightEdgeSpace = navigationRightEdgeSpace_s;
-    _leftItemsSpace = navigationLeftItemsSpace_s;
-    _rightItemsSpace = navigationRightItemsSpace_s;
+    YZHNavigationConfig *config = [UIViewController hz_navigationConfig];
+    _leftEdgeSpace = config.navigationLeftEdgeSpace;
+    _rightEdgeSpace = config.navigationRightEdgeSpace;
+    _leftItemsSpace = config.navigationLeftItemsSpace;
+    _rightItemsSpace = config.navigationRightItemsSpace;
     _popGestureEnabled = VCPopGestureEnabled_s;
     _navigationItemViewAlpha = VCNavigationItemViewAlpha_s;
     _navigationBarViewBackgroundColor = [[UINavigationBar appearance] barTintColor];
@@ -278,6 +280,27 @@
     return itn_addNavigationLeftItemWithGraphicsImageContextTitleIsResetActionBlock(self, graphicsImageContext, title, reset, actionBlock);
 }
 
+//直接在Left添加UIView,UIView的subview可以是自动布局的
+-(void)addNavigationLeftItemView:(UIView *)itemView target:(id)target action:(SEL)selector isReset:(BOOL)reset {
+    itn_addNavigationLeftItemViewsWithTargetSelectorIsReset(self, @[itemView], target, selector, reset);
+}
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的
+-(void)addNavigationLeftItemView:(UIView *)itemView isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock {
+    itn_addNavigationLeftItemViewsWithIsResetActionBlock(self, @[itemView], reset, actionBlock);
+}
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的
+-(void)addNavigationLeftItemViews:(NSArray<UIView*>*)itemViews target:(id)target action:(SEL)selector isReset:(BOOL)reset {
+    itn_addNavigationLeftItemViewsWithTargetSelectorIsReset(self, itemViews, target, selector, reset);
+}
+
+//直接在Left添加UIView,UIView的subview可以是自动布局的
+-(void)addNavigationLeftItemViews:(NSArray<UIView*>*)itemViews isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock {
+    itn_addNavigationLeftItemViewsWithIsResetActionBlock(self, itemViews, reset, actionBlock);
+}
+
+
 //right
 //添加（title）这样的按钮
 -(NSArray<UIButton*> *)addNavigationRightItemsWithTitles:(NSArray<NSString*> *)titles target:(id)target action:(SEL)selector isReset:(BOOL)reset
@@ -327,6 +350,27 @@
     return itn_addNavigationRightItemsWithCustomViewIsResetActionBlock(self, rightItems, reset, actionBlock);
 }
 
+//直接在right添加UIView,UIView的subview可以是自动布局的,target selector
+-(void)addNavigationRightItemView:(UIView *)itemView target:(id)target action:(SEL)selector isReset:(BOOL)reset {
+    itn_addNavigationRightItemViewsWithTargetSelectorIsReset(self, @[itemView], target, selector, reset);
+}
+
+//直接在right添加UIView,UIView的subview可以是自动布局的,action Block
+-(void)addNavigationRightItemView:(UIView *)itemView isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock {
+    itn_addNavigationRightItemViewsWithIsResetActionBlock(self, @[itemView], reset, actionBlock);
+}
+
+//直接在right添加UIView,UIView的subview可以是自动布局的, itemViews target selector
+-(void)addNavigationRightItemViews:(NSArray<UIView*> *)itemViews target:(id)target action:(SEL)selector isReset:(BOOL)reset {
+    itn_addNavigationRightItemViewsWithTargetSelectorIsReset(self, itemViews, target, selector, reset);
+}
+
+//直接在right添加UIView,UIView的subview可以是自动布局的, itemViews actionBlock
+-(void)addNavigationRightItemViews:(NSArray<UIView*> *)itemViews isReset:(BOOL)reset actionBlock:(YZHNavigationItemActionBlock)actionBlock {
+    itn_addNavigationRightItemViewsWithIsResetActionBlock(self, itemViews, reset, actionBlock);
+}
+
+
 -(void)setupItemsSpace:(CGFloat)itemsSpace left:(BOOL)left {
     if (left) {
         self.leftItemsSpace = itemsSpace;
@@ -366,4 +410,15 @@
     [super didReceiveMemoryWarning];
 }
 
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
 @end

@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, UIPageScrollDirection)
     UIPageScrollVertical            = 2,
 };
 
-#define UIPAGESCROLL_DIRECTION_IS_HORIZONTAL(DIR)       ((DIR) == UIPageScrollNull || (DIR) ==UIPageScrollHorizontal)
+#define UIPAGYZHROLL_DIRECTION_IS_HORIZONTAL(DIR)       ((DIR) == UIPageScrollNull || (DIR) ==UIPageScrollHorizontal)
 
 UIKIT_EXTERN NSString *const YZHPageTitleNormalColorKey;
 UIKIT_EXTERN NSString *const YZHPageTitleSelectedColorKey;

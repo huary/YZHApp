@@ -140,6 +140,15 @@
     [cell.zoomView zoomScale:zoomScale inPoint:point];
 }
 
+- (void)updateOrderNum {
+    if (self.currentPage <= 0  || self.totalPage <= 0) {
+        return;
+    }
+    if (self.delegate && [self.delegate respondsToSelector:@selector(imageBrowser:currentPage:totalPage:)]) {
+        [self.delegate imageBrowser:self currentPage:self.currentPage totalPage:self.totalPage];
+    }
+}
+
 #pragma mark YZHLoopScrollViewDelegate
 //这个代理方法后会自动给cell设置model
 - (YZHLoopCell *_Nullable)loopScrollView:(YZHLoopScrollView * _Nonnull)loopScrollView cellForModel:(id<YZHLoopCellModelProtocol>_Nullable)model withReusableCell:(YZHLoopCell *_Nullable)reusableCell
@@ -186,15 +195,55 @@
     return [self _updateImageCellWithModel:cellModel reusableCell:(YZHImageCell * _Nullable)reusableCell];
 }
 
-- (void)loopScrollViewDidEndDragging:(YZHLoopScrollView * _Nonnull)loopScrollView willDecelerate:(BOOL)decelerate { 
-    
+- (void)loopScrollView:(YZHLoopScrollView *)loopScrollView willDisplayCell:(YZHLoopCell *)loopCell {
+    if ([self.delegate respondsToSelector:@selector(imageBrowser:willDisplayCell:)]) {
+        [self.delegate imageBrowser:self willDisplayCell:(YZHImageCell *)loopCell];
+    }
+}
+
+- (void)loopScrollView:(YZHLoopScrollView *)loopScrollView didDisplayCell:(YZHLoopCell *)loopCell {
+    if ([self.delegate respondsToSelector:@selector(imageBrowser:didDisplayCell:)]) {
+        [self.delegate imageBrowser:self didDisplayCell:(YZHImageCell *)loopCell];
+    }
+}
+
+- (void)loopScrollViewWillEndDragging:(YZHLoopScrollView *)loopScrollView dragVector:(YZHScrollViewDragVector)dragVector {
+    if (self.totalPage > 0) {
+        switch (dragVector) {
+            case YZHScrollViewDragVectorNext:
+            {
+                self.currentPage = self.currentPage + 1;
+            }
+                break;
+                
+            case YZHScrollViewDragVectorPrev:
+            {
+                self.currentPage = MAX(1, self.currentPage - 1);
+            }
+                break;
+                
+            default:
+                break;
+        }
+        [self updateOrderNum];
+    }
+    if ([self.delegate respondsToSelector:@selector(imageBrowserWillEndDragging:dragVector:)]) {
+        [self.delegate imageBrowserWillEndDragging:self dragVector:dragVector];
+    }
+}
+
+- (void)loopScrollViewDidEndDragging:(YZHLoopScrollView * _Nonnull)loopScrollView willDecelerate:(BOOL)decelerate {
+    if ([self.delegate respondsToSelector:@selector(imageBrowserDidEndDragging:willDecelerate:)]) {
+        [self.delegate imageBrowserDidEndDragging:self willDecelerate:decelerate];
+    }
 }
 
 
-- (void)loopScrollViewWillBeginDragging:(YZHLoopScrollView * _Nonnull)loopScrollView { 
-    
+- (void)loopScrollViewWillBeginDragging:(YZHLoopScrollView * _Nonnull)loopScrollView {
+    if ([self.delegate respondsToSelector:@selector(loopScrollViewWillBeginDragging:)]) {
+        [self.delegate imageBrowserWillBeginDragging:self];
+    }
 }
-
 
 #pragma mark YZHImageCellDelegate
 - (void)imageCell:(YZHImageCell *)cell didTap:(UITapGestureRecognizer*)tap
@@ -264,7 +313,7 @@
             fromFrame = [fromView.superview convertRect:fromView.frame toView:showInView];
         }
     
-        UIViewContentMode contentMode = contentModeThatFits(showInView.hz_size, image.size);
+        UIViewContentMode contentMode = contentModeThatFits(showInView.bounds.size, image.size);
         
         UIImageView *fromImageView = [UIImageView new];
         fromImageView.image = image;
@@ -296,6 +345,8 @@
     self.fromView = fromView;
     
     [showInView addSubview:self.imageBrowserView];
+    [self updateOrderNum];
+    
     self.imageBrowserView.frame = showInView.bounds;
     [self.imageBrowserView.loopScrollView loadViewWithModel:model];
     
@@ -339,6 +390,20 @@
 
 
 #pragma mark - YZHImageBrowserViewDelegate
+
+- (UIView *)imageBrowserView:(YZHImageBrowserView *)imageBrowserView willPanStartAtPoint:(CGPoint)point forCell:(YZHImageCell *)imageCell {    
+    if ([self.delegate respondsToSelector:@selector(imageBrowser:willDragToDismissForCell:)]) {
+        return [self.delegate imageBrowser:self willDragToDismissForCell:imageCell];
+    }
+    return nil;
+}
+
+- (void)imageBrowserView:(YZHImageBrowserView *)imageBrowserView didEndPanToRecoverAtPoint:(CGPoint)point changedValue:(CGFloat)changedValue forCell:(YZHImageCell *)imageCell {
+    if ([self.delegate respondsToSelector:@selector(imageBrowser:didEndDragToRecoverForCell:)]) {
+        [self.delegate imageBrowser:self didEndDragToRecoverForCell:imageCell];
+    }
+}
+
 - (CGRect)imageBrowserView:(YZHImageBrowserView * _Nonnull)imageBrowserView dismissToFrameForCell:(nonnull YZHImageCell *)imageCell {
     UIView *dismissToView = self.fromView;
     CGRect dismissToFrame = CGRectMake(self.showInView.frame.size.width/2, self.showInView.frame.size.height/2, 0, 0);
@@ -348,7 +413,7 @@
     return dismissToFrame;
 }
 
-- (void)transitionView:(YZHLoopTransitionView *_Nonnull)transitionView didDismissAtPoint:(CGPoint)point changedValue:(CGFloat)changedValue
+- (void)imageBrowserView:(YZHImageBrowserView *)imageBrowserView didDismissAtPoint:(CGPoint)point changedValue:(CGFloat)changedValue forCell:(YZHImageCell *)imageCell
 {
     if ([self.delegate respondsToSelector:@selector(imageBrowserDidDismiss:)]) {
         [self.delegate imageBrowserDidDismiss:self];

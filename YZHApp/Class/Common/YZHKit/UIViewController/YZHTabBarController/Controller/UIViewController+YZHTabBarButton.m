@@ -13,7 +13,6 @@
 -(void)setHz_tabBarButton:(YZHTabBarButton *)hz_tabBarButton
 {
     [self hz_addStrongReferenceObject:hz_tabBarButton forKey:@"hz_tabBarButton"];
-    objc_setAssociatedObject(self, @selector(hz_tabBarButton), hz_tabBarButton, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 -(YZHTabBarButton*)hz_tabBarButton

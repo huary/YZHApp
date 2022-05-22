@@ -38,7 +38,7 @@
 {
     self.panGestureRecognizer.delegate = self;
     self.delaysContentTouches = NO;
-    self.canCancelContentTouches = NO;
+//    self.canCancelContentTouches = NO;
 }
 
 #pragma mark - UIGestureRecognizerDelegate

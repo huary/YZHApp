@@ -9,6 +9,9 @@
 #import "CAT_Fourth_ViewController.h"
 #import "UIViewController+YZHNavigation.h"
 
+#import "ViewController.h"
+#import "UIViewController+YZHPresentation.h"
+
 @interface CAT_Fourth_ViewController ()
 @property (nonatomic, assign) NSInteger level;
 
@@ -34,7 +37,7 @@
     self.hz_navigationBarViewBackgroundColor = [UIColor purpleColor];
 
     
-    [self hz_addNavigationFirstLeftBackItemWithTitle:@"返回" actionBlock:^(UIViewController *viewController, UIButton *button) {
+    [self hz_addNavigationFirstLeftBackItemWithTitle:@"返回" actionBlock:^(UIViewController *viewController, UIView *itemView) {
         [viewController.navigationController popViewControllerAnimated:YES];
     }];
     
@@ -43,9 +46,10 @@
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    if (self.level == 0) {
-        [self pri_enter];
-    }
+//    if (self.level == 0) {
+//        [self pri_enter];
+//    }
+    [self pri_testPresentation];
 }
 
 - (void)pri_enter {
@@ -53,6 +57,17 @@
     vc.level = self.level + 1;
     vc.hz_navigationEnable = YES;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)pri_testPresentation {
+    ViewController *first = [ViewController new];
+//    first.hz_presentationEnable = YES;
+    first.hz_navigationEnable = YES;
+    first.hz_navigationEnableForRootVCInitSetToNavigation = YES;
+    first.hz_barAndItemStyleForRootVCInitSetToNavigation = YZHNavigationBarAndItemStyleVCBarItem;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:first];
+    nav.hz_presentationEnable = YES;
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 @end

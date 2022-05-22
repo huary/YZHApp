@@ -16,6 +16,16 @@ typedef NS_ENUM(NSInteger, YZHLoopViewScrollDirection)
     YZHLoopViewScrollDirectionVertical          = 1,
 };
 
+typedef NS_ENUM(NSInteger, YZHScrollViewDragVector)
+{
+    //drag 0 向量
+    YZHScrollViewDragVectorNone    = 0,
+    //drag 前进方向(contentoffset 变大)
+    YZHScrollViewDragVectorNext    = 1,
+    //drag 后退方向(contentoffset 变小)
+    YZHScrollViewDragVectorPrev    = 2,
+};
+
 @class YZHLoopScrollView;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -31,8 +41,17 @@ NS_ASSUME_NONNULL_BEGIN
 //这个代理方法后不会给cell设置model,在返回cell的时候，cell的model已经赋值（因为不知道model）
 -(YZHLoopCell *_Nullable)loopScrollView:(YZHLoopScrollView * _Nonnull)loopScrollView prevCellWithCurrentShowModel:(id<YZHLoopCellModelProtocol>_Nullable)currentShowModel withReusableCell:(YZHLoopCell *_Nullable)reusableCell;
 
+- (void)loopScrollView:(YZHLoopScrollView * _Nonnull)loopScrollView willDisplayCell:(YZHLoopCell *)loopCell;
+
+- (void)loopScrollView:(YZHLoopScrollView * _Nonnull)loopScrollView didDisplayCell:(YZHLoopCell *)loopCell;
+
+/// scrollView即将开始拖拽
 - (void)loopScrollViewWillBeginDragging:(YZHLoopScrollView * _Nonnull)loopScrollView;
 
+/// scrollView即将结束拖拽
+- (void)loopScrollViewWillEndDragging:(YZHLoopScrollView * _Nonnull)loopScrollView dragVector:(YZHScrollViewDragVector)dragVector;
+
+/// scrollView已经结束拖拽
 - (void)loopScrollViewDidEndDragging:(YZHLoopScrollView * _Nonnull)loopScrollView willDecelerate:(BOOL)decelerate;
 
 @end
@@ -50,6 +69,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** 滚动的方向 */
 @property (nonatomic, assign) YZHLoopViewScrollDirection scrollDirection;
 
+//在YZHLoopScrollView进行layoutSubviews时，是否进行reloadData，默认为NO
+@property (nonatomic, assign) BOOL trigerReloadWhenLayoutSubviews;
+
 - (void)loadViewWithModel:(id<YZHLoopCellModelProtocol>)model;
 
 - (void)loadViewTo:(BOOL)next;
@@ -57,6 +79,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)reloadData;
 
 - (YZHLoopCell*)currentShowCell;
+
+- (YZHLoopCell*)prevCell;
+
+- (YZHLoopCell*)nextCell;
 
 - (CGSize)pageSize;
 

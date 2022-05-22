@@ -9,8 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "YZHNavigationTypes.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface UINavigationController (YZHNavigation)
 
 //是否开启本SDK开发的功能，默认为NO
@@ -29,15 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
 //动画时间,默认为0
 @property (nonatomic, assign) NSTimeInterval hz_transitionDuration;
 
-/*
- *hidesTabBarWhenPushed
- *在navigationController后所有的push操作都会hidesTabBar,
- *在之前已经push的VC的hidesBottomBarWhenPushed都会设置为NO,以后的都会设置为YES
- *默认为YES
- */
+//在push后是否隐藏tabBar，对第一个rootVC不生效，默认为YES
 @property (nonatomic, assign) BOOL hz_hidesTabBarAfterPushed;
+
 //导航栏的事件代理
 @property (nonatomic,weak) id<YZHNavigationControllerDelegate> hz_navDelegate;
+
 //导航栏和item的样式
 @property (nonatomic, assign) YZHNavigationBarAndItemStyle hz_navigationBarAndItemStyle;
 
@@ -50,15 +45,13 @@ NS_ASSUME_NONNULL_BEGIN
                   completion:(YZHNavigationControllerAnimationCompletionBlock)completion;
 
 -(void)hz_setViewControllers:(NSArray<UIViewController *> *)viewControllers
-                  completion:(YZHNavigationControllerAnimationCompletionBlock)completion;
+                   completion:(YZHNavigationControllerAnimationCompletionBlock)completion;
 
 -(void)hz_setViewControllers:(NSArray<UIViewController *> *)viewControllers
-                    animated:(BOOL)animated
-                  completion:(YZHNavigationControllerAnimationCompletionBlock)completion;
+                     animated:(BOOL)animated
+                   completion:(YZHNavigationControllerAnimationCompletionBlock)completion;
 
 //带有完成的pop，和系统的只带有一个动画完成的回调
-
-
 - (UIViewController *)hz_popViewControllerAnimated:(BOOL)animated
                                         completion:(YZHNavigationControllerAnimationCompletionBlock)completion;
 
@@ -70,5 +63,3 @@ NS_ASSUME_NONNULL_BEGIN
                                                         completion:(YZHNavigationControllerAnimationCompletionBlock)completion;
 
 @end
-
-NS_ASSUME_NONNULL_END

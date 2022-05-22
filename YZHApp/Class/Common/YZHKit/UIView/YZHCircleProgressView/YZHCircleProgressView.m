@@ -32,7 +32,7 @@ static CGFloat defaultProgressLineWidth_s = 5.0;
 
 -(void)setUpChild
 {
-    self.circleType = UICircleProgressViewTypeDefaultOnce;
+    self.circleType = YZHCircleProgressViewTypeDefaultOnce;
     self.progressBorderWidth = 0;
     self.progressBorderColor = nil;
     
@@ -93,10 +93,10 @@ static CGFloat defaultProgressLineWidth_s = 5.0;
 -(void)setTrackLayer
 {
     [self check];
-    CGFloat tranckLineWidth = self.progressTrackLineWidth;
-    self.progressTrackLayer.lineWidth = tranckLineWidth;
+    CGFloat trackLineWidth = self.progressTrackLineWidth;
+    self.progressTrackLayer.lineWidth = trackLineWidth;
     
-    CGFloat trackRadius = tranckLineWidth/2 + self.progressTrackInsideRadius;
+    CGFloat trackRadius = trackLineWidth/2 + self.progressTrackInsideRadius;
     //此函数的参数，center表示弧线原点的位置；radius表示弧度线宽中心点到原点的位置，如果lineWidth > radius 的话，那么radius表示线宽的宽度的一般，此时的内侧半径为lineWidth/2；startAngle表示开始的位置，endAngle表示结束的位置，正上的坐标点为-M_PI_2;clockwize表示顺时针还是逆时针
     UIBezierPath *trackPath = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.center.x - self.frame.origin.x, self.center.y - self.frame.origin.y) radius:trackRadius startAngle:0 endAngle:2 * M_PI clockwise:YES];
     self.progressTrackLayer.path = trackPath.CGPath;
@@ -112,7 +112,7 @@ static CGFloat defaultProgressLineWidth_s = 5.0;
 -(void)setUpProgressLayer
 {
     if (self.progressBorderWidth > 0) {
-        self.layer.cornerRadius = self.bounds.size.width/2;
+//        self.layer.cornerRadius = self.bounds.size.width/2;
     }
     self.progressLayer.lineWidth = self.progressLineWidth;
     self.progressLayer.strokeColor = self.progressColor.CGColor;
@@ -155,7 +155,7 @@ static CGFloat defaultProgressLineWidth_s = 5.0;
 
 -(void)setProgress:(CGFloat)progress animated:(BOOL)animated
 {
-    if (self.circleType == UICircleProgressViewTypeDefaultOnce) {
+    if (self.circleType == YZHCircleProgressViewTypeDefaultOnce) {
         [self setProgressPathWithProgress:progress];
         if (animated) {
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
@@ -166,7 +166,7 @@ static CGFloat defaultProgressLineWidth_s = 5.0;
             [self.progressLayer addAnimation:animation forKey:@"progress"];
         }
     }
-    else if (self.circleType == UICircleProgressViewTypeInfinitePartRadian)
+    else if (self.circleType == YZHCircleProgressViewTypeInfinitePartRadian)
     {
         [self setProgressPathWithProgress:progress];
         self.progressLayer.lineCap = kCALineCapRound;
@@ -176,7 +176,7 @@ static CGFloat defaultProgressLineWidth_s = 5.0;
         animation.repeatCount = MAXFLOAT;
         [self.progressLayer addAnimation:animation forKey:@"progress"];
     }
-    else if (self.circleType == UICircleProgressViewTypeInfiniteAllRadian)
+    else if (self.circleType == YZHCircleProgressViewTypeInfiniteAllRadian)
     {
         [self setProgressPathWithProgress:progress];
         

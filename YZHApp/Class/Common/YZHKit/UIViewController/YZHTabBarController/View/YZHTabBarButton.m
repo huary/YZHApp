@@ -16,17 +16,6 @@ static float defautlTextFontSize = 12;
 
 static float tabBarImageRatio = 0.65;
 
-//@interface YZHTabBarButton ()
-//
-//@property (nonatomic, assign) CGRange imageRange;
-//@property (nonatomic, assign) CGRange titleRange;
-//@property (nonatomic, assign) YZHButtonImageTitleStyle buttonStyle;
-//
-//@property (nonatomic, strong) UIButton *badgeButton;
-//@property (nonatomic, assign) CGRect graphicsImageFrame;
-//
-//@end
-
 @implementation YZHTabBarButton
 
 -(instancetype)initWithFrame:(CGRect)frame
@@ -60,10 +49,13 @@ static float tabBarImageRatio = 0.65;
     }
     CGFloat itemWidth = itemHeight;
     
-    CGFloat imageRatio = imageSize.width/imageSize.height;
-    CGFloat imageHeigth = itemHeight * 0.6;//height * 0.4;
-    CGFloat imageWidth = imageHeigth * imageRatio;
-    
+    CGFloat imageWidth = imageSize.width;
+    CGFloat imageHeigth = imageSize.height;
+    if (self.graphButtonImage) {
+        CGFloat imageRatio = imageSize.width/imageSize.height;
+        imageHeigth = itemHeight * 0.6;//height * 0.4;
+        imageWidth = imageHeigth * imageRatio;
+    }
     itemWidth = MAX(itemWidth, imageWidth);
     
     if (graphicsSize) {
@@ -84,6 +76,13 @@ static float tabBarImageRatio = 0.65;
     if (CGRectIsEmpty(frame)) {
         return image;
     }
+    if (imageFrame) {
+        *imageFrame = frame;
+    }
+    if (!self.graphButtonImage) {
+        return image;
+    }
+    
     YZHGraphicsContext *ctx = [[YZHGraphicsContext alloc] initWithBeginBlock:^(YZHGraphicsContext *context) {
         context.beginInfo = [[YZHGraphicsBeginInfo alloc] init];
         context.beginInfo.graphicsSize = graphicsSize;
@@ -91,9 +90,6 @@ static float tabBarImageRatio = 0.65;
         [image drawInRect:frame];
     } endPathBlock:nil];
     UIImage *newImage =[ctx createGraphicesImageWithStrokeColor:nil];
-    if (imageFrame) {
-        *imageFrame = frame;
-    }
     return newImage;
 }
 
@@ -121,6 +117,8 @@ static float tabBarImageRatio = 0.65;
 
 -(void)_setupDefaultValue
 {
+    self.graphButtonImage = NO;
+    
     [self _updateTitleFontAndColor];
     
     self.imageRange = CGRangeMake(0, tabBarImageRatio);
@@ -159,6 +157,9 @@ static float tabBarImageRatio = 0.65;
             h = 10;
             w = 10;
             wR = 3;
+        } else if (badgeType == YZHBadgeTypeDefault) {
+            h = 16;
+            w = 16;
         }
         
         UIImage *image = self.tabBarItem.image;
@@ -166,12 +167,23 @@ static float tabBarImageRatio = 0.65;
             CGSize size = self.graphicsImageFrame.size;
             CGRect imageRect = [self _getImageRectForContentRect:self.bounds];
             
-            x = (imageRect.size.width - size.width)/2 + size.width - h/wR;
-            y = (imageRect.size.height - size.height)/2 - h/hR;
+            if (badgeType == YZHBadgeTypeDefault) {
+                x = (imageRect.size.width - size.width) / 2 + size.width - 9;
+                y = 3;
+            } else {
+                x = (imageRect.size.width - size.width)/2 + size.width - h/wR;
+                y = (imageRect.size.height - size.height)/2 - h/hR;
+            }
         }
-        if (realShowValue.length > 2 && badgeType == YZHBadgeTypeDefault) {
-            w = 32;
+        
+        if (badgeType == YZHBadgeTypeDefault) {
+            if (realShowValue.length >= 3) {
+                w = 30;
+            } else if (realShowValue.length >= 2) {
+                w = 22;
+            }
         }
+        
         w = MIN(w, self.bounds.size.width - x);
         self.badgeButton.frame = CGRectMake(x, y, w, h);
     }
@@ -181,6 +193,12 @@ static float tabBarImageRatio = 0.65;
     self.badgeButton.backgroundColor = [self _badgeColor];
     if (badgeType == YZHBadgeTypeDefault) {
         [self _createUpdateBadgeButton:self.badgeButton badgeValue:realShowValue];
+        
+        self.badgeButton.layer.borderWidth = 1;
+        self.badgeButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        // #E64C44
+        self.badgeButton.backgroundColor = [UIColor colorWithRed:0.902 green:0.298 blue:0.267 alpha:1.0f];
+        self.badgeButton.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Semibold" size:12];
         self.badgeButton.hidden = !IS_AVAILABLE_NSSTRNG(realShowValue);
     }
     else if (badgeType == YZHBadgeTypeDot) {

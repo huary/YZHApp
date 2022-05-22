@@ -18,6 +18,15 @@ NS_ASSUME_NONNULL_BEGIN
 @optional
 - (CGRect)imageBrowserView:(YZHImageBrowserView *_Nonnull)imageBrowserView dismissToFrameForCell:(YZHImageCell *)imageCell;
 
+- (UIView *)imageBrowserView:(YZHImageBrowserView *_Nonnull)imageBrowserView willPanStartAtPoint:(CGPoint)point forCell:(YZHImageCell *)imageCell;
+
+- (void)imageBrowserView:(YZHImageBrowserView *_Nonnull)imageBrowserView didEndPanToRecoverAtPoint:(CGPoint)point changedValue:(CGFloat)changedValue forCell:(YZHImageCell *)imageCell;
+
+- (void)imageBrowserView:(YZHImageBrowserView *_Nonnull)imageBrowserView didPanStartAtPoint:(CGPoint)point forCell:(YZHImageCell *)imageCell;
+
+- (void)imageBrowserView:(YZHImageBrowserView *_Nonnull)imageBrowserView updateAtPoint:(CGPoint)point changedValue:(CGFloat)changedValue forCell:(YZHImageCell *)imageCell;
+
+- (void)imageBrowserView:(YZHImageBrowserView *_Nonnull)imageBrowserView didDismissAtPoint:(CGPoint)point changedValue:(CGFloat)changedValue forCell:(YZHImageCell *)imageCell;
 @end
 
 @interface YZHImageBrowserView : YZHLoopTransitionView

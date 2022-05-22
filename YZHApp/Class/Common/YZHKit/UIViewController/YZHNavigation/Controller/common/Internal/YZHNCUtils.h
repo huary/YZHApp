@@ -19,12 +19,13 @@ void itn_resetNavigationBarAndItemViewFrame(UINavigationController *nc, CGRect f
 void itn_pushViewController(UINavigationController *nc, UIViewController *vc, BOOL animated);
 
 //自定义
-void itn_pushViewControllerCompletion(UINavigationController *nc, UIViewController *vc, YZHNavigationControllerAnimationCompletionBlock completion);
+void itn_pushViewControllerCompletion(UINavigationController *nc, UIViewController *vc,YZHNavigationControllerAnimationCompletionBlock completion);
 
 void itn_popViewControllerCompletion(UINavigationController *nc, YZHNavigationControllerAnimationCompletionBlock completion);
 
+void itn_afterPushPopForNavigationController(UINavigationController *nc, UIViewController *fromVC, BOOL push, BOOL animated);
 //void itn_popToViewController(UINavigationController *nc, UIViewController *vc, YZHNavigationControllerAnimationCompletionBlock completion);
-//
+
 //void itn_popToRootViewController(UINavigationController *nc, YZHNavigationControllerAnimationCompletionBlock completion);
 
 id itn_getKeyFromVC(UIViewController *vc);

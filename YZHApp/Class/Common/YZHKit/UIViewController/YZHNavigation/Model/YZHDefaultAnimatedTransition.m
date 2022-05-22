@@ -9,9 +9,7 @@
 #import "YZHDefaultAnimatedTransition.h"
 //#import "UIViewController+NavigationBarAndItemView.h"
 #import "UIViewController+YZHNavigation.h"
-#import "UITabBarController+UITabBarView.h"
-#import "UIView+YZHAdd.h"
-#import "YZHKitType.h"
+#import "UITabBarController+YZHTabBarView.h"
 
 #import "UINavigationController+YZHNavigation.h"
 #import "UINavigationController+YZHNavigationItn.h"
@@ -19,21 +17,21 @@
 /**************************************************************************
  *UITabBarController (UITabBarTransitionView)
  **************************************************************************/
-@interface UITabBarController (UITabBarTransitionView)
+@interface UITabBarController (TabBarTransitionView)
 
 /** tabBarTransitionView,主要用于NavigationController上进行交互使用的，不要使用此属性 */
 @property (nonatomic, strong) UIView *hz_itn_tabBarTransitionView;
 
 @end
 
-@implementation UITabBarController (UITabBarTransitionView)
+@implementation UITabBarController (TabBarTransitionView)
 
 - (void)setHz_itn_tabBarTransitionView:(UIView *)hz_itn_tabBarTransitionView {
     [self hz_addStrongReferenceObject:hz_itn_tabBarTransitionView forKey:@"hz_itn_tabBarTransitionView"];
 }
 
 - (UIView *)hz_itn_tabBarTransitionView {
-    return [self hz_strongReferenceObjectForKey:@"hz_itn_tabBarTransitionView"];;
+    return [self hz_strongReferenceObjectForKey:@"hz_itn_tabBarTransitionView"];
 }
 
 -(UIView*)createTabBarTransitionView
@@ -100,6 +98,18 @@
     
     [containerView addSubview:toVC.view];
     if (self.operation == UINavigationControllerOperationPush) {
+        
+        CGColorRef shadowColor_f = toVC.view.layer.shadowColor;
+        CGSize shadowOffset_f = toVC.view.layer.shadowOffset;
+        CGFloat shadowOpacity_f = toVC.view.layer.shadowOpacity;
+        CGFloat shadowRadius_f = toVC.view.layer.shadowRadius;
+        void (^shadowRestoreBlock)(void) = ^{
+            toVC.view.layer.shadowColor = shadowColor_f;
+            toVC.view.layer.shadowOffset = shadowOffset_f;
+            toVC.view.layer.shadowOpacity = shadowOpacity_f;
+            toVC.view.layer.shadowRadius = shadowRadius_f;
+        };
+        
         toVC.view.layer.shadowColor = shadowColor.CGColor;
         toVC.view.layer.shadowOffset = shadowOffset;
         toVC.view.layer.shadowOpacity = shadowOpacity;
@@ -127,18 +137,14 @@
         toVC.view.transform = CGAffineTransformMakeTranslation(toViewTransitionX, 0);
         fromVC.view.transform = CGAffineTransformIdentity;
 
-        BOOL hideBottomBar = NO;
-        if (fromVC.tabBarController && (self.navigationController.hz_hidesTabBarAfterPushed || toVC.hidesBottomBarWhenPushed)) {
-
-            __block BOOL prevHasHide = NO;
-            [self.navigationController.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if (obj != toVC && obj.hidesBottomBarWhenPushed) {
-                    prevHasHide = YES;
-                    *stop = YES;
-                }
-            }];
-            if (prevHasHide == NO) {
-                hideBottomBar = YES;
+        BOOL hideBottomBar = fromVC.hidesBottomBarWhenPushed;
+        __block dispatch_block_t tabBarRestoreBlock = nil;
+        
+        if (fromVC.tabBarController &&
+            self.navigationController.hz_hidesTabBarAfterPushed &&
+            self.navigationController.hz_itn_isSetViewControllersToRootVC == NO) {
+            hideBottomBar = YES;
+            if (fromVC.hidesBottomBarWhenPushed == NO) {
                 UITabBar *tabBar = fromVC.tabBarController.tabBar;
                 UIView *transitionView = nil;
                 if (fromVC.tabBarController.hz_tabBarView) {
@@ -149,12 +155,25 @@
                     transitionView = [fromVC.tabBarController createTabBarTransitionView];
                 }
                 CGRect frame = transitionView.frame;
-                frame.origin = CGPointMake(0, fromVC.view.bounds.size.height -tabBar.bounds.size.height);
+                frame.size = tabBar.bounds.size;
+                frame.origin = CGPointMake(0, SCREEN_HEIGHT - frame.size.height);
                 transitionView.frame = frame;
                 [fromVC.view addSubview:transitionView];
+                BOOL prevHidden = tabBar.hidden;
                 tabBar.hidden = YES;
 
                 fromVC.tabBarController.hz_itn_tabBarTransitionView = transitionView;
+                UITabBarController *tabBarController = fromVC.tabBarController;
+                tabBarRestoreBlock = ^{
+                    [tabBarController.hz_itn_tabBarTransitionView removeFromSuperview];
+                    if (tabBarController.hz_tabBarView) {
+                        UIView *tabBarView = tabBarController.hz_tabBarView;
+                        tabBarView.frame = tabBar.bounds;
+                        [tabBar addSubview:tabBarView];
+                    }
+                    tabBar.hidden = prevHidden;
+//                    tabBarController.hz_itn_tabBarTransitionView = nil;
+                };
             }
         }
        
@@ -163,58 +182,70 @@
                               delay:0
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
-                             //1.变化NavigationBar上面的颜色
-                             self.navigationController.hz_navigationBarViewBackgroundColor = toColor;
-                             
-                             //2.变化不同ItemView的transform
-                             [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformMakeTranslation(-fromViewTransitionX, 0) forViewController:fromVC];
-                             [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:toVC];
-                             
-                             //3.变化ViewController上View的transform
-                             toVC.view.transform = CGAffineTransformIdentity;
-                             fromVC.view.transform = CGAffineTransformMakeTranslation(-fromViewTransitionX, 0);
-                         }
+            //1.变化NavigationBar上面的颜色
+            self.navigationController.hz_navigationBarViewBackgroundColor = toColor;
+            
+            //2.变化不同ItemView的transform
+            [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformMakeTranslation(-fromViewTransitionX, 0) forViewController:fromVC];
+            [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:toVC];
+            
+            //3.变化ViewController上View的transform
+            toVC.view.transform = CGAffineTransformIdentity;
+            fromVC.view.transform = CGAffineTransformMakeTranslation(-fromViewTransitionX, 0);
+        }
                          completion:^(BOOL finished) {
-                             //1.指定变化完成后的NavigationItemView的Transform
-                             [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:fromVC];
-                             [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:toVC];
-                             
-                             //2.指定ViewController的View的transform
-                             fromVC.view.transform = CGAffineTransformIdentity;
-                             toVC.view.transform = CGAffineTransformIdentity;
-
-                             toVC.hidesBottomBarWhenPushed = hideBottomBar;
-                             
-                             //3.检查是否完成push还是取消
-                             BOOL canceled = [transitionContext transitionWasCancelled];
-                             [transitionContext completeTransition:!canceled];
-                             if (canceled) {
-                                 //取消
-                                 //1.移除添加的NavigationItem
-                                 [self.navigationController hz_itn_removeNavigationItemViewForViewController:toVC];
-                                 
-                                 //2.还原navigationBar上面的颜色
-                                 self.navigationController.hz_navigationBarViewBackgroundColor = fromColor;
-
-                                 if (hideBottomBar) {
-                                     UITabBar *tabBar = fromVC.tabBarController.tabBar;
-                                     if (fromVC.tabBarController.hz_tabBarView) {
-                                         UIView *transitionView = fromVC.tabBarController.hz_tabBarView;
-                                         [transitionView removeFromSuperview];
-                                         
-                                         CGRect frame = transitionView.frame;
-                                         frame.origin = CGPointMake(0, 0);
-                                         transitionView.frame = frame;
-                                         [tabBar addSubview:transitionView];
-                                     }
-                                     else {
-                                         [fromVC.tabBarController.hz_itn_tabBarTransitionView removeFromSuperview];
-                                     }
-                                     tabBar.hidden = NO;
-                                 }
-                             }
-                             self.navigationController.view.userInteractionEnabled = YES;
-                         }];
+            
+            shadowRestoreBlock();
+            
+            //1.指定变化完成后的NavigationItemView的Transform
+            [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:fromVC];
+            [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:toVC];
+            
+            //2.指定ViewController的View的transform
+            fromVC.view.transform = CGAffineTransformIdentity;
+            toVC.view.transform = CGAffineTransformIdentity;
+            
+            //3.检查是否完成push还是取消
+            BOOL canceled = [transitionContext transitionWasCancelled];
+            [transitionContext completeTransition:!canceled];
+            if (canceled) {
+                //取消
+                //1.移除添加的NavigationItem
+                [self.navigationController hz_itn_removeNavigationItemViewForViewController:toVC];
+                
+                //2.还原navigationBar上面的颜色
+                self.navigationController.hz_navigationBarViewBackgroundColor = fromColor;
+                
+                //3.还原tabBar
+                if (tabBarRestoreBlock) {
+                    tabBarRestoreBlock();
+                }
+            }
+            else {
+                //如果是直接setViewController:animated:(YES)改变navigationController的rootVC时，rootVC没有TabBarController，因此不显示tabBar
+//                toVC.hidesBottomBarWhenPushed = hideBottomBar;
+//                if ([self.navigationController.viewControllers containsObject:fromVC]) {
+//                    NSInteger fromIdx = [self.navigationController.viewControllers indexOfObject:fromVC] + 1;
+//                    for (NSInteger idx = fromIdx; idx < self.navigationController.viewControllers.count; ++idx) {
+//                        UIViewController *vc = self.navigationController.viewControllers[idx];
+//                        if (vc != toVC) {
+//                            vc.hidesBottomBarWhenPushed = hideBottomBar;
+//                        }
+//                        else {
+//                            break;
+//                        }
+//                    }
+//                }
+//                else {
+//                    for (NSInteger idx = 1; idx < self.navigationController.viewControllers.count; ++idx) {
+//                        UIViewController *vc = self.navigationController.viewControllers[idx];
+//                        vc.hidesBottomBarWhenPushed = hideBottomBar;
+//                    }
+//                }
+            }
+            self.navigationController.view.userInteractionEnabled = YES;
+            tabBarRestoreBlock = nil;
+        }];
         
 //        CGFloat diff = duration * navigationItemViewAlphaPushChangeDurationWithTotalDurationRatio;
         [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -239,6 +270,18 @@
     }
     else
     {
+        
+        CGColorRef shadowColor_f = fromVC.view.layer.shadowColor;
+        CGSize shadowOffset_f = fromVC.view.layer.shadowOffset;
+        CGFloat shadowOpacity_f = fromVC.view.layer.shadowOpacity;
+        CGFloat shadowRadius_f = fromVC.view.layer.shadowRadius;
+        void (^shadowRestoreBlock)(void) = ^{
+            fromVC.view.layer.shadowColor = shadowColor_f;
+            fromVC.view.layer.shadowOffset = shadowOffset_f;
+            fromVC.view.layer.shadowOpacity = shadowOpacity_f;
+            fromVC.view.layer.shadowRadius = shadowRadius_f;
+        };
+        
         fromVC.view.layer.shadowColor = shadowColor.CGColor;
         fromVC.view.layer.shadowOffset = shadowOffset;
         fromVC.view.layer.shadowOpacity = shadowOpacity;
@@ -247,17 +290,9 @@
         self.navigationController.view.userInteractionEnabled = NO;
 
         BOOL showBottomBar = NO;
+        __block dispatch_block_t tabBarFinishBlock = nil;
         if (fromVC.hidesBottomBarWhenPushed && toVC.tabBarController) {
-            
-            __block BOOL prevHasHide = NO;
-            [self.navigationController.viewControllers enumerateObjectsUsingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if (obj.hidesBottomBarWhenPushed) {
-                    prevHasHide = YES;
-                    *stop = YES;
-                }
-            }];
-            
-            if (prevHasHide == NO) {
+            if (toVC.hidesBottomBarWhenPushed == NO) {
                 showBottomBar = YES;
                 
                 UITabBar *tabBar = toVC.tabBarController.tabBar;
@@ -274,17 +309,24 @@
                     }
                 }
                 CGRect frame = transitionView.frame;
-                
-                CGFloat h = tabBar.bounds.size.height;
-                CGFloat x = 0;
-                CGFloat y = toVC.view.bounds.size.height - h;
-                CGFloat w = tabBar.bounds.size.width;
-                frame = CGRectMake(x, y, w, h);
+                frame.size = tabBar.bounds.size;
+                frame.origin = CGPointMake(0, SCREEN_HEIGHT - frame.size.height);
                 transitionView.frame = frame;
                 [toVC.view addSubview:transitionView];
                 tabBar.hidden = YES;
                 
                 toVC.tabBarController.hz_itn_tabBarTransitionView = transitionView;
+                UITabBarController *tabBarController = toVC.tabBarController;
+                tabBarFinishBlock = ^{
+                    [tabBarController.hz_itn_tabBarTransitionView removeFromSuperview];
+                    if (tabBarController.hz_tabBarView) {
+                        UIView *tabBarView = tabBarController.hz_tabBarView;
+                        tabBarView.frame = tabBar.bounds;
+                        [tabBar addSubview:tabBarView];
+                    }
+                    tabBarController.hz_itn_tabBarTransitionView = nil;
+                    tabBar.hidden = NO;
+                };
             }
         }
         
@@ -310,59 +352,49 @@
                               delay:0.0
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
-                             //1.变化NavigationBar上面的颜色
-                             self.navigationController.hz_navigationBarViewBackgroundColor = toColor;
-                             
-                             //3.变化不同ItemView的transform
-                             [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformMakeTranslation(fromViewTransitionX, 0) forViewController:fromVC];
-                             [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:toVC];
-                             
-                             //4.变化ViewController上View的transform
-                             toVC.view.transform = CGAffineTransformIdentity;
-                             fromVC.view.transform = CGAffineTransformMakeTranslation(toViewTransitionX, 0);
-                         }
-                         completion:^(BOOL finished) {                             
-                             //1.指定变化完成后的NavigationItemView的Transform
-                             [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:fromVC];
-                             [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:toVC];
-                             
-                             //2.指定ViewController的View的transform
-                             fromVC.view.transform = CGAffineTransformIdentity;
-                             toVC.view.transform = CGAffineTransformIdentity;
+            shadowRestoreBlock();
 
-                             //3.检查是否完成pop还是取消
-                             BOOL canceled = [transitionContext transitionWasCancelled];
-                             [transitionContext completeTransition:!canceled];
-                             if (canceled) {
-                                 //取消
-                                 //1.还原navigationBar上面的颜色
-                                 self.navigationController.hz_navigationBarViewBackgroundColor = fromColor;
-                             }
-                             else
-                             {
-                                 //完成
-                                 [self.navigationController hz_itn_removeNavigationItemViewForViewController:fromVC];
-                                 
-                                 if (showBottomBar) {
-                                     UITabBar *tabBar = toVC.tabBarController.tabBar;
-                                     if (toVC.tabBarController.hz_tabBarView) {
-                                         UIView *transitionView = toVC.tabBarController.hz_tabBarView;
-                                         [transitionView removeFromSuperview];
-                                         
-                                         CGRect frame = tabBar.bounds;
-                                         transitionView.frame = frame;
-                                         [tabBar addSubview:transitionView];
-                                     }
-                                     else {
-                                         [toVC.tabBarController.hz_itn_tabBarTransitionView removeFromSuperview];
-                                     }
-                                     toVC.tabBarController.hz_itn_tabBarTransitionView = nil;
-                                     tabBar.hidden = NO;
-                                 }
-                             }
-                             
-                             self.navigationController.view.userInteractionEnabled = YES;
-                         }];
+            //1.变化NavigationBar上面的颜色
+            self.navigationController.hz_navigationBarViewBackgroundColor = toColor;
+            
+            //3.变化不同ItemView的transform
+            [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformMakeTranslation(fromViewTransitionX, 0) forViewController:fromVC];
+            [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:toVC];
+            
+            //4.变化ViewController上View的transform
+            toVC.view.transform = CGAffineTransformIdentity;
+            fromVC.view.transform = CGAffineTransformMakeTranslation(toViewTransitionX, 0);
+        }
+                         completion:^(BOOL finished) {
+            //1.指定变化完成后的NavigationItemView的Transform
+            [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:fromVC];
+            [self.navigationController hz_itn_setNavigationItemViewTransform:CGAffineTransformIdentity forViewController:toVC];
+            
+            //2.指定ViewController的View的transform
+            fromVC.view.transform = CGAffineTransformIdentity;
+            toVC.view.transform = CGAffineTransformIdentity;
+            
+            //3.检查是否完成pop还是取消
+            BOOL canceled = [transitionContext transitionWasCancelled];
+            [transitionContext completeTransition:!canceled];
+            if (canceled) {
+                //取消
+                //1.还原navigationBar上面的颜色
+                self.navigationController.hz_navigationBarViewBackgroundColor = fromColor;
+            }
+            else
+            {
+                //完成
+                [self.navigationController hz_itn_removeNavigationItemViewForViewController:fromVC];
+                
+                if (tabBarFinishBlock) {
+                    tabBarFinishBlock();
+                }
+            }
+            
+            self.navigationController.view.userInteractionEnabled = YES;
+            tabBarFinishBlock = nil;
+        }];
         
 //        CGFloat diff = duration * navigationItemViewAlphaPopChangeDurationWithTotalDurationRatio;
         [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -386,5 +418,70 @@
         }];
     }
 }
+
++ (void)updateTabBarForNavigationController:(UINavigationController *)navigationController fromVC:(UIViewController *)fromVC whenPushPopNoAnimatedTransition:(BOOL)push {
+    UIViewController *topVC = navigationController.topViewController;
+    UITabBarController *tabBarVC = topVC.tabBarController;
+    if (!tabBarVC || fromVC == topVC) {
+        return;
+    }
+    
+    UIColor *toColor = [topVC hz_navigationBarViewBackgroundColor];
+    CGFloat toAlpha = [topVC hz_navigationItemViewAlpha];
+
+    if (push) {
+        [navigationController hz_itn_addNewNavigationItemViewForViewController:topVC];
+        
+        navigationController.hz_navigationBarViewBackgroundColor = toColor;
+        
+        [navigationController hz_itn_setNavigationItemViewAlpha:toAlpha minToHidden:NO forViewController:topVC];
+
+        //如果只有rootVC时，是不隐藏tabBar的
+        BOOL hidden = navigationController.viewControllers.count > 1 ? navigationController.hz_hidesTabBarAfterPushed : fromVC.hidesBottomBarWhenPushed;
+//        topVC.hidesBottomBarWhenPushed = hidden;
+        topVC.tabBarController.tabBar.hidden = hidden;
+        
+//        if (fromVC) {
+//            if ([navigationController.viewControllers containsObject:fromVC]) {
+//                NSInteger fromIdx = [navigationController.viewControllers indexOfObject:fromVC] + 1;
+//                for (NSInteger idx = fromIdx; idx < navigationController.viewControllers.count; ++idx) {
+//                    UIViewController *vc = navigationController.viewControllers[idx];
+//                    if (vc != topVC) {
+//                        vc.hidesBottomBarWhenPushed = navigationController.hz_hidesTabBarAfterPushed;
+//                    }
+//                    else {
+//                        break;
+//                    }
+//                }
+//            }
+//            else {
+//                for (NSInteger idx = 1; idx < navigationController.viewControllers.count; ++idx) {
+//                    UIViewController *vc = navigationController.viewControllers[idx];
+//                    vc.hidesBottomBarWhenPushed = navigationController.hz_hidesTabBarAfterPushed;
+//                }
+//            }
+//        }
+    }
+    else {
+//        BOOL prevHasHide = topVC.hidesBottomBarWhenPushed;
+        
+        if (!topVC.hidesBottomBarWhenPushed) {
+            [topVC.tabBarController.hz_itn_tabBarTransitionView removeFromSuperview];
+            UITabBar *tabBar = topVC.tabBarController.tabBar;
+            if (topVC.tabBarController.hz_tabBarView) {
+                UIView *tabBarView = topVC.tabBarController.hz_tabBarView;
+                tabBarView.frame = tabBar.bounds;
+                [tabBar addSubview:tabBarView];
+            }
+            topVC.tabBarController.hz_itn_tabBarTransitionView = nil;
+            tabBar.hidden = NO;
+        }
+        
+        navigationController.hz_navigationBarViewBackgroundColor = toColor;
+        
+        [navigationController hz_itn_setNavigationItemViewAlpha:toAlpha minToHidden:NO forViewController:topVC];
+    }
+}
+
 
 @end

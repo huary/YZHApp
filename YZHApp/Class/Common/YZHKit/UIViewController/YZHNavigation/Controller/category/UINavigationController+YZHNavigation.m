@@ -12,8 +12,10 @@
 #import "UIViewController+YZHNavigationRootVCInitSetup.h"
 #import "YZHNavigationItnTypes.h"
 #import "YZHNCUtils.h"
+#import "YZHNavigationController.h"
+#import "YZHNavigationController+Internal.h"
 
-#define PREV_NC_CHECK(ret)   if (!self.hz_navigationEnable || ![self isKindOfClass:[UINavigationController class]]) return ret;
+#define PREV_NC_CHECK_EXE(C,...) if ( C PREV_NC_COND) __VA_ARGS__
 
 
 @implementation UINavigationController (YZHNavigation)
@@ -149,10 +151,17 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
         [self hz_exchangeInstanceMethod:@selector(viewDidLoad) with:@selector(hz_nc_viewDidLoad)];
         [self hz_exchangeInstanceMethod:@selector(viewWillLayoutSubviews) with:@selector(hz_nc_viewWillLayoutSubviews)];
         [self hz_exchangeInstanceMethod:@selector(pushViewController:animated:) with:@selector(hz_pushViewController:animated:)];
+        [self hz_exchangeInstanceMethod:@selector(popViewControllerAnimated:) with:@selector(hz_popViewControllerAnimated:)];
+        [self hz_exchangeInstanceMethod:@selector(popToViewController:animated:) with:@selector(hz_popToViewController:animated:)];
+        [self hz_exchangeInstanceMethod:@selector(popToRootViewControllerAnimated:) with:@selector(hz_popToRootViewControllerAnimated:)];
+        
+        [self hz_exchangeInstanceMethod:@selector(setViewControllers:) with:@selector(hz_setViewControllers:)];
+        [self hz_exchangeInstanceMethod:@selector(setViewControllers:animated:) with:@selector(hz_setViewControllers:animated:)];
     });
 }
 
 - (instancetype)hz_initWithRootViewController:(UIViewController *)rootViewController {
+    self.hz_navbarFrameBlock = rootViewController.hz_navbarFrameBlockForRootVCInitSetToNavigation;
     self.hz_navigationEnable = rootViewController.hz_navigationEnableForRootVCInitSetToNavigation;
     self.hz_navigationBarAndItemStyle = rootViewController.hz_barAndItemStyleForRootVCInitSetToNavigation;
     return [self hz_initWithRootViewController:rootViewController];
@@ -178,10 +187,81 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
 
 #pragma mark override
 -(void)hz_pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    itn_pushViewController(self, viewController, animated);
-    [self hz_pushViewController:viewController animated:animated];
+    PREV_NC_CHECK_EXE(!, {
+        [self hz_pushViewController:viewController animated:animated completion:nil];
+    } else {
+        [self hz_pushViewController:viewController animated:animated];
+    })
 }
 
+- (UIViewController *)hz_popViewControllerAnimated:(BOOL)animated {
+    PREV_NC_CHECK_EXE(!, {
+        return [self hz_popViewControllerAnimated:animated completion:nil];
+    } else {
+        return [self hz_popViewControllerAnimated:animated];
+    })
+}
+
+- (NSArray<UIViewController *> *)hz_popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    PREV_NC_CHECK_EXE(!, {
+        return [self hz_popToViewController:viewController animated:animated completion:nil];
+    } else {
+        return [self hz_popToViewController:viewController animated:animated];
+    })
+}
+
+- (NSArray<UIViewController *> *)hz_popToRootViewControllerAnimated:(BOOL)animated {
+    PREV_NC_CHECK_EXE(!, {
+        return [self hz_popToRootViewControllerAnimated:animated completion:nil];
+    } else {
+        return [self hz_popToRootViewControllerAnimated:animated];
+    })
+}
+
+- (void)hz_setViewControllers:(NSArray<__kindof UIViewController *> *)viewControllers {
+#if 0
+    BOOL push = NO;
+    UIViewController *fromVC = nil;
+    PREV_NC_CHECK_EXE(!, {
+        push = viewControllers.count >= self.viewControllers.count;
+        self.hz_itn_isSetViewControllersToRootVC = viewControllers.count == 1;
+        fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    });
+    [self hz_setViewControllers:viewControllers];
+    PREV_NC_CHECK_EXE(!, {
+        itn_afterPushPopForNavigationController(self, fromVC, push, NO);
+    });
+#else
+    PREV_NC_CHECK_EXE(!, {
+        [self hz_setViewControllers:viewControllers completion:nil];
+    } else {
+        [self hz_setViewControllers:viewControllers];
+    })
+#endif
+}
+
+- (void)hz_setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated {
+#if 0
+    BOOL push = NO;
+    UIViewController *fromVC = nil;
+    PREV_NC_CHECK_EXE(!, {
+        push = viewControllers.count >= self.viewControllers.count;
+        self.hz_itn_isSetViewControllersToRootVC = viewControllers.count == 1;
+        fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    });
+    [self hz_setViewControllers:viewControllers animated:animated];
+    
+    PREV_NC_CHECK_EXE(!, {
+        itn_afterPushPopForNavigationController(self, fromVC, push, animated);
+    });
+#else
+    PREV_NC_CHECK_EXE(!, {
+        [self hz_setViewControllers:viewControllers animated:animated completion:nil];
+    } else {
+        [self hz_setViewControllers:viewControllers animated:animated];
+    })
+#endif
+}
 
 -(void)hz_resetNavigationBarAndItemViewFrame:(CGRect)frame
 {
@@ -204,7 +284,20 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
     PREV_NC_CHECK();
 
     itn_pushViewControllerCompletion(self, viewController, completion);
+#if 0
     [self pushViewController:viewController animated:animated];
+#else
+    UIViewController *fromVC = nil;
+    PREV_NC_CHECK_EXE(!, {
+        self.hz_itn_isSetViewControllersToRootVC = self.viewControllers.count == 0;
+        fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+        itn_pushViewController(self, viewController, animated);
+    });
+    [self hz_pushViewController:viewController animated:animated];
+    PREV_NC_CHECK_EXE(!, {
+        itn_afterPushPopForNavigationController(self, fromVC, YES, animated);
+    });
+#endif
 }
 
 -(void)hz_setViewControllers:(NSArray<UIViewController *> *)viewControllers
@@ -215,7 +308,21 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
     }
     PREV_NC_CHECK();
     itn_pushViewControllerCompletion(self, viewControllers.lastObject, completion);
+#if 0
     self.viewControllers = viewControllers;
+#else
+    BOOL push = NO;
+    UIViewController *fromVC = nil;
+    PREV_NC_CHECK_EXE(!, {
+        push = viewControllers.count >= self.viewControllers.count;
+        self.hz_itn_isSetViewControllersToRootVC = viewControllers.count == 1;
+        fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    });
+    [self hz_setViewControllers:viewControllers];
+    PREV_NC_CHECK_EXE(!, {
+        itn_afterPushPopForNavigationController(self, fromVC, push, NO);
+    });
+#endif
 }
 
 -(void)hz_setViewControllers:(NSArray<UIViewController *> *)viewControllers
@@ -227,7 +334,22 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
     }
     PREV_NC_CHECK();
     itn_pushViewControllerCompletion(self, viewControllers.lastObject, completion);
+#if 0
     [self setViewControllers:viewControllers animated:animated];
+#else
+    BOOL push = NO;
+    UIViewController *fromVC = nil;
+    PREV_NC_CHECK_EXE(!, {
+        push = viewControllers.count >= self.viewControllers.count;
+        self.hz_itn_isSetViewControllersToRootVC = viewControllers.count == 1;
+        fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    });
+    [self hz_setViewControllers:viewControllers animated:animated];
+    
+    PREV_NC_CHECK_EXE(!, {
+        itn_afterPushPopForNavigationController(self, fromVC, push, animated);
+    });
+#endif
 }
 
 - (UIViewController *)hz_popViewControllerAnimated:(BOOL)animated completion:(YZHNavigationControllerAnimationCompletionBlock)completion
@@ -238,7 +360,8 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
     PREV_NC_CHECK(nil);
 
     itn_popViewControllerCompletion(self, completion);
-    UIViewController *vc = [self popViewControllerAnimated:animated];
+    UIViewController *vc = [self hz_popViewControllerAnimated:animated];
+    itn_afterPushPopForNavigationController(self, vc, NO, animated);
     return vc;
 }
 
@@ -249,7 +372,9 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
     }
     PREV_NC_CHECK(nil);
     itn_popViewControllerCompletion(self, completion);
-    return [self popToViewController:viewController animated:animated];
+    NSArray *vcs = [self hz_popToViewController:viewController animated:animated];
+    itn_afterPushPopForNavigationController(self, vcs.count ? vcs.lastObject : nil, NO, animated);
+    return vcs;
 }
 
 - (NSArray *)hz_popToRootViewControllerAnimated:(BOOL)animated completion:(YZHNavigationControllerAnimationCompletionBlock)completion
@@ -259,7 +384,9 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
     }
     PREV_NC_CHECK(nil);
     itn_popViewControllerCompletion(self, completion);
-    return [self popToRootViewControllerAnimated:animated];
+    NSArray *vcs = [self hz_popToRootViewControllerAnimated:animated];
+    itn_afterPushPopForNavigationController(self, vcs.count ? vcs.lastObject : nil, NO, animated);
+    return vcs;
 }
 
 @end

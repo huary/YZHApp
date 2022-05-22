@@ -116,6 +116,18 @@ UIButton *itn_addNavigationLeftItemWithGraphicsImageContextTitleTargetSelectorIs
 //通过YZHGraphicsContext来添加leftButtonItem,block
 UIButton *itn_addNavigationLeftItemWithGraphicsImageContextTitleIsResetActionBlock(UIViewController *vc,YZHGraphicsContext *graphicsImageContext, NSString *title, BOOL reset, YZHNavigationItemActionBlock actionBlock);
 
+//添加(itemView),target selector
+//void itn_addNavigationLeftItemViewWithTargetSelectorIsReset(UIViewController *vc, UIView *itemView, id target, SEL selector, BOOL reset);
+
+//添加(itemView),actionBlock
+//void itn_addNavigationLeftItemViewWithIsResetActionBlock(UIViewController *vc, UIView *itemView, BOOL reset, YZHNavigationItemActionBlock actionBlock);
+
+//添加(itemViews),target selector
+void itn_addNavigationLeftItemViewsWithTargetSelectorIsReset(UIViewController *vc, NSArray<UIView*> *itemViews, id target, SEL selector, BOOL reset);
+
+//添加(itemViews),actionBlock
+void itn_addNavigationLeftItemViewsWithIsResetActionBlock(UIViewController *vc, NSArray<UIView*> *itemViews, BOOL reset, YZHNavigationItemActionBlock actionBlock);
+
 //right
 //添加（title）这样的按钮
 NSArray<UIButton*> *itn_addNavigationRightItemsWithTitlesTargetSelectorIsReset(UIViewController *vc, NSArray<NSString*> *titles, id target, SEL selector, BOOL reset);
@@ -140,6 +152,19 @@ NSArray<UIButton*> *itn_addNavigationRightItemsWithCustomViewTargetSelectorIsRes
 
 //添加（UIView）这样的按钮,block
 NSArray<UIButton*> *itn_addNavigationRightItemsWithCustomViewIsResetActionBlock(UIViewController *vc, NSArray<UIView*> * rightItems, BOOL reset, YZHNavigationItemActionBlock actionBlock);
+
+//添加(itemView),target selector
+//void itn_addNavigationRightItemViewWithTargetSelectorIsReset(UIViewController *vc, UIView *itemView, id target, SEL selector, BOOL reset);
+
+//添加(itemView),actionBlock
+//void itn_addNavigationRightItemViewWithIsResetActionBlock(UIViewController *vc, UIView *itemView, BOOL reset, YZHNavigationItemActionBlock actionBlock);
+
+//添加(itemViews),target selector
+void itn_addNavigationRightItemViewsWithTargetSelectorIsReset(UIViewController *vc, NSArray<UIView*> *itemViews, id target, SEL selector, BOOL reset);
+
+//添加(itemViews),actionBlock
+void itn_addNavigationRightItemViewsWithIsResetActionBlock(UIViewController *vc, NSArray<UIView*> *itemViews, BOOL reset, YZHNavigationItemActionBlock actionBlock);
+
 
 void itn_setupItemsSpace(UIViewController *vc, CGFloat itemsSpace, BOOL left);
 

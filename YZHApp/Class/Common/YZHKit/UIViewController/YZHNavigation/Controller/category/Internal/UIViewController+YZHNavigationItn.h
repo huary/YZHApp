@@ -12,6 +12,10 @@
 
 @interface UIViewController (YZHNavigationItn)
 
+@property (nonatomic, assign) CGRect hz_itn_navBarFrame;
+
+@property (nonatomic, assign) CGFloat hz_itn_itemViewLayoutHeight;
+
 @property (nonatomic, strong) YZHNavigationBarView *hz_itn_navigationBarView;
 
 @property (nonatomic, strong) YZHNavigationItemView *hz_itn_navigationItemView;

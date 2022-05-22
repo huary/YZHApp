@@ -14,7 +14,9 @@
 @protocol YZHLoopTransitionViewDelegate <NSObject>
 
 @optional
-- (void)transitionView:(YZHLoopTransitionView *_Nonnull)transitionView didStartAtPoint:(CGPoint)point;
+- (UIView *_Nonnull)transitionView:(YZHLoopTransitionView *_Nonnull)transitionView willPanStartAtPoint:(CGPoint)point;
+
+- (void)transitionView:(YZHLoopTransitionView *_Nonnull)transitionView didPanStartAtPoint:(CGPoint)point;
 
 - (void)transitionView:(YZHLoopTransitionView *_Nonnull)transitionView updateAtPoint:(CGPoint)point changedValue:(CGFloat)changedValue;
 

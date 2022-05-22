@@ -12,8 +12,11 @@
 
 @property (nonatomic, strong, readonly) UIView *contentView;
 
-//@property (nonatomic, assign, readonly) CGSize contentViewSize;
+//在contentView上进行布局的LayoutTopY值
+@property (nonatomic, assign) CGFloat contentViewLayoutTopY;
 
 +(CGSize)contentViewSize;
+
++(CGFloat)bottomSafeOffY;
 
 @end

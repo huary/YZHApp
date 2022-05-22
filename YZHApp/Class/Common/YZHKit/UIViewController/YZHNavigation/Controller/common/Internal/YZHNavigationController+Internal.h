@@ -42,6 +42,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) YZHTimer *updateTransitionTimer;
 
+//是否直接修改viewController到只有一个rootViewController，默认为NO
+@property (nonatomic, assign) BOOL isSetViewControllersToRootVC;
+
 //在viewController didLoad的时候调用，此函数仅仅是创建了一个NavigationItemView，在push的时候添加
 -(void)itn_createNewNavigationItemViewForViewController:(UIViewController*)viewController;
 

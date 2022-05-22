@@ -35,18 +35,18 @@
         [self hz_addNavigationLeftItemWithImage:nil title:@"L" isReset:YES actionBlock:nil];
         [self hz_addNavigationRightItemsWithTitles:@[@"R"] isReset:YES actionBlock:nil];
 
-        [self hz_addNavigationLeftItemsWithTitles:@[@"L-1",@"L-2",] isReset:NO actionBlock:^(UIViewController *viewController, UIButton *button) {
-            NSLog(@"left.btn=%ld",button.tag);
+        [self hz_addNavigationLeftItemsWithTitles:@[@"L-1",@"L-2",] isReset:NO actionBlock:^(UIViewController *viewController, UIView *itemView) {
+            NSLog(@"left.btn=%ld",itemView.tag);
         }];
-        [self hz_addNavigationRightItemsWithTitles:@[@"R-1",@"R-2"] isReset:NO actionBlock:^(UIViewController *viewController, UIButton *button) {
-            NSLog(@"right.btn=%ld",button.tag);
+        [self hz_addNavigationRightItemsWithTitles:@[@"R-1",@"R-2"] isReset:NO actionBlock:^(UIViewController *viewController, UIView *itemView) {
+            NSLog(@"right.btn=%ld",itemView.tag);
         }];
         return;
     }
     
     self.hz_navigationBarViewBackgroundColor = [UIColor purpleColor];
 
-    [self hz_addNavigationFirstLeftBackItemWithTitle:@"返回" actionBlock:^(UIViewController *viewController, UIButton *button) {
+    [self hz_addNavigationFirstLeftBackItemWithTitle:@"返回" actionBlock:^(UIViewController *viewController, UIView *itemView) {
         [viewController.navigationController popViewControllerAnimated:YES];
     }];
     

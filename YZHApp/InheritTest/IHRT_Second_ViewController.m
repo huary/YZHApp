@@ -38,7 +38,7 @@
     self.hz_navigationBarViewBackgroundColor = [UIColor purpleColor];
 
     
-    [self hz_addNavigationFirstLeftBackItemWithTitle:@"返回" actionBlock:^(UIViewController *viewController, UIButton *button) {
+    [self hz_addNavigationFirstLeftBackItemWithTitle:@"返回" actionBlock:^(UIViewController *viewController, UIView *itemView) {
         [viewController.navigationController popViewControllerAnimated:YES];
     }];
     

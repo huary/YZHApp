@@ -12,7 +12,7 @@ typedef BOOL(^YZHPanGestureRecognizerShouldRecognizeSimultaneouslyBlock)(UIScrol
 
 @interface YZHNavigationPopScrollView : UIScrollView
 
-//在进行回调的时候，要注意循环引用的问题
+//在进行回调的时候，一定要注意循环引用的问题,这里已经对scrollView进行弱引用
 @property (nonatomic, copy) YZHPanGestureRecognizerShouldRecognizeSimultaneouslyBlock shouldRecognizeSimultaneouslyBlock;
 
 @end

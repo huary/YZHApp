@@ -13,8 +13,11 @@ UIKIT_EXTERN NSNotificationName const YZHNavigationBarAttributeChangedNotificati
 UIKIT_EXTERN NSString * const YZHNavigationBarBoundsKey;
 UIKIT_EXTERN NSString * const YZHNavigationBarCenterPointKey;
 
-typedef void(^YZHNavigationItemActionBlock)(UIViewController *viewController, UIButton *button);
+typedef CGRect(^YZHNavBarViewFrameBlock)(UIViewController *viewController, CGFloat *itemViewLayoutHeight);
+//typedef CGFloat(^YZHNavItemViewLayoutHeightBlock)(UIViewController *viewController);
+typedef void(^YZHNavigationItemActionBlock)(UIViewController *viewController, UIView *itemView);
 typedef void(^YZHNavigationControllerAnimationCompletionBlock)(UINavigationController *navigationController);
+
 
 typedef NS_ENUM(NSInteger, YZHNavigationBarAndItemStyle)
 {

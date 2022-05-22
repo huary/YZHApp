@@ -13,6 +13,7 @@
 #import "YZHNCUtils.h"
 #import "YZHNavigationItnTypes.h"
 #import "UIViewController+YZHNavigationRootVCInitSetup.h"
+//#import "UIViewController+YZHNavigation.h"
 
 @implementation YZHNavigationController
 -(void)pri_setupDefaultValue
@@ -79,6 +80,11 @@
     itn_nc_setNavigationBarViewAlpha(self, navigationBarViewAlpha);
 }
 
+// 允许其堆栈内的VC自定义状态栏颜色
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return [self.topViewController preferredStatusBarStyle];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -96,8 +102,51 @@
 #pragma mark override
 -(void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
+#if 0
+    self.isSetViewControllersToRootVC = self.viewControllers.count == 0;
+    UIViewController *fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
     itn_pushViewController(self, viewController, animated);
     [super pushViewController:viewController animated:animated];
+    itn_afterPushPopForNavigationController(self, fromVC, YES, animated);
+#else
+    [self pushViewController:viewController animated:animated completion:nil];
+#endif
+}
+
+- (UIViewController *)popViewControllerAnimated:(BOOL)animated {
+    return [self popViewControllerAnimated:animated completion:nil];
+}
+
+- (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    return [self popToViewController:viewController animated:animated completion:nil];
+}
+
+- (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
+    return [self popToRootViewControllerAnimated:animated completion:nil];
+}
+
+- (void)setViewControllers:(NSArray<__kindof UIViewController *> *)viewControllers {
+#if 0
+    BOOL push = viewControllers.count >= self.viewControllers.count;
+    self.isSetViewControllersToRootVC = viewControllers.count == 1;
+    UIViewController *fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    [super setViewControllers:viewControllers];
+    itn_afterPushPopForNavigationController(self, fromVC, push, NO);
+#else
+    [self setViewControllers:viewControllers completion:nil];
+#endif
+}
+
+- (void)setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated {
+#if 0
+    BOOL push = viewControllers.count >= self.viewControllers.count;
+    self.isSetViewControllersToRootVC = viewControllers.count == 1;
+    UIViewController *fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    [super setViewControllers:viewControllers animated:animated];
+    itn_afterPushPopForNavigationController(self, fromVC, push, animated);
+#else
+    [self setViewControllers:viewControllers animated:animated completion:nil];
+#endif
 }
 
 -(void)resetNavigationBarAndItemViewFrame:(CGRect)frame
@@ -111,20 +160,44 @@
                completion:(YZHNavigationControllerAnimationCompletionBlock)completion
 {
     itn_pushViewControllerCompletion(self, viewController, completion);
+#if 0
     [self pushViewController:viewController animated:animated];
+#else
+    self.isSetViewControllersToRootVC = self.viewControllers.count == 0;
+    UIViewController *fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    itn_pushViewController(self, viewController, animated);
+    [super pushViewController:viewController animated:animated];
+    itn_afterPushPopForNavigationController(self, fromVC, YES, animated);
+#endif
 }
 
 -(void)setViewControllers:(NSArray<UIViewController *> *)viewControllers
                completion:(YZHNavigationControllerAnimationCompletionBlock)completion {
     itn_pushViewControllerCompletion(self, viewControllers.lastObject, completion);
+#if 0
     self.viewControllers = viewControllers;
+#else
+    BOOL push = viewControllers.count >= self.viewControllers.count;
+    self.isSetViewControllersToRootVC = viewControllers.count == 1;
+    UIViewController *fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    [super setViewControllers:viewControllers];
+    itn_afterPushPopForNavigationController(self, fromVC, push, NO);
+#endif
 }
 
 -(void)setViewControllers:(NSArray<UIViewController *> *)viewControllers
                  animated:(BOOL)animated
                completion:(YZHNavigationControllerAnimationCompletionBlock)completion {
     itn_pushViewControllerCompletion(self, viewControllers.lastObject, completion);
+#if 0
     [self setViewControllers:viewControllers animated:animated];
+#else
+    BOOL push = viewControllers.count >= self.viewControllers.count;
+    self.isSetViewControllersToRootVC = viewControllers.count == 1;
+    UIViewController *fromVC = self.viewControllers.count ? self.viewControllers.lastObject : nil;
+    [super setViewControllers:viewControllers animated:animated];
+    itn_afterPushPopForNavigationController(self, fromVC, push, animated);
+#endif
 }
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated
@@ -132,6 +205,7 @@
 {
     itn_popViewControllerCompletion(self, completion);
     UIViewController *vc = [super popViewControllerAnimated:animated];
+    itn_afterPushPopForNavigationController(self, vc, NO, animated);
     return vc;
 }
 
@@ -140,14 +214,18 @@
                                          completion:(YZHNavigationControllerAnimationCompletionBlock)completion
 {
     itn_popViewControllerCompletion(self, completion);
-    return [super popToViewController:viewController animated:animated];
+    NSArray *vcs = [super popToViewController:viewController animated:animated];
+    itn_afterPushPopForNavigationController(self, vcs.count ? vcs.lastObject : nil, NO, animated);
+    return vcs;
 }
 
 - (NSArray<UIViewController*> *)popToRootViewControllerAnimated:(BOOL)animated
                                                      completion:(YZHNavigationControllerAnimationCompletionBlock)completion
 {
     itn_popViewControllerCompletion(self, completion);
-    return [super popToRootViewControllerAnimated:animated];
+    NSArray *vcs = [super popToRootViewControllerAnimated:animated];
+    itn_afterPushPopForNavigationController(self, vcs.count ? vcs.lastObject : nil, NO, animated);
+    return vcs;
 }
 
 //在viewController didLoad的时候调用，此函数仅仅是创建了一个NavigationItemView，在push的时候添加

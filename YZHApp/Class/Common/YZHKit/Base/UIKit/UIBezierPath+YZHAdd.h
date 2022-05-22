@@ -11,6 +11,12 @@
 @interface UIBezierPath (YZHAdd)
 
 /*
+ *cornerRadiusList的顺序为UIRectCornerTopLeft、UIRectCornerTopRight、UIRectCornerBottomLeft、UIRectCornerBottomRight
+ */
++(instancetype)hz_bezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadiusList:(NSArray<NSNumber*>*)cornerRadiusList;
+
+
+/*
  *此方法为了和UIView的layer的corneradius保持一致，
  *+ (instancetype)bezierPathWithRoundedRect:(CGRect)rect cornerRadius:(CGFloat)cornerRadius;方法同layer上的corneradius存在微小的差别
  */
@@ -20,6 +26,12 @@
  *创建一个rect边缘的border的bezierPath
  */
 +(instancetype)hz_borderBezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadius:(CGFloat)cornerRadius borderWidth:(CGFloat)borderWidth;
+
+
+/*
+ *创建一个rect边缘的border的bezierPath
+ */
++(instancetype)hz_borderBezierPathWithRoundedRect:(CGRect)rect byRoundingCorners:(UIRectCorner)corners cornerRadiusList:(NSArray<NSNumber*>*)cornerRadiusList borderWidth:(CGFloat)borderWidth;
 
 +(CGRect)hz_borderRectForRoundedRect:(CGRect)rect borderWidth:(CGFloat)borderWidth;
 

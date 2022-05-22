@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "YZHNavigationBarView.h"
 #import "YZHNavigationItemView.h"
-#import "YZHTimer.h"
 
-#define PREV_NC_CHECK(ret)   if (!self.hz_navigationEnable || ![self isKindOfClass:[UINavigationController class]]) return ret;
+#define PREV_NC_COND         (!self.hz_navigationEnable || [self isKindOfClass:[YZHNavigationController class]])
+#define PREV_NC_CHECK(ret)   if (PREV_NC_COND) return ret;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -44,7 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSTimeInterval hz_itn_latestTransitionDuration;
 
 @property (nonatomic, strong, nullable) YZHTimer *hz_itn_updateTransitionTimer;
-
+//是否直接修改viewController到只有一个rootViewController
+@property (nonatomic, assign) BOOL hz_itn_isSetViewControllersToRootVC;
 
 //在viewController初始化的时候调用，此函数仅仅是创建了一个NavigationItemView，在push的时候添加
 -(void)hz_itn_createNewNavigationItemViewForViewController:(UIViewController*)viewController;

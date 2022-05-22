@@ -159,7 +159,12 @@ static NSBundleInterfaceOrientation *defaultInterfaceOrientation_s = nil;
 
 - (void)hz_updateCurrentDeviceOrientation:(UIDeviceOrientation)orientation
 {
-    [[UIDevice currentDevice] setValue:@(orientation) forKey:@"orientation"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+//    [[UIApplication sharedApplication] setStatusBarOrientation:orientation animated:YES];
+#pragma clang diagnostic pop
+//    [[UIDevice currentDevice] setValue:@(UIDeviceOrientationUnknown) forKey:@"orientation"];
+//    [[UIDevice currentDevice] setValue:@(orientation) forKey:@"orientation"];
 }
 
 

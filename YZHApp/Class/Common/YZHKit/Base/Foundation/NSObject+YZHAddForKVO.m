@@ -53,7 +53,12 @@
     }];
 }
 
+- (void)removeKVOObserver {
+    [self.target hz_removeKVOObserver:self forKeyPath:self.keyPath];
+}
+
 - (void)dealloc {
+    NSLog(@"self.target=%p",self.target);
     [self.target hz_removeKVOObserver:self forKeyPath:self.keyPath];
 }
 
@@ -119,11 +124,13 @@
 
 -(void)hz_removeKVOObserverBlockForKeyPath:(NSString *)keyPath {
     @synchronized (self) {
-        NSString *key = [NSString stringWithFormat:@"YZHKVOObserver.%@",keyPath];
         @autoreleasepool {
-            if (![self hz_strongReferenceObjectForKey:key]) {
+            NSString *key = [NSString stringWithFormat:@"YZHKVOObserver.%@",keyPath];
+            YZHKVOObserver *observer = [self hz_strongReferenceObjectForKey:key];
+            if (!observer) {
                 return;
             }
+            [observer removeKVOObserver];
             [self hz_removeStrongReferenceObjectForKey:key];
         }
     }

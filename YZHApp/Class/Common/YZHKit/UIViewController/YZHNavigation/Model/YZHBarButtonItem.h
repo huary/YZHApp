@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+#if 0
 @interface YZHBarButtonItem : UIBarButtonItem
 
 -(instancetype)initWithCustomView:(UIView *)customView target:(id)target action:(SEL)action;
 @end
+#endif

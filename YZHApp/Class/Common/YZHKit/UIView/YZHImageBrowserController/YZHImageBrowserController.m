@@ -28,6 +28,10 @@
         _imageBrowser.imageBrowserView.minScaleToRemove = 0.75;
         _imageBrowser.delegate = self;
         _imageBrowser.imageBrowserView.loopScrollView.scrollDirection = YZHLoopViewScrollDirectionHorizontal;
+        if (self.totalPage > 0 && self.currentPage > 0) {
+            _imageBrowser.currentPage = self.currentPage;
+            _imageBrowser.totalPage = self.totalPage;
+        }
     }
     return _imageBrowser;
 }
@@ -42,7 +46,7 @@
 
 - (void)pri_prepareStart
 {
-    [self pri_dismissAction];
+    [_cacheList removeAllObjects];
 }
 
 - (void)showInView:(UIView *_Nullable)inView
@@ -75,7 +79,7 @@
     cellModel.isEnd = target ? NO : YES;
     WEAK_SELF(weakSelf);
     cellModel.updateBlock = ^(id<YZHImageCellModelProtocol> model, YZHImageCell *imageCell) {
-        YZHImageCellModel *tmp = model;
+        YZHImageCellModel *tmp = (YZHImageCellModel *)model;
         [imageCell updateWithImage:nil];
         if (weakSelf.updateCellBlock) {
             weakSelf.updateCellBlock(tmp.target, imageCell);
@@ -104,8 +108,11 @@
     return nil;
 }
 
-- (YZHImageCellModel *)pri_cellModelForCurrentShowModel:(YZHImageCellModel*)currentShowModel possibleModel:(YZHImageCellModel *)possibleModel next:(BOOL)next
+- (YZHImageCellModel *)pri_cellModelForCurrentShowModel:(YZHImageCellModel* _Nullable)currentShowModel possibleModel:(YZHImageCellModel *_Nullable)possibleModel next:(BOOL)next
 {
+    if (!currentShowModel) {
+        return nil;
+    }
     YZHImageCellModel *findObj = [self pri_findCellModelWithModel:currentShowModel next:next];
     if (findObj) {
         if (findObj.isEnd) {
@@ -192,8 +199,14 @@
     
 }
 
+- (void)imageBrowser:(YZHImageBrowser *)imageBrowser currentPage:(NSUInteger)currentPage totalPage:(NSUInteger)totalPage {
+    if (self.updatePageBlock) {
+        self.updatePageBlock(self, currentPage, totalPage);
+    }
+}
+
 - (id<YZHImageCellModelProtocol> _Nullable)imageBrowser:(YZHImageBrowser * _Nonnull)imageBrowser newModelWithCurrentShowModel:(id<YZHImageCellModelProtocol> _Nullable)currentShowModel possibleModel:(id<YZHImageCellModelProtocol> _Nullable)possibleModel {
-    if ([self.cacheList containsObject:currentShowModel]) {
+    if (currentShowModel && [self.cacheList containsObject:(YZHImageCellModel*)currentShowModel]) {
         return currentShowModel;
     }
     else {
@@ -202,11 +215,11 @@
 }
 
 - (id<YZHImageCellModelProtocol> _Nullable)imageBrowser:(YZHImageBrowser * _Nonnull)imageBrowser nextModelWithCurrentShowModel:(id<YZHImageCellModelProtocol> _Nullable)currentShowModel possibleModel:(id<YZHImageCellModelProtocol> _Nullable)possibleModel {
-    return [self pri_cellModelForCurrentShowModel:currentShowModel possibleModel:possibleModel next:YES];
+    return [self pri_cellModelForCurrentShowModel:(YZHImageCellModel*)currentShowModel possibleModel:(YZHImageCellModel*)possibleModel next:YES];
 }
 
 - (id<YZHImageCellModelProtocol> _Nullable)imageBrowser:(YZHImageBrowser * _Nonnull)imageBrowser prevModelWithCurrentShowModel:(id<YZHImageCellModelProtocol> _Nullable)currentShowModel possibleModel:(id<YZHImageCellModelProtocol> _Nullable)possibleModel {
-    return [self pri_cellModelForCurrentShowModel:currentShowModel possibleModel:possibleModel next:NO];
+    return [self pri_cellModelForCurrentShowModel:(YZHImageCellModel*)currentShowModel possibleModel:(YZHImageCellModel*)possibleModel next:NO];
 }
 
 - (void)imageBrowserDidDismiss:(YZHImageBrowser *)imageBrowser
@@ -218,5 +231,39 @@
         }
     }
 }
+
+- (void)imageBrowser:(YZHImageBrowser * _Nonnull)imageBrowser willDisplayCell:(nonnull YZHImageCell *)imageCell {
+    
+}
+
+- (void)imageBrowser:(YZHImageBrowser *)imageBrowser didDisplayCell:(YZHImageCell *)imageCell {
+    YZHImageCellModel *tmp = (YZHImageCellModel *)imageCell.model;
+    if (self.currentShowCellBlock) {
+        self.currentShowCellBlock(tmp.target, imageCell);
+    }
+}
+
+- (void)imageBrowser:(YZHImageBrowser * _Nonnull)imageBrowser didEndDragToRecoverForCell:(nonnull YZHImageCell *)imageCell {
+    
+}
+
+- (UIView * _Nullable)imageBrowser:(YZHImageBrowser * _Nonnull)imageBrowser willDragToDismissForCell:(nonnull YZHImageCell *)imageCell {
+    return nil;
+}
+
+
+- (void)imageBrowserDidEndDragging:(YZHImageBrowser * _Nonnull)imageBrowser willDecelerate:(BOOL)decelerate {
+    
+}
+
+
+- (void)imageBrowserWillBeginDragging:(YZHImageBrowser * _Nonnull)imageBrowser {
+    
+}
+
+
+- (void)imageBrowserWillEndDragging:(YZHImageBrowser * _Nonnull)imageBrowser dragVector:(YZHScrollViewDragVector)dragVector {
+}
+
 
 @end

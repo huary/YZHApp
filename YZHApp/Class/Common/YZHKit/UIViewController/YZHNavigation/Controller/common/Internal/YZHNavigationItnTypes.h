@@ -79,9 +79,3 @@ static const BOOL VCPopGestureEnabled_s = YES;
 static const CGFloat VCNavigationItemViewAlpha_s = 1.0;
 
 static const CGFloat minAlphaToHidden_s = 0.01;
-
-static const CGFloat navigationDefaultEdgeSpace_s = 12;
-static const CGFloat navigationLeftEdgeSpace_s = 8;
-static const CGFloat navigationRightEdgeSpace_s = 8;
-static const CGFloat navigationLeftItemsSpace_s = 8;
-static const CGFloat navigationRightItemsSpace_s = 8;

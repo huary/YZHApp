@@ -8,6 +8,7 @@
 
 #import "YZHNCUtils.h"
 #import "UIViewController+YZHNavigation.h"
+#import "UIViewController+YZHNavigationItn.h"
 #import "UINavigationControllerDelegateImp.h"
 #import "UINavigationController+YZHNavigation.h"
 #import "UINavigationController+YZHNavigationItn.h"
@@ -15,9 +16,7 @@
 #import "NSObject+YZHAddForDealloc.h"
 #import "YZHNavigationItnTypes.h"
 #import "UIViewController+YZHNavigationControllerAnimation.h"
-
-#import "NSMapTable+YZHAdd.h"
-
+#import "YZHDefaultAnimatedTransition.h"
 
 #define MIN_PERCENT_PUSH_VIEWCONTROLLER     (0.15)
 #define MIN_PERCENT_POP_VIEWCONTROLLER      (0.2)
@@ -37,7 +36,8 @@ void _createNavigationBarView(UINavigationController *nc, BOOL atTop)
         return;
     }
     if (self.hz_itn_nc_navigationBarView == nil) {
-        CGRect frame =  CGRectMake(SAFE_X, -STATUS_BAR_HEIGHT, SAFE_WIDTH, STATUS_NAV_BAR_HEIGHT);
+//        CGRect frame =  CGRectMake(SAFE_X, -STATUS_BAR_HEIGHT, SAFE_WIDTH, STATUS_NAV_BAR_HEIGHT);
+        CGRect frame = self.hz_itn_navBarFrame;
         YZHNavigationBarView *barView = [[YZHNavigationBarView alloc] initWithFrame:frame];
         barView.style = YZHNavBarStyleNone;
         if (atTop) {
@@ -287,7 +287,7 @@ void _addObserverNavigationBar(UINavigationController *nc, BOOL add)
     [navBar hz_addKVOForKeyPath:@"bounds" options:NSKeyValueObservingOptionNew context:nil block:block];
     [navBar hz_addKVOForKeyPath:@"transform" options:NSKeyValueObservingOptionNew context:nil block:block];
 
-    [nc hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {        
+    [nc hz_addDeallocBlock:^(void * _Nonnull deallocTarget) {
         [navBar hz_removeKVOObserverBlockForKeyPath:@"frame"];
         [navBar hz_removeKVOObserverBlockForKeyPath:@"center"];
         [navBar hz_removeKVOObserverBlockForKeyPath:@"bounds"];
@@ -321,7 +321,8 @@ void _doCheckNavigationItemView(UINavigationController *nc)
         }
     }];
     [outMutDict enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, YZHNavigationItemView * _Nonnull obj, BOOL * _Nonnull stop) {
-        _removeNavigationItemView(nc, obj);
+        [nc.hz_itn_navigationItemViewWithVCMap removeObjectForKey:key];
+        [obj removeFromSuperview];
     }];
 }
 
@@ -388,6 +389,9 @@ void itn_pushViewController(UINavigationController *nc, UIViewController *viewCo
 //自定义
 void itn_pushViewControllerCompletion(UINavigationController *nc, UIViewController *vc, YZHNavigationControllerAnimationCompletionBlock completion)
 {
+    if (nc.viewControllers.count >= 1) {
+        vc.hidesBottomBarWhenPushed = nc.hz_hidesTabBarAfterPushed;
+    }
     nc.hz_itn_lastTopVC = vc;
     vc.itn_pushCompletionBlock = completion;
 }
@@ -396,6 +400,19 @@ void itn_popViewControllerCompletion(UINavigationController *nc, YZHNavigationCo
     UIViewController *topVC = nc.topViewController;
     nc.hz_itn_lastTopVC = topVC;
     topVC.itn_popCompletionBlock = completion;
+}
+
+void itn_afterPushPopForNavigationController(UINavigationController *nc, UIViewController *fromVC, BOOL push, BOOL animated) {
+    if (animated) {
+        return;
+    }
+    if (push) {
+        [YZHDefaultAnimatedTransition updateTabBarForNavigationController:nc fromVC:fromVC whenPushPopNoAnimatedTransition:YES];
+    }
+    else {
+        _doCheckNavigationItemView(nc);
+        [YZHDefaultAnimatedTransition updateTabBarForNavigationController:nc fromVC:fromVC whenPushPopNoAnimatedTransition:NO];
+    }
 }
 
 //void itn_popToViewController(UINavigationController *nc, UIViewController *vc, YZHNavigationControllerAnimationCompletionBlock completion) {
@@ -409,8 +426,6 @@ void itn_popViewControllerCompletion(UINavigationController *nc, YZHNavigationCo
 //    nc.hz_itn_lastTopVC = topVC;
 //    topVC.itn_popCompletionBlock = completion;
 //}
-
-
 
 id itn_getKeyFromVC(UIViewController *vc) {
     return @((uintptr_t)vc);

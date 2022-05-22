@@ -15,7 +15,6 @@
 #import "UITabBarItem+UIButton.h"
 #import "UIView+YZHAddForUIGestureRecognizer.h"
 
-
 /**************************************************************************
  *YZHTabBarView
  **************************************************************************/
@@ -26,6 +25,8 @@
 @property (nonatomic, strong) NSMutableArray *singleTabBarItems;
 
 @property (nonatomic, weak) YZHTabBarButton *lastSelectedBtn;
+
+@property (nonatomic, assign) NSInteger lastSelectedBtnIdx;
 
 @property (nonatomic, strong) CALayer *lineLayer;
 
@@ -50,7 +51,7 @@
 {
     self.lineLayer = [[CALayer alloc] init];
     
-    self.lineLayer.frame = CGRectMake(0, -SINGLE_LINE_WIDTH, self.bounds.size.width, SINGLE_LINE_WIDTH);
+    self.lineLayer.frame = CGRectMake(0, -[self _topLineHeight], self.bounds.size.width, [self _topLineHeight]);
     self.lineLayer.backgroundColor = RGBA_F(0, 0, 0, 0.3).CGColor;
     [self.layer addSublayer:self.lineLayer];
     
@@ -86,7 +87,7 @@
 -(void)layoutSubviews
 {
     [super layoutSubviews];
-    self.lineLayer.frame = CGRectMake(0, -SINGLE_LINE_WIDTH, self.bounds.size.width, SINGLE_LINE_WIDTH);
+    self.lineLayer.frame = CGRectMake(0, -[self _topLineHeight], self.bounds.size.width, [self _topLineHeight]);
     [self _updateLayout];
 }
 
@@ -197,20 +198,29 @@
 
 -(YZHTabBarButton*)addTabBarItem:(UITabBarItem *)tabBarItem
 {
-    return [self _createTabBarItem:tabBarItem tabBarItemType:YZHTabBarButtonTypeDefault forControlEvents:UIControlEventTouchUpInside actionBlock:nil];
+    return [self _createTabBarItem:tabBarItem tabBarItemType:YZHTabBarButtonTypeDefault forControlEvents:UIControlEventTouchUpInside actionBlock:nil atIndex:-1];
 }
 
 -(YZHTabBarButton*)addCustomLayoutTabBarItem:(UITabBarItem *)tabBarItem
 {
-    return [self _createTabBarItem:tabBarItem tabBarItemType:YZHTabBarButtonTypeCustomLayout forControlEvents:UIControlEventTouchUpInside actionBlock:nil];
+    return [self _createTabBarItem:tabBarItem tabBarItemType:YZHTabBarButtonTypeCustomLayout forControlEvents:UIControlEventTouchUpInside actionBlock:nil atIndex:-1];
 }
 
 -(YZHTabBarButton*)createSingleTabBarItem:(UITabBarItem *)tabBarItem forControlEvents:(UIControlEvents)controlEvents actionBlock:(YZHButtonActionBlock)actionBlock
 {
-    return [self _createTabBarItem:tabBarItem tabBarItemType:YZHTabBarButtonTypeSingle forControlEvents:controlEvents actionBlock:actionBlock];
+    return [self _createTabBarItem:tabBarItem tabBarItemType:YZHTabBarButtonTypeSingle forControlEvents:controlEvents actionBlock:actionBlock atIndex:-1];
 }
 
--(YZHTabBarButton*)_createTabBarItem:(UITabBarItem *)tabBarItem tabBarItemType:(YZHTabBarButtonType)tabBarButtonType forControlEvents:(UIControlEvents)controlEvents actionBlock:(YZHButtonActionBlock)actionBlock
+-(YZHTabBarButton*)insertTabBarItem:(UITabBarItem *)tabBarItem atIndex:(NSInteger)index
+{
+    return [self _createTabBarItem:tabBarItem tabBarItemType:YZHTabBarButtonTypeDefault forControlEvents:UIControlEventTouchUpInside actionBlock:nil atIndex:index];
+}
+
+-(YZHTabBarButton*)_createTabBarItem:(UITabBarItem *)tabBarItem
+                      tabBarItemType:(YZHTabBarButtonType)tabBarButtonType
+                    forControlEvents:(UIControlEvents)controlEvents
+                         actionBlock:(YZHButtonActionBlock)actionBlock
+                             atIndex:(NSInteger)index
 {
     YZHTabBarButton *btn = [[YZHTabBarButton alloc] init];
     btn.tabBarItem = tabBarItem;
@@ -226,7 +236,12 @@
         [self _addGestureAtButton:btn];
 #endif
         btn.tabBarView = self;
-        [self.items addObject:btn];
+        if (index == -1) {
+            [self.items addObject:btn];
+        }
+        else {
+            [self.items insertObject:btn atIndex:index];
+        }
         [self.scrollView addSubview:btn];
         NSInteger index = self.items.count - 1;
         if (index == self.defaultSelectIndex) {
@@ -235,7 +250,12 @@
         [self setNeedsLayout];
     }
     else {
-        [self.singleTabBarItems addObject:btn];
+        if (index == -1) {
+            [self.singleTabBarItems addObject:btn];
+        }
+        else {
+            [self.singleTabBarItems insertObject:btn atIndex:index];
+        }
     }
     return btn;
 }
@@ -252,18 +272,23 @@
     return btn;
 }
 
-//-(void)_removeCustomViewAtView:(UIView*)view
-//{
-//    UIView *old = [view viewWithTag:customViewTag_s];
-//    [old removeFromSuperview];
-//}
-
 -(YZHTabBarButton*)addTabBarWithCustomView:(UIView*)customView
 {
 //    if (customView == nil) {
 //        return nil;
 //    }
     YZHTabBarButton *btn = [self addTabBarItem:nil];
+    if (customView) {
+        customView.userInteractionEnabled = NO;
+        [btn addSubview:customView];
+        btn.customView = customView;
+    }
+    return btn;
+}
+
+-(YZHTabBarButton*)insertTabBarWithCustomView:(UIView*)customView atIndex:(NSInteger)index
+{
+    YZHTabBarButton *btn = [self insertTabBarItem:nil atIndex:index];
     if (customView) {
         customView.userInteractionEnabled = NO;
         [btn addSubview:customView];
@@ -349,11 +374,22 @@
 -(void)removeTabBarAtIndex:(NSInteger)index {
     UIButton *removeBtn = [self.items objectAtIndex:index];
     [self.items removeObjectAtIndex:index];
+    [removeBtn removeFromSuperview];
     if (removeBtn == self.lastSelectedBtn) {
+        self.lastSelectedBtnIdx = index;
         NSInteger selectIndex = index < self.items.count ? index : self.items.count - 1;
         [self doSelectTo:selectIndex];
     }
     [self _updateLayout];
+}
+
+-(void)setLastSelectedBtn:(YZHTabBarButton *)lastSelectedBtn {
+    _lastSelectedBtn = lastSelectedBtn;
+    _lastSelectedBtnIdx = 0;
+    if (lastSelectedBtn) {
+        _lastSelectedBtnIdx = [self.items indexOfObject:lastSelectedBtn];
+    }
+    
 }
 
 -(void)clear
@@ -382,6 +418,9 @@
         BOOL shouldSelect = YES;
         if ([self.delegate respondsToSelector:@selector(tabBarView:didSelectFrom:to:actionInfo:)]) {
             NSInteger fromIdx = [self.items indexOfObject:self.lastSelectedBtn];
+            if (fromIdx == NSNotFound) {
+                fromIdx = self.lastSelectedBtnIdx;
+            }
             NSInteger toIdx = [self.items indexOfObject:selectedBtn];
             shouldSelect = [self.delegate tabBarView:self didSelectFrom:fromIdx to:toIdx actionInfo:actionInfo];
         }
@@ -415,9 +454,25 @@
     [self _tabBarClickAction:btn userInteraction:NO];
 }
 
--(NSInteger)currentIndex
+-(NSInteger)itemCount
 {
     return self.items.count;
+}
+
+-(NSInteger)currentSelectedIndex {
+    if (self.lastSelectedBtn) {
+        return [self.items indexOfObject:self.lastSelectedBtn];
+    }
+    return -1;
+}
+
+-(void)updateSelectIndex:(NSInteger)index {
+    YZHTabBarButton *selectedBtn = [self.items objectAtIndex:index];
+    if (selectedBtn) {
+        self.lastSelectedBtn.selected = NO;
+        selectedBtn.selected = YES;
+        self.lastSelectedBtn = selectedBtn;
+    }
 }
 
 -(UITabBarItem*)tabBarItemAtIndex:(NSInteger)index
@@ -436,4 +491,20 @@
 -(CALayer *)topLine {
     return self.lineLayer;
 }
+
+- (CGFloat)_topLineHeight {
+    UIViewController *vc = self.hz_viewController;
+    if ([vc isKindOfClass:[YZHTabBarController class]]) {
+        NSDictionary *attr = ((YZHTabBarController *)vc).tabBarAttributes;
+        if ([attr objectForKey: YZHTabBarTopLineHeightKey]) {
+            return [[attr objectForKey: YZHTabBarTopLineHeightKey] floatValue];
+        }
+        else {
+            return SINGLE_LINE_WIDTH;
+        }
+    }
+    return SINGLE_LINE_WIDTH;
+}
+
+
 @end
