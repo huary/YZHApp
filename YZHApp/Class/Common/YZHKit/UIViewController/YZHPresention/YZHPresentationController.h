@@ -23,7 +23,7 @@ typedef void(^YZHPresentationControllerTransitionBlock)(YZHPresentationControlle
 @interface YZHPresentationController : UIPresentationController <UIViewControllerAnimatedTransitioning,UIViewControllerTransitioningDelegate> {
 @protected
     UIView *_presentView;
-    UIView *_dismissView;
+    UIView *_dimmingView;
 }
 
 //默认0
@@ -54,7 +54,7 @@ typedef void(^YZHPresentationControllerTransitionBlock)(YZHPresentationControlle
 - (UIView *)presentView;
 
 //在展示view下层的蒙层
-- (UIView *)dismissView;
+- (UIView *)dimmingView;
 
 //设置手势，暂时只设置dismiss的手势（注意⚠️：不能直接调用，上层类可以重写）
 - (void)setupGestureRecognizer;

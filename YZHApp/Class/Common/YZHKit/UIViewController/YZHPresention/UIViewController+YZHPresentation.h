@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL hz_presentationEnable;
 
+@property (nonatomic, assign) CGFloat hz_presentTopLayoutY;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -1762,16 +1762,16 @@
 		2B43CCC5275B7F3900FB4BED /* CategoryTest */ = {
 			isa = PBXGroup;
 			children = (
-				2B43CCC6275B7F3900FB4BED /* CAT_Third_ViewController.h */,
+				2B43CCCB275B7F3900FB4BED /* CAT_Fifth_ViewController.h */,
 				2B43CCC7275B7F3900FB4BED /* CAT_Fifth_ViewController.m */,
 				2B43CCC8275B7F3900FB4BED /* CAT_First_ViewController.h */,
-				2B43CCC9275B7F3900FB4BED /* CAT_Fourth_ViewController.m */,
-				2B43CCCA275B7F3900FB4BED /* CAT_Second_ViewController.m */,
-				2B43CCCB275B7F3900FB4BED /* CAT_Fifth_ViewController.h */,
-				2B43CCCC275B7F3900FB4BED /* CAT_Third_ViewController.m */,
 				2B43CCCD275B7F3900FB4BED /* CAT_First_ViewController.m */,
 				2B43CCCE275B7F3900FB4BED /* CAT_Fourth_ViewController.h */,
+				2B43CCC9275B7F3900FB4BED /* CAT_Fourth_ViewController.m */,
 				2B43CCCF275B7F3900FB4BED /* CAT_Second_ViewController.h */,
+				2B43CCCA275B7F3900FB4BED /* CAT_Second_ViewController.m */,
+				2B43CCC6275B7F3900FB4BED /* CAT_Third_ViewController.h */,
+				2B43CCCC275B7F3900FB4BED /* CAT_Third_ViewController.m */,
 				2B6FD794275FB24F00C5C822 /* TestHostPatchViewController.h */,
 				2B6FD795275FB24F00C5C822 /* TestHostPatchViewController.m */,
 			);

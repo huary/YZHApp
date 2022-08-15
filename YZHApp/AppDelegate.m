@@ -153,7 +153,7 @@ YZH_OW_PROPERTY_IMP(UIColor *, color, Color, AppDelegate)
 }
 
 - (void)pri_setupNavBarAppearance {
-    [self pri_test];
+//    [self pri_test];
     /*这是barButton的字体色/背景色/font，
      *[UIBarButtonItem appearance]的titleTextAttributesForState没有设置时，取[UINavigationBar appearance]的
      *[UIBarButtonItem appearance].tintColor = [UIColor blackColor];同[UIBarButtonItem appearance]中的NSForegroundColorAttributeName
@@ -297,18 +297,6 @@ YZH_OW_PROPERTY_IMP(UIColor *, color, Color, AppDelegate)
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    NSArray *f = [UIFont fontNamesForFamilyName:@"Helvetica Neue"];
-    NSLog(@"f=%@",f);
-    UIFont *font = [UIFont fontWithName:@"HelveticaNeue" size:12];
-    NSLog(@"font=%@",font);
-    
-    f = [UIFont fontNamesForFamilyName:@"PingFangSC-Regular"];
-    NSLog(@"f=%@",f);
-    UIFont *pf = [UIFont fontWithName:@"PingFangSC-Regular" size:12];
-    NSLog(@"pf=%@",pf);
-    
-    
     [self pri_setupNavBarAppearance];
     
     [self pri_setupRootVC];

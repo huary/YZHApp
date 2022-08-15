@@ -19,19 +19,39 @@
 }
 
 - (void)setHz_presentationEnable:(BOOL)hz_presentationEnable {
-    if (![self hz_strongReferenceObjectForKey:@"hz_VCPresentationEnableKey"]) {
-        [self hz_addStrongReferenceObject:@(hz_presentationEnable) forKey:@"hz_VCPresentationEnableKey"];
+    if (![self hz_strongReferenceObjectForKey:@"hz_presentationEnable"]) {
+        [self hz_addStrongReferenceObject:@(hz_presentationEnable) forKey:@"hz_presentationEnable"];
     }
 }
 
 - (BOOL)hz_presentationEnable {
-    return [self hz_strongReferenceObjectForKey:@"hz_VCPresentationEnableKey"];
+    NSNumber *enableValue = [self hz_strongReferenceObjectForKey:@"hz_presentationEnable"];
+    if (!enableValue) {
+        return NO;
+    }
+    return [enableValue boolValue];
+}
+
+- (void)setHz_presentTopLayoutY:(CGFloat)hz_presentTopLayoutY {
+    [self hz_addStrongReferenceObject:@(hz_presentTopLayoutY) forKey:@"hz_presentTopLayoutY"];
+}
+
+- (CGFloat)hz_presentTopLayoutY {
+    return [[self hz_strongReferenceObjectForKey:@"hz_presentTopLayoutY"] floatValue];
+}
+
+- (NSNumber *)pri_itn_presentTopLayoutY {
+    return [self hz_strongReferenceObjectForKey:@"hz_presentTopLayoutY"];
 }
 
 - (void)hz_presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion {
     YZHDefaultPresentationController *presentationController = nil;
     if (viewControllerToPresent.hz_presentationEnable) {
         presentationController = [[YZHDefaultPresentationController alloc] initWithPresentedViewController:viewControllerToPresent presentingViewController:self];
+        NSNumber *topLayoutY = [viewControllerToPresent pri_itn_presentTopLayoutY];
+        if (topLayoutY) {
+            presentationController.defaultTopLayoutY = [topLayoutY floatValue];
+        }
     }
     [self hz_presentViewController:viewControllerToPresent animated:flag completion:completion];
 

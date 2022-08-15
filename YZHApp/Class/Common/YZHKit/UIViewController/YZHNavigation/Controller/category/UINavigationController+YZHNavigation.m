@@ -389,4 +389,21 @@ ITN_GET_PROPERTY_C(YZHNavigationBarAndItemStyle, hz_navigationBarAndItemStyle, i
     return vcs;
 }
 
+
+- (BOOL)shouldAutorotate
+{
+    return self.topViewController.shouldAutorotate;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return self.topViewController.supportedInterfaceOrientations;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return self.topViewController.preferredInterfaceOrientationForPresentation;
+}
+
+
 @end

@@ -14,12 +14,12 @@
 - (instancetype)initWithPresentedViewController:(UIViewController *)presentedViewController presentingViewController:(UIViewController *)presentingViewController {
     self = [super initWithPresentedViewController:presentedViewController presentingViewController:presentingViewController];
     if (self) {
-        self.defaultTopLayoutY = 300;
+        self.defaultTopLayoutY = 57;
         self.presentWillBeginAnimationBlock = ^(YZHPresentationController * _Nonnull presentationController, id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            presentationController.dismissView.alpha = 0.5;
+            presentationController.dimmingView.alpha = 0.5;
         };
         self.dismissWillBeginAnimationBlock = ^(YZHPresentationController * _Nonnull presentationController, id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            presentationController.dismissView.alpha = 0;
+            presentationController.dimmingView.alpha = 0;
         };
     }
     return self;
@@ -39,18 +39,23 @@
     return _presentView;
 }
 
-- (UIView *)dismissView {
-    if (!_dismissView) {
-        _dismissView = [[UIView alloc] initWithFrame:self.containerView.bounds];
-        _dismissView.backgroundColor = [UIColor blackColor];
-        _dismissView.alpha = 0;
+- (UIView *)dimmingView {
+    if (!_dimmingView) {
+        _dimmingView = [[UIView alloc] initWithFrame:self.containerView.bounds];
+        _dimmingView.backgroundColor = [UIColor blackColor];
+        _dimmingView.alpha = 0;
         WEAK_SELF(weakSelf);
-        [_dismissView hz_addTapGestureRecognizerBlock:^(UIGestureRecognizer *gesture) {
+        [_dimmingView hz_addTapGestureRecognizerBlock:^(UIGestureRecognizer *gesture) {
             [weakSelf.presentedViewController dismissViewControllerAnimated:YES completion:nil];
         }];
     }
-    return _dismissView;
+    return _dimmingView;
 }
+
+//- (CGRect)frameOfPresentedViewInContainerView {
+//    CGSize size = self.presentingViewController.view.hz_size;
+//    return CGRectMake(0, self.defaultTopLayoutY, size.width, size.height - self.defaultTopLayoutY);
+//}
 
 
 //- (void)dealloc {

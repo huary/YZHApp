@@ -295,22 +295,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A0463F29-705C-4F17-AC68-FFFEE74F4CA7"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Controller/inherit/YZHNavigationController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
-            landmarkName = "-pushViewController:animated:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "73C2108F-0948-42F1-AAC8-97588EC0F0D4"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -407,22 +391,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "23C60EBA-EAE5-4341-8221-12623A648CDE"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Controller/category/UINavigationController+YZHNavigation.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "267"
-            endingLineNumber = "267"
-            landmarkName = "-hz_setViewControllers:animated:completion:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "83FC77C7-0284-468C-A859-835403643CB9"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -448,7 +416,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "202"
             endingLineNumber = "202"
-            landmarkName = "-hz_setViewControllers:"
+            landmarkName = "-hz_popViewControllerAnimated:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -527,7 +495,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "400"
             endingLineNumber = "400"
-            landmarkName = "+updateTabBarForNavigationController:fromVC:whenPushPopNoAnimatedTransition:"
+            landmarkName = "-animateTransition:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -543,7 +511,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "415"
             endingLineNumber = "415"
-            landmarkName = "+updateTabBarForNavigationController:fromVC:whenPushPopNoAnimatedTransition:"
+            landmarkName = "-animateTransition:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -559,8 +527,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "421"
             endingLineNumber = "421"
-            landmarkName = "+updateTabBarForNavigationController:fromVC:whenPushPopNoAnimatedTransition:"
-            landmarkType = "7">
+            landmarkName = "YZHDefaultAnimatedTransition"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -607,7 +575,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "396"
             endingLineNumber = "396"
-            landmarkName = "+updateTabBarForNavigationController:fromVC:whenPushPopNoAnimatedTransition:"
+            landmarkName = "-animateTransition:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -623,7 +591,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "397"
             endingLineNumber = "397"
-            landmarkName = "+updateTabBarForNavigationController:fromVC:whenPushPopNoAnimatedTransition:"
+            landmarkName = "-animateTransition:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -647,7 +615,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "B49236A2-1603-4B37-82C4-8D479DF66266"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Model/YZHDefaultAnimatedTransition.m"
@@ -687,7 +655,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "200"
             endingLineNumber = "200"
-            landmarkName = "-hz_setViewControllers:"
+            landmarkName = "-hz_popViewControllerAnimated:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -703,8 +671,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "196"
             endingLineNumber = "196"
-            landmarkName = "-hz_setViewControllers:"
-            landmarkType = "7">
+            landmarkName = "UINavigationController(YZHNavigation)"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -719,7 +687,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "401"
             endingLineNumber = "401"
-            landmarkName = "+updateTabBarForNavigationController:fromVC:whenPushPopNoAnimatedTransition:"
+            landmarkName = "-animateTransition:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -735,7 +703,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "209"
             endingLineNumber = "209"
-            landmarkName = "-hz_setViewControllers:animated:"
+            landmarkName = "-hz_popToViewController:animated:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -751,8 +719,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "188"
             endingLineNumber = "188"
-            landmarkName = "-hz_pushViewController:animated:"
-            landmarkType = "7">
+            landmarkName = "UINavigationController(YZHNavigation)"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -783,7 +751,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "185"
             endingLineNumber = "185"
-            landmarkName = "-hz_pushViewController:animated:"
+            landmarkName = "-hz_nc_viewWillLayoutSubviews"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -799,7 +767,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "216"
             endingLineNumber = "216"
-            landmarkName = "-hz_setViewControllers:animated:"
+            landmarkName = "-hz_popToRootViewControllerAnimated:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -895,7 +863,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "412"
             endingLineNumber = "412"
-            landmarkName = "+updateTabBarForNavigationController:fromVC:whenPushPopNoAnimatedTransition:"
+            landmarkName = "-animateTransition:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -959,7 +927,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "417"
             endingLineNumber = "417"
-            landmarkName = "+updateTabBarForNavigationController:fromVC:whenPushPopNoAnimatedTransition:"
+            landmarkName = "-animateTransition:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1590,54 +1558,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "8E18AB79-59E0-4C8E-9661-249C68EC92D5"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Controller/common/Internal/YZHNCUtils.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "603"
-            endingLineNumber = "603"
-            landmarkName = "itn_addNavigationItemViewRightButtonItemsIsResetForVC(nc, rightButtonItems, reset, vc)"
-            landmarkType = "9">
-            <Locations>
-               <Location
-                  uuid = "8E18AB79-59E0-4C8E-9661-249C68EC92D5 - 85bbf8b66130167e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "itn_addNavigationItemViewRightButtonItemsIsResetForVC"
-                  moduleName = "YZHApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/bytedance/Documents/yuanzh/github/YZHApp/YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Controller/common/Internal/YZHNCUtils.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "603"
-                  endingLineNumber = "603"
-                  offsetFromSymbolStart = "244">
-               </Location>
-               <Location
-                  uuid = "8E18AB79-59E0-4C8E-9661-249C68EC92D5 - 85bbf8b66130167e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "itn_addNavigationItemViewRightButtonItemsIsResetForVC"
-                  moduleName = "YZHApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/bytedance/Documents/yuanzh/github/YZHApp/YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Controller/common/Internal/YZHNCUtils.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "603"
-                  endingLineNumber = "603"
-                  offsetFromSymbolStart = "270">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "9E3CBF9D-E919-41AE-875D-C50A0154E353"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1655,7 +1575,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "CFE98893-F8DA-461B-AA68-DDB10F06DE40"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "YZHApp/CategoryTest/CAT_First_ViewController.m"
@@ -1679,24 +1599,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "236"
             endingLineNumber = "236"
-            landmarkName = "-itn_createNewNavigationItemViewForViewController:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "944CDECF-FB1C-469A-A7A6-A9C9803AB9D3"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/ViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "891"
-            endingLineNumber = "891"
-            landmarkName = "-supportedInterfaceOrientations"
-            landmarkType = "7">
+            landmarkName = "YZHNavigationController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1709,8 +1613,8 @@
             filePath = "YZHApp/ViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "903"
-            endingLineNumber = "903"
+            startingLineNumber = "916"
+            endingLineNumber = "916"
             landmarkName = "ViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -1725,8 +1629,8 @@
             filePath = "YZHApp/AppDelegate.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "464"
-            endingLineNumber = "464"
+            startingLineNumber = "452"
+            endingLineNumber = "452"
             landmarkName = "-application:supportedInterfaceOrientationsForWindow:"
             landmarkType = "7">
          </BreakpointContent>
@@ -1757,8 +1661,8 @@
             filePath = "YZHApp/ViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "351"
-            endingLineNumber = "351"
+            startingLineNumber = "353"
+            endingLineNumber = "353"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
          </BreakpointContent>
@@ -1823,8 +1727,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "241"
             endingLineNumber = "241"
-            landmarkName = "-itn_addNewNavigationItemViewForViewController:"
-            landmarkType = "7">
+            landmarkName = "YZHNavigationController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1872,22 +1776,6 @@
             startingLineNumber = "186"
             endingLineNumber = "186"
             landmarkName = "-supportedInterfaceOrientations"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "B3100179-266B-4179-B7A4-FE5106670F4A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "YZHApp/AppDelegate.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "304"
-            endingLineNumber = "304"
-            landmarkName = "-application:didFinishLaunchingWithOptions:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2013,8 +1901,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
             landmarkName = "-presentationTransitionWillBegin"
             landmarkType = "7">
          </BreakpointContent>
@@ -2029,8 +1917,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
+            startingLineNumber = "131"
+            endingLineNumber = "131"
             landmarkName = "-dismissalTransitionWillBegin"
             landmarkType = "7">
          </BreakpointContent>
@@ -2061,8 +1949,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
             landmarkName = "-presentationTransitionWillBegin"
             landmarkType = "7">
          </BreakpointContent>
@@ -2077,8 +1965,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
             landmarkName = "-dismissalTransitionWillBegin"
             landmarkType = "7">
          </BreakpointContent>
@@ -2109,8 +1997,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "241"
-            endingLineNumber = "241"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
             landmarkName = "-animationControllerForPresentedController:presentingController:sourceController:"
             landmarkType = "7">
          </BreakpointContent>
@@ -2125,8 +2013,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
             landmarkName = "-presentationControllerForPresentedViewController:presentingViewController:sourceViewController:"
             landmarkType = "7">
          </BreakpointContent>
@@ -2141,8 +2029,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "260"
-            endingLineNumber = "260"
+            startingLineNumber = "275"
+            endingLineNumber = "275"
             landmarkName = "-interactionControllerForDismissal:"
             landmarkType = "7">
          </BreakpointContent>
@@ -2157,8 +2045,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "255"
-            endingLineNumber = "255"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
             landmarkName = "-interactionControllerForPresentation:"
             landmarkType = "7">
          </BreakpointContent>
@@ -2173,8 +2061,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
+            startingLineNumber = "208"
+            endingLineNumber = "208"
             landmarkName = "-animatorForTransition:"
             landmarkType = "7">
          </BreakpointContent>
@@ -2189,8 +2077,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "231"
-            endingLineNumber = "231"
+            startingLineNumber = "246"
+            endingLineNumber = "246"
             landmarkName = "-interruptibleAnimatorForTransition:"
             landmarkType = "7">
          </BreakpointContent>
@@ -2205,8 +2093,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "227"
-            endingLineNumber = "227"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
             landmarkName = "-animateTransition:"
             landmarkType = "7">
          </BreakpointContent>
@@ -2221,8 +2109,8 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
+            startingLineNumber = "229"
+            endingLineNumber = "229"
             landmarkName = "-animatorForTransition:"
             landmarkType = "7">
          </BreakpointContent>
@@ -2397,9 +2285,345 @@
             filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/UIViewController+YZHPresentation.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
             landmarkName = "-hz_presentViewController:animated:completion:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9933333A-B201-4E2F-B704-BC64649B29F5"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "-dimmingView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9EB6C604-59C6-415E-96AB-38E393A93966"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHDefaultPresentationController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "-frameOfPresentedViewInContainerView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BABE28A0-2587-4B33-9660-77EA72B20D93"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHDefaultPresentationController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
+            landmarkName = "-dimmingView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1A5306B8-2BAC-4E64-9350-E455E75E43C7"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHDefaultPresentationController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "-presentView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E4CB4248-92A6-4F14-A1AA-053D4871E511"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "390"
+            endingLineNumber = "390"
+            landmarkName = "-viewWillLayoutSubviews"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "79DA6111-0931-4F32-9544-05E9AFA86D1F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/UIViewController+YZHPresentation.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "-pri_itn_presentTopLayoutY"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EAD495C2-C6E7-4553-92CC-C1E6028C3734"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/UIViewController+YZHPresentation.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
+            landmarkName = "-hz_presentTopLayoutY"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EC140C34-CC37-41AA-9EE5-753642D8A720"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/UIViewController+YZHPresentation.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "-setHz_presentTopLayoutY:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "ECBCEE7E-0AA9-4424-9E13-E62BB39753E5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/UIViewController+YZHPresentation.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "-hz_presentationEnable"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E0C19DDF-E142-4A18-AD26-D4894A8A12F4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "911"
+            endingLineNumber = "911"
+            landmarkName = "ViewController"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C0AA5390-4584-4202-B099-6C887ADC8A98"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Controller/category/UINavigationController+YZHNavigation.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "395"
+            endingLineNumber = "395"
+            landmarkName = "-shouldAutorotate"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1F97526A-4078-4726-BD60-6BC2082BB06B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Controller/category/UINavigationController+YZHNavigation.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "400"
+            endingLineNumber = "400"
+            landmarkName = "-supportedInterfaceOrientations"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "41030D19-A3F8-4BA6-A4CD-3CDFB6F1324F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHNavigation/Controller/category/UINavigationController+YZHNavigation.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "405"
+            endingLineNumber = "405"
+            landmarkName = "-preferredInterfaceOrientationForPresentation"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CE225640-3F20-4448-8E13-2B4CADF69ACC"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "903"
+            endingLineNumber = "903"
+            landmarkName = "-supportedInterfaceOrientations"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "42A495BB-EF0D-4B17-8AB4-7B28CB0CAFEF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "895"
+            endingLineNumber = "895"
+            landmarkName = "-shouldAutorotate"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B4716720-E950-4211-B816-D0BC38D425F3"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "-containerViewWillLayoutSubviews"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6E19CED5-0ED9-42D7-8219-BE01F74EEBD7"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "-frameOfPresentedViewInContainerView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7988A5EF-FAC6-482F-93F8-128B9736D823"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/CategoryTest/CAT_Third_ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
+            landmarkName = "-pri_testShapeView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4DC6C869-AD5C-4932-B512-C69F64476AE8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/Class/Common/YZHKit/UIViewController/YZHPresention/YZHPresentationController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "-containerViewWillLayoutSubviews"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5B8BFB39-02A0-4553-94C3-4E73108F1C91"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/CategoryTest/CAT_Third_ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
+            landmarkName = "-pri_testShapeView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FFA6D220-5062-4354-B55A-0DC954AAA608"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "YZHApp/CategoryTest/CAT_Third_ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "-setBackgroundColor:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

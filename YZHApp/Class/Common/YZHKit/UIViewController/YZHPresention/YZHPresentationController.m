@@ -12,9 +12,9 @@
 
 @property (nonatomic, strong) UIView *presentView;
 
-@property (nonatomic, strong) UIView *dismissView;
+@property (nonatomic, strong) UIView *dimmingView;
 
-@property (nonatomic, assign) CGFloat dismissViewBeginAlpha;
+@property (nonatomic, assign) CGFloat dimmingViewBeginAlpha;
 
 @property (nonatomic, strong) YZHTransitionAnimator *transitionAnimator;
 
@@ -42,11 +42,11 @@
     return _presentView;
 }
 
-- (UIView *)dismissView {
-    if (!_dismissView) {
-        _dismissView = [[UIView alloc] initWithFrame:self.containerView.bounds];
+- (UIView *)dimmingView {
+    if (!_dimmingView) {
+        _dimmingView = [[UIView alloc] initWithFrame:self.containerView.bounds];
     }
-    return _dismissView;
+    return _dimmingView;
 }
 
 - (void)setupGestureRecognizer {
@@ -65,12 +65,12 @@
 
     UIGestureRecognizerState state = interactiveTransition.panGestureRecognizer.state;
     if (state == UIGestureRecognizerStateBegan) {
-        self.dismissViewBeginAlpha = self.dismissView.alpha;
-        self.dismissView.alpha = (1-percent) * self.dismissViewBeginAlpha;
+        self.dimmingViewBeginAlpha = self.dimmingView.alpha;
+        self.dimmingView.alpha = (1-percent) * self.dimmingViewBeginAlpha;
         self.presentView.transform = CGAffineTransformMakeTranslation(0, ty);
     }
     else if (state == UIGestureRecognizerStateChanged) {
-        self.dismissView.alpha = (1-percent) * self.dismissViewBeginAlpha;
+        self.dimmingView.alpha = (1-percent) * self.dimmingViewBeginAlpha;
         self.presentView.transform = CGAffineTransformMakeTranslation(0, ty);
     }
     else if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled) {
@@ -79,7 +79,7 @@
             [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
         }else{
             [UIView animateWithDuration:self.panDismissFailedToRecoverDuration delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                self.dismissView.alpha = self.dismissViewBeginAlpha;
+                self.dimmingView.alpha = self.dimmingViewBeginAlpha;
                 self.presentView.transform = CGAffineTransformIdentity;
             } completion:nil];
         }
@@ -87,12 +87,27 @@
 }
 
 #pragma mark override
+- (void)containerViewWillLayoutSubviews {
+    [super containerViewWillLayoutSubviews];
+    if ([self.dismissInteractiveTransition isInteractive] || [self.presentInteractiveTransition isInteractive]) {
+        return;
+    }
+    CGSize size = self.containerView.hz_size;
+    self.presentedView.frame = CGRectMake(0, self.defaultTopLayoutY, size.width, size.height - self.defaultTopLayoutY);
+    self.presentedViewController.view.frame = self.presentedView.bounds;
+}
+
+- (CGRect)frameOfPresentedViewInContainerView {
+    CGSize size = self.containerView.hz_size;
+    return CGRectMake(0, self.defaultTopLayoutY, size.width, size.height - self.defaultTopLayoutY);
+}
+
 - (void)presentationTransitionWillBegin {
     UIView *presentedView = [super presentedView];
         
     [self.presentView addSubview:presentedView];
     
-    [self.containerView addSubview:self.dismissView];
+    [self.containerView addSubview:self.dimmingView];
     [self.containerView addSubview:self.presentView];
     
     [self setupGestureRecognizer];
@@ -107,7 +122,7 @@
 
 - (void)presentationTransitionDidEnd:(BOOL)completed {
     if (!completed) {
-        _dismissView = nil;
+        _dimmingView = nil;
     }
 }
 
@@ -122,7 +137,7 @@
 
 - (void)dismissalTransitionDidEnd:(BOOL)completed {
     if (completed) {
-        _dismissView = nil;
+        _dimmingView = nil;
     }
 }
 
@@ -160,7 +175,7 @@
                 [CATransaction setAnimationTimingFunction:timingFunction];
                 
                 [UIView animateWithDuration:duration animations:^{
-                    weakSelf.presentView.hz_top = self.presentView.hz_height;
+                    weakSelf.presentView.hz_top = self.containerView.hz_height;
                 } completion:nil];
                 [CATransaction commit];
             }
@@ -175,12 +190,12 @@
             weakSelf.presentView.hz_top = weakSelf.defaultTopLayoutY;
         }
         else {
-            weakSelf.presentView.hz_top = weakSelf.presentView.hz_height;
+            weakSelf.presentView.hz_top = weakSelf.containerView.hz_height;
         }
     };
     BOOL present = NO;
     if (self.operationType == YZHPresentOperationTypePresent) {
-        self.presentView.hz_top = self.presentView.hz_height;
+        self.presentView.hz_top = self.containerView.hz_height;
         present = YES;
     }
     [transitionAnimator addAnimations:^{

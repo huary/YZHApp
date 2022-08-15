@@ -15,6 +15,8 @@
 #import "TestMessageForwardViewController.h"
 #import "TestDeallocProxyViewController.h"
 #import "TestMemoryGraphViewController.h"
+#import "UIViewController+YZHNavigation.h"
+
 #import <SDWebImage/SDWebImage.h>
 
 #import <dlfcn.h>
@@ -352,7 +354,11 @@ static void _image_add_func(const struct mach_header *mhp, intptr_t slide) {
     
 //    [RegsterEnterManager loadSegmentInfo];
     
+    self.hz_navigationBarViewBackgroundColor = [UIColor brownColor];
+    
     self.view.backgroundColor = [UIColor orangeColor];
+    
+    NSLog(@"vc.view.bounds=%@,present.vc.bds=%@",NSStringFromCGRect(self.view.bounds),NSStringFromCGRect(self.presentationController.frameOfPresentedViewInContainerView));
     // Do any additional setup after loading the view, typically from a nib.
     
 //    [self _test];
@@ -376,6 +382,12 @@ static void _image_add_func(const struct mach_header *mhp, intptr_t slide) {
 //    [self pri_testHZRefresh];
     
 //    [self pri_testGCDTimer];
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    UIPresentationController *presentCtrller = self.navigationController.presentationController;
+    NSLog(@"vc.view.bounds=%@,present.vc.bds=%@,self.nav.bds=%@",NSStringFromCGRect(self.view.bounds),NSStringFromCGRect(presentCtrller.frameOfPresentedViewInContainerView),NSStringFromCGRect(self.navigationController.view.bounds));
 }
 
 -(void)_test
@@ -880,23 +892,24 @@ static void _image_add_func(const struct mach_header *mhp, intptr_t slide) {
 
 - (BOOL)shouldAutorotate
 {
-    BOOL should = [self hz_shouldAutorotate];
-    NSLog(@"VC.should=%@",@(should));
-    return should;
+    return YES;
+//    BOOL should = [self hz_shouldAutorotate];
+//    NSLog(@"VC.should=%@",@(should));
+//    return should;
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-    return UIInterfaceOrientationMaskAll;
-    NSLog(@"VC.mask=%@",@([self hz_supportedInterfaceOrientations]));
-    return [self hz_supportedInterfaceOrientations];
+    return UIInterfaceOrientationMaskPortrait;
+//    NSLog(@"VC.mask=%@",@([self hz_supportedInterfaceOrientations]));
+//    return [self hz_supportedInterfaceOrientations];
 }
 
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    NSLog(@"prefer=%@",@([self hz_preferredInterfaceOrientationForPresentation]));
-    return [self hz_preferredInterfaceOrientationForPresentation];
-}
+//- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+//{
+//    NSLog(@"prefer=%@",@([self hz_preferredInterfaceOrientationForPresentation]));
+//    return [self hz_preferredInterfaceOrientationForPresentation];
+//}
 
 //- (void)viewWillAppear:(BOOL)animated {
 //    [super viewWillAppear:animated];

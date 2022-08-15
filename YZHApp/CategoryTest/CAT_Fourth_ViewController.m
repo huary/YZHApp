@@ -65,8 +65,9 @@
     first.hz_navigationEnable = YES;
     first.hz_navigationEnableForRootVCInitSetToNavigation = YES;
     first.hz_barAndItemStyleForRootVCInitSetToNavigation = YZHNavigationBarAndItemStyleVCBarItem;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:first];
+    UINavigationController *nav = [[YZHNavigationController alloc] initWithRootViewController:first];
     nav.hz_presentationEnable = YES;
+    nav.hz_presentTopLayoutY = 44;
     [self presentViewController:nav animated:YES completion:nil];
 }
 

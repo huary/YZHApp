@@ -33,11 +33,13 @@
 - (void)setPath:(UIBezierPath *)path {
     _path = path;
     ((CAShapeLayer*)self.layer).path = path.CGPath;
+    ((CAShapeLayer*)self.layer).strokeColor = [UIColor purpleColor].CGColor;
+    ((CAShapeLayer*)self.layer).lineWidth = 10;
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
-//    [super setBackgroundColor:backgroundColor];
-    ((CAShapeLayer*)self.layer).fillColor = backgroundColor.CGColor;
+//    [super setBackgroundColor:[UIColor orangeColor]];
+    ((CAShapeLayer*)self.layer).fillColor = CLEAR_COLOR.CGColor;//backgroundColor.CGColor;
 }
 
 @end
@@ -115,10 +117,10 @@
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    if (self.level == 0) {
-        [self pri_enter];
-    }
-//    [self pri_testShapeView];
+//    if (self.level == 0) {
+//        [self pri_enter];
+//    }
+    [self pri_testShapeView];
 }
 
 - (void)pri_enter {
@@ -144,6 +146,10 @@
     CGFloat bl = arc4random() % 31;
     CGFloat br = arc4random() % 41;
     self.shapeView.path = [UIBezierPath hz_bezierPathWithRoundedRect:self.shapeView.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadiusList:@[@(tl),@(tr),@(bl),@(br)]];
+    
+//    self.shapeView.hz_size = self.shapeView.bounds.size;
+    self.shapeView.frame = CGRectMake(20, 200, self.view.hz_width - 40, 600);
+    self.shapeView.backgroundColor = [UIColor yellowColor];
 }
 
 @end

@@ -199,7 +199,12 @@ typedef id(^WeakReferenceObjectBlock)(void);
 
 -(void)hz_addStrongReferenceObject:(id)object forKey:(id)key
 {
-    [self.hz_strongReferenceObjectsTable setObject:object forKey:key];
+    if (object) {
+        [self.hz_strongReferenceObjectsTable setObject:object forKey:key];
+    }
+    else {
+        [self.hz_strongReferenceObjectsTable removeObjectForKey:key];
+    }
 }
 
 -(void)hz_removeStrongReferenceObjectForKey:(id)key {
